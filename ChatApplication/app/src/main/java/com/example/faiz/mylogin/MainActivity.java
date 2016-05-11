@@ -1,14 +1,10 @@
 package com.example.faiz.mylogin;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -28,11 +23,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText email, pass, id, password, fname, lname,dob;
+    EditText email, pass, id, password, fname, lname,dob,gender;
     Firebase firebase;
     Button buttonSignup, buttonSignin;
     RadioButton radioButtonMale,radioButtonFemale;
-    private RadioGroup radioSexGroup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +52,13 @@ public class MainActivity extends AppCompatActivity {
                 builder.setTitle("Add");
                 builder.setMessage("Add New Email or Password");
                 LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                View vv = inflater.inflate(R.layout.myview, null);
-                id = (EditText) vv.findViewById(R.id.edtview);
-                password = (EditText) vv.findViewById(R.id.edtview1);
-                fname = (EditText) vv.findViewById(R.id.edtview2);
-                lname = (EditText) vv.findViewById(R.id.edtview3);
+                View vv = inflater.inflate(R.layout.signup_view, null);
+                id = (EditText) vv.findViewById(R.id.edtviewEmail);
+                password = (EditText) vv.findViewById(R.id.edtviewPassword);
+                fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
+                lname = (EditText) vv.findViewById(R.id.edtviewLastName);
                 dob = (EditText) vv.findViewById(R.id.editTextDob);
-                radioSexGroup = (RadioGroup) vv.findViewById(R.id.radioGroup);
-
-
-                radioButtonFemale = (RadioButton) vv.findViewById(R.id.radioButtonFemale);
-                radioButtonMale = (RadioButton) vv.findViewById(R.id.radioButtonMale);
-
+                gender = (EditText)vv.findViewById(R.id.editGender);
 
 
                 builder.setView(vv);
@@ -79,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Map<String, Object> stringObjectMap) {
 
-                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new EmailAndPass(fname.getText().toString(),lname.getText().toString(),id.getText().toString(),password.getText().toString(),dob.getText().toString()));
+                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new EmailAndPass(fname.getText().toString(),lname.getText().toString(),id.getText().toString(),password.getText().toString(),dob.getText().toString(),gender.getText().toString(),stringObjectMap.get("uid").toString()));
 //                            Log.d("Data After Signup",""+stringObjectMap.get("uid"));
                                 Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
                             }

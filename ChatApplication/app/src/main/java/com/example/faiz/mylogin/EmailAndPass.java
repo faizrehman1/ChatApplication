@@ -1,11 +1,24 @@
 package com.example.faiz.mylogin;
 
+import java.lang.ref.SoftReference;
+
 public class EmailAndPass {
     private String fname;
     private String lname;
     private String email;
     private String password;
     private String dob;
+
+    public String getU_Id() {
+        return U_Id;
+    }
+
+    public void setU_Id(String u_Id) {
+        U_Id = u_Id;
+    }
+
+    private String gender;
+    private String U_Id;
 
     public String getDob() {
         return dob;
@@ -15,12 +28,23 @@ public class EmailAndPass {
         this.dob = dob;
     }
 
-    public EmailAndPass(String fname, String lname, String email, String password, String dob) {
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public EmailAndPass(String fname, String lname, String email, String password, String dob, String gender,String U_Id) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
         this.password = password;
         this.dob = dob;
+        this.gender = gender;
+        this.U_Id = U_Id;
+
     }
 
     public EmailAndPass() {
