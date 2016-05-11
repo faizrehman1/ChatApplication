@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+
+    >
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edtTodoTitle"
+        android:hint="Title"
+
+
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtTodoTitle"
+        android:hint="Discription"
+        android:id="@+id/edtTodoDiscrip"
+        />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done Or Not?"
+        android:id="@+id/dialogboxcheck"
+        android:layout_below="@+id/edtTodoDiscrip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp" />
+
+
+</RelativeLayout>
