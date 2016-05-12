@@ -23,18 +23,22 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
-public class Signin extends AppCompatActivity implements AdapterForToDoItems.Checked {
+public class Signin extends AppCompatActivity {
 
-  //  private ArrayList<EmailAndPass> list = new ArrayList<>();
-    private ArrayList<ToDo_Objects> todolist = new ArrayList<>();
-    AdapterForToDoItems adapter = new AdapterForToDoItems(todolist,Signin.this);
+    //  private ArrayList<EmailAndPass> list = new ArrayList<>();
+    private ArrayList<Message> todolist = new ArrayList<>();
+    AdapterForMessage adapter = new AdapterForMessage(todolist, Signin.this);
     Firebase firebase;
     Button buttonAdd, buttonLogoutt;
-    EditText todoTitle, todoDis;
+    EditText userMsg, userU_id;
     private String ref;
     private CheckBox check;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,80 +47,93 @@ public class Signin extends AppCompatActivity implements AdapterForToDoItems.Che
         Firebase.setAndroidContext(this);
 
 
-        ListView listView = (ListView) findViewById(R.id.listView1);
-        buttonAdd = (Button) findViewById(R.id.buttonAdd);
-        buttonLogoutt = (Button) findViewById(R.id.buttonLogout);
+//        ListView listView = (ListView) findViewById(R.id.listView1);
+//        buttonAdd = (Button) findViewById(R.id.buttonAdd);
+//        buttonLogoutt = (Button) findViewById(R.id.buttonLogout);
+
+//        Date date = new Date(System.currentTimeMillis());
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+//
+//        final String var = dateFormat.format(date);
 
 
-        listView.setAdapter(adapter);
+       // listView.setAdapter(adapter);
 
-        firebase = new Firebase("https://myloginf.firebaseio.com/");
-
-
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                LayoutInflater layoutInflater = LayoutInflater.from(Signin.this);
-                View vv = layoutInflater.inflate(R.layout.myviewtodo, null);
-
-                todoTitle = (EditText) vv.findViewById(R.id.edtTodoTitle);
-                todoDis = (EditText) vv.findViewById(R.id.edtTodoDiscrip);
-                check = (CheckBox)vv.findViewById(R.id.dialogboxcheck);
-                ref = firebase.getAuth().getUid();
+        firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
 
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(Signin.this);
-                builder.setTitle("Add");
-                builder.setMessage("Add ToDo in List");
-                builder.setView(vv);
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        firebase.child("UserData").child(ref).push().setValue(new ToDo_Objects(todoTitle.getText().toString(), todoDis.getText().toString(),check.isChecked()));
-                        Toast.makeText(Signin.this, "Item add in ToDo", Toast.LENGTH_SHORT).show();
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                builder.setNegativeButton("Retrun", null);
 
-                builder.show();
-            }
-        });
+
+
+
+//        buttonAdd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                LayoutInflater layoutInflater = LayoutInflater.from(Signin.this);
+//                View vv = layoutInflater.inflate(R.layout.myviewtodo, null);
+//
+//                userMsg = (EditText) vv.findViewById(R.id.edtTodoTitle);
+//                userU_id = (EditText) vv.findViewById(R.id.edtTodoDiscrip);
+//                // check = (CheckBox)vv.findViewById(R.id.dialogboxcheck);
+//                ref = firebase.getAuth().getUid();
+//
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(Signin.this);
+//                builder.setTitle("Add");
+//                builder.setMessage("Add ToDo in List");
+//                builder.setView(vv);
+//                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Firebase push = firebase.push();
+//                        key = push.getKey();
+//                        Log.d("LOL", key);
+//                        firebase.child("Conversation").child(key).push().setValue(new Message(userMsg.getText().toString(), ref, var));
+//                        Toast.makeText(Signin.this, "Item add in ToDo", Toast.LENGTH_SHORT).show();
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                });
+//                builder.setNegativeButton("Retrun", null);
+//
+//                builder.show();
+//            }
+//        });
 
 
 //
-        firebase.child("UserData").child(firebase.getAuth().getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                   ToDo_Objects post = dataSnapshot.getValue(ToDo_Objects.class);
-                   todolist.add(new ToDo_Objects(post.getTitle().toString(), post.getDiscription().toString(), post.isCheck()));
-                   adapter.notifyDataSetChanged();
-
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+//        firebase.child("Conversation").child(key).addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//
+//                Message post = dataSnapshot.getValue(Message.class);
+//                todolist.add(new Message(post.getMsg().toString(), post.getU_id().toString(), post.getTime()));
+//                adapter.notifyDataSetChanged();
+//
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
 
 
         buttonLogoutt.setOnClickListener(new View.OnClickListener() {
@@ -127,48 +144,47 @@ public class Signin extends AppCompatActivity implements AdapterForToDoItems.Che
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Signin.this);
-                builder.setTitle("Remove");
-                builder.setMessage("Remove this ToDo ?");
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                       firebase.child(firebase.getAuth().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                           @Override
-                           public void onDataChange(DataSnapshot dataSnapshot) {
-                               int i = 0;
-                               for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                   if (i == position) {
-                                       Firebase ref=data.getRef();
-                                       ref.removeValue();
-                                       Toast.makeText(Signin.this, "item Deleted", Toast.LENGTH_SHORT).show();
-                                        todolist.remove(position);
-                                       adapter.notifyDataSetChanged();
-
-                                   }
-                                   i++;
-
-                               }
-                           }
-
-                           @Override
-                           public void onCancelled(FirebaseError firebaseError) {
-
-                           }
-                       });
-                    }
-                });
-                builder.setNegativeButton("Return", null);
-                builder.show();
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(Signin.this);
+//                builder.setTitle("Remove");
+//                builder.setMessage("Remove this ToDo ?");
+//                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        firebase.child(firebase.getAuth().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                int i = 0;
+//                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                                    if (i == position) {
+//                                        Firebase ref = data.getRef();
+//                                        ref.removeValue();
+//                                        Toast.makeText(Signin.this, "item Deleted", Toast.LENGTH_SHORT).show();
+//                                        todolist.remove(position);
+//                                        adapter.notifyDataSetChanged();
+//
+//                                    }
+//                                    i++;
+//
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(FirebaseError firebaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                });
+//                builder.setNegativeButton("Return", null);
+//                builder.show();
+//            }
+//        });
 
 
     }
-
 
 
     @Override
@@ -193,26 +209,4 @@ public class Signin extends AppCompatActivity implements AdapterForToDoItems.Che
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void Check(final int pos, final boolean tick) {
-        firebase.child(firebase.getAuth().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int i=0;
-                for(DataSnapshot data:dataSnapshot.getChildren()){
-                    Firebase ref = data.getRef();
-                    if(i==pos){
-                        ref.child("check").setValue(!tick);
-                    }
-                    i++;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
 }

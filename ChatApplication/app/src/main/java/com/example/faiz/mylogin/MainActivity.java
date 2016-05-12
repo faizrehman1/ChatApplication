@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        firebase = new Firebase("https://myloginf.firebaseio.com/");
+        firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onAuthenticated(AuthData authData) {
 
                         Toast.makeText(MainActivity.this, "Login Successfull", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, Signin.class);
+                        Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
                         startActivity(intent);
                     }
 
