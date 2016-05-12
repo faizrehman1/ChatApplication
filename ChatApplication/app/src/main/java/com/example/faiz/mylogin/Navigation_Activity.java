@@ -119,8 +119,8 @@ public class Navigation_Activity extends AppCompatActivity
         viewPager = (ViewPager)findViewById(R.id.view_pager);
 
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
-        tabLayout.addTab(tabLayout.newTab().setText("Group"));
         tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
+        tabLayout.addTab(tabLayout.newTab().setText("Groups"));
         chatFragment = new Chat_Fragment();
         contactFragment = new Contact_Fragment();
         groupFragment = new Group_Fragment();
