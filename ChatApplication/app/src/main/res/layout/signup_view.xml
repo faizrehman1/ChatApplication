@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fff"
+                android:orientation="vertical">
 
     <EditText
         android:id="@+id/edtviewFirstName"
@@ -20,12 +20,10 @@
         android:id="@+id/edtviewLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Last Name"
-        android:layout_below="@+id/edtviewFirstName"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edtviewFirstName"
+        android:hint="Last Name"/>
 
 
     <EditText
@@ -34,46 +32,50 @@
         android:layout_height="wrap_content"
 
 
-        android:hint="Email"
-        android:layout_below="@+id/edtviewLastName"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edtviewLastName"
+        android:hint="Email"/>
 
     <EditText
         android:id="@+id/edtviewPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:hint="Password"
-        android:password="true"
-        android:layout_below="@+id/edtviewEmail"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-
-
-
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edtviewEmail"
+        android:hint="Password"
+        android:password="true"/>
 
 
     <EditText
         android:id="@+id/editTextDob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edtviewPassword"
         android:ems="10"
         android:hint="Date/Month/Year"
-        android:inputType="date"
-        android:layout_below="@+id/edtviewPassword"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:inputType="date"/>
 
     <EditText
+        android:id="@+id/editGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editGender"
-        android:hint="Gender: Male Or Female"
         android:layout_below="@+id/editTextDob"
+        android:hint="Gender: Male Or Female"
+        />
+
+    <EditText
+        android:id="@+id/imag_URL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editGender"
+        android:hint="Upload Image"
         />
 
 </RelativeLayout>
