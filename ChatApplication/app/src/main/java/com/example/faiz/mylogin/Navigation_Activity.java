@@ -127,8 +127,8 @@ public class Navigation_Activity extends AppCompatActivity
 
         fragments = new ArrayList<>();
         fragments.add(chatFragment);
-        fragments.add(contactFragment);
         fragments.add(groupFragment);
+        fragments.add(contactFragment);
 
 
 
