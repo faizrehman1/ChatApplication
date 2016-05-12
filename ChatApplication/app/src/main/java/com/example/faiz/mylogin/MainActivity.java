@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 builder.setView(vv);
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         firebase.createUser(id.getText().toString(), password.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 });
-                builder.setNegativeButton("Return", null);
+                builder.setNegativeButton("Cancel", null);
                 builder.show();
 
             }
