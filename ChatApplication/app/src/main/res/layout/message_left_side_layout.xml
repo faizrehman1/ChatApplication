@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imageView_leftSide_messages"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_menu_camera"/>
+
+    <TextView
+        android:id="@+id/nameView_LeftSide_View_messages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/imageView_leftSide_messages"
+        android:layout_toRightOf="@+id/imageView_leftSide_messages"
+        android:text="NameView"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/MsgView_RightSide_View_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameView_LeftSide_View_messages"
+        android:layout_toEndOf="@+id/imageView_leftSide_messages"
+        android:layout_toRightOf="@+id/imageView_leftSide_messages"
+        android:text="MsgView"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/timeView_leftSide_messages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="TimeView"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+</RelativeLayout>

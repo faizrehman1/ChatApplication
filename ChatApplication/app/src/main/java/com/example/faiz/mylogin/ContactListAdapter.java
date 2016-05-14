@@ -2,16 +2,15 @@ package com.example.faiz.mylogin;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
-import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 
@@ -56,35 +55,51 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         String imgUrl = msg.getImgUrl();
 
 
-
-
-
-
         String fname = msg.getFname().toString();
         nameView.setText(fname);
-       // imgView.setImageDrawable(imgUrl);
+        // imgView.setImageDrawable(imgUrl);
 
-                imgView.setImageResource(R.drawable.ic_menu_camera);
+        imgView.setImageResource(R.drawable.ic_menu_camera);
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater1 = LayoutInflater.from(context);
-                View view = inflater1.inflate(R.layout.contact_alertview_userprofile, null);
+                final View view = inflater1.inflate(R.layout.contact_alertview_userprofile, null);
 
                 TextView nameView = (TextView) view.findViewById(R.id.textViewName_alert_Name);
                 TextView emailView = (TextView) view.findViewById(R.id.textView_alert_Email);
                 TextView dobView = (TextView) view.findViewById(R.id.textView_alert_Dob);
                 ImageView imgView = (ImageView) view.findViewById(R.id.imageView_userprofile);
+                Button textButton = (Button) view.findViewById(R.id.button_Text_alertBox);
+                Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
+
 
                 nameView.setText(message.get(position).getFname());
                 emailView.setText(message.get(position).getEmail());
                 dobView.setText(message.get(position).getDob());
                 imgView.setImageResource(R.drawable.ic_menu_camera);
+                textButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context, Conversation_Activity.class);
+                        context.startActivity(i);
+
+                    }
+                });
+//                builder.setCancelable(false);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                    }
+                });
                 builder.setView(view);
 
-           //     builder.setMessage("LOL");
+
+                //     builder.setMessage("LOL");
 
                 builder.create().show();
             }
