@@ -1,5 +1,6 @@
 package com.example.faiz.mylogin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -106,7 +107,8 @@ public class Navigation_Activity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            Intent intent = new Intent(Navigation_Activity.this,MainActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -119,8 +121,8 @@ public class Navigation_Activity extends AppCompatActivity
         viewPager = (ViewPager)findViewById(R.id.view_pager);
 
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
-        tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
+        tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
         chatFragment = new Chat_Fragment();
         contactFragment = new Contact_Fragment();
         groupFragment = new Group_Fragment();
