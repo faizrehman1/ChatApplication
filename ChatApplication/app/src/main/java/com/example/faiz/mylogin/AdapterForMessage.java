@@ -15,7 +15,6 @@ public class AdapterForMessage extends BaseAdapter {
     private Context context;
 
 
-
     public AdapterForMessage(ArrayList<Message> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
@@ -46,20 +45,17 @@ public class AdapterForMessage extends BaseAdapter {
 
         TextView msg = (TextView) view.findViewById(R.id.textViewtitle);
         TextView time = (TextView) view.findViewById(R.id.textViewDiscrip);
-      //  TextView text1 = (TextView) view.findViewById(R.id.textViewDiscrip);
-      //  final CheckBox checkbox = (CheckBox) view.findViewById(R.id.listCheckbox);
+        //  TextView text1 = (TextView) view.findViewById(R.id.textViewDiscrip);
+        //  final CheckBox checkbox = (CheckBox) view.findViewById(R.id.listCheckbox);
 
 
-
-
-     //   checkbox.setChecked(arrayList.get(position).isCheck());
+        //   checkbox.setChecked(arrayList.get(position).isCheck());
         msg.setText(arrayList.get(position).getMsg());
         time.setText(arrayList.get(position).getTime());
 
 
         return view;
     }
-
 
 
 }

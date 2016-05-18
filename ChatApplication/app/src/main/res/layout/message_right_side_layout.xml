@@ -15,30 +15,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="NameView"
-        android:id="@+id/nameView_RightSide_messages"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/imageView_RightSide_messages"
-        android:layout_toStartOf="@+id/imageView_RightSide_messages"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/msgView_RightSide_messages"
-        android:layout_below="@+id/nameView_RightSide_messages"
-        android:layout_toLeftOf="@+id/imageView_RightSide_messages"
-        android:layout_toStartOf="@+id/imageView_RightSide_messages"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="TimeView"
         android:id="@+id/timeView_RightSide_messages"
-        android:layout_below="@+id/nameView_RightSide_messages"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="messageView"
+        android:id="@+id/messageView_rightSide"
+        android:layout_below="@+id/timeView_RightSide_messages"
+        android:layout_toLeftOf="@+id/imageView_RightSide_messages"
+        android:layout_toStartOf="@+id/imageView_RightSide_messages"/>
 </RelativeLayout>

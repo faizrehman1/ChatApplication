@@ -11,26 +11,6 @@
         android:background="@drawable/ic_menu_camera"/>
 
     <TextView
-        android:id="@+id/nameView_LeftSide_View_messages"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/imageView_leftSide_messages"
-        android:layout_toRightOf="@+id/imageView_leftSide_messages"
-        android:text="NameView"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <TextView
-        android:id="@+id/MsgView_RightSide_View_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameView_LeftSide_View_messages"
-        android:layout_toEndOf="@+id/imageView_leftSide_messages"
-        android:layout_toRightOf="@+id/imageView_leftSide_messages"
-        android:text="MsgView"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-    <TextView
         android:id="@+id/timeView_leftSide_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,4 +19,14 @@
         android:layout_alignParentTop="true"
         android:text="TimeView"
         android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/message_view_leftSide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeView_leftSide_messages"
+        android:layout_toEndOf="@+id/imageView_leftSide_messages"
+        android:layout_toRightOf="@+id/imageView_leftSide_messages"
+        android:text="message_View"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 </RelativeLayout>

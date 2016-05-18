@@ -31,7 +31,7 @@
         />
 
     <ListView
-        android:id="@+id/messagesContainer"
+        android:id="@+id/messagesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/editText_Conversation_message"
