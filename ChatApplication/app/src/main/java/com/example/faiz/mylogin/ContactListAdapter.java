@@ -20,21 +20,22 @@ import java.util.ArrayList;
 //setting Adapter class for the COntact list View in Fragment
 public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
-    private ArrayList<EmailAndPass> message;
+    private ArrayList<EmailAndPass> userData;
+    public static final String UUID_KEY = "data_uudsdfgasdg";
 
     public ContactListAdapter(Context context, ArrayList<EmailAndPass> message) {
         this.context = context;
-        this.message = message;
+        this.userData = message;
     }
 
     @Override
     public int getCount() {
-        return message.size();
+        return userData.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return message.get(position);
+        return userData.get(position);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         TextView nameView = (TextView) view.findViewById(R.id.name_View_ContacList);
         ImageView imgView = (ImageView) view.findViewById(R.id.image_View_ContacList);
 
-        EmailAndPass msg = message.get(position);
+        EmailAndPass msg = userData.get(position);
         String imgUrl = msg.getImgUrl();
 
 
@@ -76,14 +77,15 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
 
 
-                nameView.setText(message.get(position).getFname());
-                emailView.setText(message.get(position).getEmail());
-                dobView.setText(message.get(position).getDob());
+                nameView.setText(userData.get(position).getFname());
+                emailView.setText(userData.get(position).getEmail());
+                dobView.setText(userData.get(position).getDob());
                 imgView.setImageResource(R.drawable.ic_menu_camera);
                 textButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(context, Conversation_Activity.class);
+                        i.putExtra(UUID_KEY, userData.get(position).getU_Id());
                         context.startActivity(i);
 
                     }

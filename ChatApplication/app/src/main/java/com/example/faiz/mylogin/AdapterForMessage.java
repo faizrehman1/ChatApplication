@@ -5,57 +5,66 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
-public class AdapterForMessage extends BaseAdapter {
+public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
-    private ArrayList<Message> arrayList;
+    private ArrayList<Message> messages;
     private Context context;
+    Firebase firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
 
-
-    public AdapterForMessage(ArrayList<Message> arrayList, Context context) {
-        this.arrayList = arrayList;
+    public AdapterForMessage(ArrayList<Message> messages, Context context) {
+        this.messages = messages;
         this.context = context;
-
     }
-
 
     @Override
     public int getCount() {
-        return arrayList.size();
+        return messages.size();
     }
 
     @Override
-    public Message getItem(int position) {
-        return arrayList.get(position);
+    public Object getItem(int position) {
+        return messages.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.chatview, null);
+        View view1 = inflater.inflate(R.layout.message_left_side_layout, null);
+        View view2 = inflater.inflate(R.layout.message_right_side_layout, null);
 
-        TextView msg = (TextView) view.findViewById(R.id.textViewtitle);
-        TextView time = (TextView) view.findViewById(R.id.textViewDiscrip);
-        //  TextView text1 = (TextView) view.findViewById(R.id.textViewDiscrip);
-        //  final CheckBox checkbox = (CheckBox) view.findViewById(R.id.listCheckbox);
+        TextView msgViewLeft = (TextView) view1.findViewById(R.id.message_view_leftSide);
+        TextView timeViewLeft = (TextView) view1.findViewById(R.id.timeView_leftSide_messages);
 
-
-        //   checkbox.setChecked(arrayList.get(position).isCheck());
-        msg.setText(arrayList.get(position).getMsg());
-        time.setText(arrayList.get(position).getTime());
+        TextView msgViewRight = (TextView) view1.findViewById(R.id.messageView_rightSide);
+        TextView timeViewRight = (TextView) view1.findViewById(R.id.timeView_RightSide_messages);
 
 
-        return view;
+        if (messages.get(position).getU_id().equals(firebase.getAuth().getUid())) {
+
+            msgViewRight.setText(messages.get(position).getMsg());
+            timeViewRight.setText(messages.get(position).getTime());
+            return view2;
+        } else {
+            msgViewLeft.setText(messages.get(position).getMsg());
+            timeViewLeft.setText(messages.get(position).getTime());
+            return view1;
+        }
+
     }
-
-
 }
