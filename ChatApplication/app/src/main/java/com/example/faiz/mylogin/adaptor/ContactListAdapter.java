@@ -1,4 +1,4 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.adaptor;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.example.faiz.mylogin.R;
+import com.example.faiz.mylogin.model.User;
+import com.example.faiz.mylogin.ui.Conversation_Activity;
+
 import java.util.ArrayList;
 
 /**
@@ -20,10 +24,10 @@ import java.util.ArrayList;
 //setting Adapter class for the COntact list View in Fragment
 public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
-    private ArrayList<EmailAndPass> userData;
+    private ArrayList<User> userData;
     public static final String UUID_KEY = "data_uudsdfgasdg";
 
-    public ContactListAdapter(Context context, ArrayList<EmailAndPass> message) {
+    public ContactListAdapter(Context context, ArrayList<User> message) {
         this.context = context;
         this.userData = message;
     }
@@ -52,7 +56,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         TextView nameView = (TextView) view.findViewById(R.id.name_View_ContacList);
         ImageView imgView = (ImageView) view.findViewById(R.id.image_View_ContacList);
 
-        EmailAndPass msg = userData.get(position);
+        User msg = userData.get(position);
         String imgUrl = msg.getImgUrl();
 
 
@@ -85,7 +89,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(context, Conversation_Activity.class);
-                        i.putExtra(UUID_KEY, userData.get(position).getU_Id());
+                        i.putExtra(UUID_KEY, userData.get(position));
                         context.startActivity(i);
 
                     }

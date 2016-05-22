@@ -1,4 +1,4 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.example.faiz.mylogin.R;
+import com.example.faiz.mylogin.model.User;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Map<String, Object> stringObjectMap) {
 
-                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new EmailAndPass(fname.getText().toString(), lname.getText().toString(), id.getText().toString(), password.getText().toString(), dob.getText().toString(), gender.getText().toString(), stringObjectMap.get("uid").toString(), img_Url.getText().toString()));
+                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new User(fname.getText().toString(), lname.getText().toString(), id.getText().toString(), password.getText().toString(), dob.getText().toString(), gender.getText().toString(), stringObjectMap.get("uid").toString(), img_Url.getText().toString()));
 
 //                            Log.d("Data After Signup",""+stringObjectMap.get("uid"));
                                 Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
