@@ -1,0 +1,163 @@
+package com.example.faiz.mylogin.ui;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import com.example.faiz.mylogin.R;
+import com.example.faiz.mylogin.adaptor.AdapterForMessage;
+import com.example.faiz.mylogin.adaptor.ContactListAdapter;
+import com.example.faiz.mylogin.model.Message;
+import com.example.faiz.mylogin.model.TempRefObj;
+import com.example.faiz.mylogin.model.User;
+import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
+import java.util.ArrayList;
+
+public class Conversation_Activity extends AppCompatActivity {
+    private EditText messageField;
+    private Button sendButton;
+    private Firebase firebase;
+    private ListView messagesListView;
+    private Button sendBtn;
+    private AdapterForMessage adapter;
+    private ArrayList<Message> messages;
+    private User friendData;
+    private AuthData meData;
+    private TempRefObj conversationData;
+    private String conversationPushRef;
+    private boolean isConversationOld = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_conversation_);
+
+        firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
+        try {
+            meData = firebase.getAuth();
+            friendData = getIntent().getParcelableExtra(ContactListAdapter.UUID_KEY);
+        } catch (Exception ex) {
+            Log.e("Error getting I values", "Error Msg:" + ex.getMessage());
+        }
+        messageField = (EditText) findViewById(R.id.editText_Conversation_message);
+        sendButton = (Button) findViewById(R.id.button_Conversation_send);
+        messagesListView = (ListView) findViewById(R.id.messagesListView);
+
+        messages = new ArrayList<Message>();
+        adapter = new AdapterForMessage(messages, Conversation_Activity.this);
+        messagesListView.setAdapter(adapter);
+
+
+        checkConversationNewOROLD();
+
+    }
+
+    private void checkConversationNewOROLD() {
+        firebase.child("user_conv").child(meData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    for (DataSnapshot d : dataSnapshot.getChildren()) {
+                        TempRefObj data = d.getValue(TempRefObj.class);
+                        if (data.getUserId().equals(friendData.getU_Id())) {
+                            conversationData = data;
+                            isConversationOld = true;
+                            conversationPushRef = data.getConversationId();
+                        }
+                    }
+
+                } catch (Exception ec) {
+                    ec.printStackTrace();
+                } finally {
+                    getConvoDataOrCreateNew();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void getConvoDataOrCreateNew() {
+        if (isConversationOld) {
+            getConversationData();
+        } else {
+            createNewConversation();
+        }
+    }
+
+    private void createNewConversation() {
+        Firebase pushRef = firebase.child("conversation").push();
+        conversationPushRef = pushRef.getKey();
+        final TempRefObj tempRefObj = new TempRefObj(meData.getUid(), conversationPushRef);
+        firebase.child("user_conv").child(friendData.getU_Id()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase f) {
+                if (firebaseError == null) {
+                    tempRefObj.setUserId(friendData.getU_Id());
+                    firebase.child("user_conv").child(meData.getUid()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError == null) {
+                                getConversationData();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    private void getConversationData() {
+        firebase.child("conversation").child(conversationPushRef).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                messages.clear();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Message message = d.getValue(Message.class);
+                    messages.add(message);
+                    adapter.notifyDataSetChanged();
+                    Log.d("User Message Data", "Msg:" + message.getMsg() + "\nUUID:" + message.getU_id() + "\nTime:" + message.getTime());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Error Getting Data", "No Message Data Available");
+            }
+        });
+        setButtonClick();
+    }
+
+    private void setButtonClick() {
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (messageField.getText().length() > 1) {
+                    Message m = new Message();
+                    m.setMsg(messageField.getText().toString());
+                    m.setTime(System.currentTimeMillis() + "");
+                    m.setU_id(meData.getUid());
+                    firebase.child("conversation").child(conversationPushRef).push().setValue(m);
+                    Log.d("Message Send Button", "Clicked");
+                    messageField.setText("");
+                }
+            }
+        });
+    }
+}
+

@@ -1,15 +1,15 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.firebase.client.ChildEventListener;
+import com.example.faiz.mylogin.adaptor.ContactListAdapter;
+import com.example.faiz.mylogin.R;
+import com.example.faiz.mylogin.model.User;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class Contact_Fragment extends android.support.v4.app.Fragment {
     private ListView listView;
-    private ArrayList<EmailAndPass> nameList;
+    private ArrayList<User> nameList;
     private ContactListAdapter adapter;
     private Firebase firebase;
     String name;
@@ -42,7 +42,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                  EmailAndPass  msg = data.getValue(EmailAndPass.class);
+                  User msg = data.getValue(User.class);
                    // Log.d("msg:",msg.getU_Id() +" User Id:"+ firebase.getAuth().getUid());
                        if(msg.getU_Id().equals(firebase.getAuth().getUid())) {
                          //  Log.d("LOL", msg.getU_Id());
@@ -50,7 +50,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
                        }else {
                          //  Log.d("LOL2","Hahaha");
                            String image = msg.getImgUrl();
-                           nameList.add(new EmailAndPass(msg.getFname(), msg.getLname(), msg.getEmail(), msg.getPassword(), msg.getDob(), msg.getGender(), msg.getU_Id(), image));
+                           nameList.add(new User(msg.getFname(), msg.getLname(), msg.getEmail(), msg.getPassword(), msg.getDob(), msg.getGender(), msg.getU_Id(), image));
                            adapter.notifyDataSetChanged();
                        }
                 }

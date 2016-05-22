@@ -1,4 +1,4 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.model;
 
 
 

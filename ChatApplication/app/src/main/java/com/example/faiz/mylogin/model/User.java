@@ -1,6 +1,9 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.model;
 
-public class EmailAndPass {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class User implements Parcelable {
     private String fname;
     private String lname;
     private String email;
@@ -13,7 +16,7 @@ public class EmailAndPass {
     //setting Up construtor for all the fields
 
 
-    public EmailAndPass(String fname, String lname, String email, String password, String dob, String gender, String u_Id, String imgUrl) {
+    public User(String fname, String lname, String email, String password, String dob, String gender, String u_Id, String imgUrl) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
@@ -24,7 +27,7 @@ public class EmailAndPass {
         this.imgUrl = imgUrl;
     }
 
-    public EmailAndPass() {
+    public User() {
     }
 
     public String getImgUrl() {
@@ -93,4 +96,44 @@ public class EmailAndPass {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.fname);
+        dest.writeString(this.lname);
+        dest.writeString(this.email);
+        dest.writeString(this.password);
+        dest.writeString(this.dob);
+        dest.writeString(this.gender);
+        dest.writeString(this.U_Id);
+        dest.writeString(this.imgUrl);
+    }
+
+    protected User(Parcel in) {
+        this.fname = in.readString();
+        this.lname = in.readString();
+        this.email = in.readString();
+        this.password = in.readString();
+        this.dob = in.readString();
+        this.gender = in.readString();
+        this.U_Id = in.readString();
+        this.imgUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

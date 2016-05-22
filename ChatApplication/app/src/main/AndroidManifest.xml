@@ -5,12 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name=".AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,13 +20,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Signin"
+            android:name=".ui.Signin"
             android:label="@string/title_activity_signin"/>
         <activity
-            android:name=".Navigation_Activity"
+            android:name=".ui.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Conversation_Activity">
+        <activity android:name=".ui.Conversation_Activity">
         </activity>
     </application>
 

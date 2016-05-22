@@ -1,4 +1,4 @@
-package com.example.faiz.mylogin;
+package com.example.faiz.mylogin.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.faiz.mylogin.R;
+import com.example.faiz.mylogin.adaptor.Tab_Adapter;
 
 import java.util.ArrayList;
 
