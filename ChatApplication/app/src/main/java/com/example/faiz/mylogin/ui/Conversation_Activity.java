@@ -20,7 +20,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class Conversation_Activity extends AppCompatActivity {
     private EditText messageField;
@@ -147,10 +150,15 @@ public class Conversation_Activity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Date date = new Date(System.currentTimeMillis());
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+
+                final String var = dateFormat.format(date);
                 if (messageField.getText().length() > 1) {
                     Message m = new Message();
                     m.setMsg(messageField.getText().toString());
-                    m.setTime(System.currentTimeMillis() + "");
+                    m.setTime(var);
                     m.setU_id(meData.getUid());
                     firebase.child("conversation").child(conversationPushRef).push().setValue(m);
                     Log.d("Message Send Button", "Clicked");
