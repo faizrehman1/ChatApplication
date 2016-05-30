@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.ui.Conversation_Activity;
+import com.example.faiz.mylogin.ui.RoundImage;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
     private ArrayList<User> userData;
     public static final String UUID_KEY = "data_uudsdfgasdg";
+    private Picasso picasso;
+    ImageView imgView_dialog;
 
     public ContactListAdapter(Context context, ArrayList<User> message) {
         this.context = context;
@@ -64,7 +68,12 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         nameView.setText(fname);
         // imgView.setImageDrawable(imgUrl);
 
-        imgView.setImageResource(R.drawable.ic_menu_camera);
+
+        picasso.with(context)
+                .load(userData.get(position).getImgUrl())
+                .transform(new RoundImage())
+                .into(imgView);
+        // imgView.setImageResource(R.drawable.ic_menu_camera);
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +85,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 TextView nameView = (TextView) view.findViewById(R.id.textViewName_alert_Name);
                 TextView emailView = (TextView) view.findViewById(R.id.textView_alert_Email);
                 TextView dobView = (TextView) view.findViewById(R.id.textView_alert_Dob);
-                ImageView imgView = (ImageView) view.findViewById(R.id.imageView_userprofile);
+                imgView_dialog = (ImageView) view.findViewById(R.id.imageView_userprofile);
                 Button textButton = (Button) view.findViewById(R.id.button_Text_alertBox);
                 Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
 
@@ -84,7 +93,10 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 nameView.setText(userData.get(position).getFname());
                 emailView.setText(userData.get(position).getEmail());
                 dobView.setText(userData.get(position).getDob());
-                imgView.setImageResource(R.drawable.ic_menu_camera);
+                picasso.with(context)
+                        .load(userData.get(position).getImgUrl())
+                        .transform(new RoundImage())
+                        .into(imgView_dialog);
                 textButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -98,8 +110,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
+                        builder.create().dismiss();
                     }
                 });
                 builder.setView(view);
@@ -113,4 +124,5 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
 
         return view;
     }
+
 }

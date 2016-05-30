@@ -130,6 +130,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="library" exported="" name="firebase-iid-9.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-9.0.1" level="project" />
@@ -157,5 +158,19 @@
     <orderEntry type="library" exported="" name="bolts-applinks-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="customtabs-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-9.0.1" level="project" />
+=======
+    <orderEntry type="library" exported="" name="design-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="cloudinary-android-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="firebase-client-android-2.3.1 (1)" level="project" />
+    <orderEntry type="library" exported="" name="cloudinary-core-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.3.3" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="android-android-23" level="project" />
+>>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
   </component>
 </module>
