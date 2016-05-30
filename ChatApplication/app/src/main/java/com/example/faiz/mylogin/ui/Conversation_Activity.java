@@ -56,7 +56,7 @@ public class Conversation_Activity extends AppCompatActivity {
         messagesListView = (ListView) findViewById(R.id.messagesListView);
 
         messages = new ArrayList<Message>();
-        adapter = new AdapterForMessage(messages, Conversation_Activity.this);
+        adapter = new AdapterForMessage(messages, Conversation_Activity.this,friendData);
         messagesListView.setAdapter(adapter);
 
 
@@ -72,6 +72,7 @@ public class Conversation_Activity extends AppCompatActivity {
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         TempRefObj data = d.getValue(TempRefObj.class);
                         if (data.getUserId().equals(friendData.getU_Id())) {
+                            Log.d(data.getUserId().toString(),friendData.getU_Id().toString()+" "+meData.getUid());
                             conversationData = data;
                             isConversationOld = true;
                             conversationPushRef = data.getConversationId();

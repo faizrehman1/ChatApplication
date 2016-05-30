@@ -21,7 +21,7 @@ public class Signin extends AppCompatActivity {
 
     //  private ArrayList<EmailAndPass> list = new ArrayList<>();
     private ArrayList<Message> todolist = new ArrayList<>();
-    AdapterForMessage adapter = new AdapterForMessage(todolist, Signin.this);
+   // AdapterForMessage adapter = new AdapterForMessage(todolist, Signin.this);
     Firebase firebase;
     Button buttonAdd, buttonLogoutt;
     EditText userMsg, userU_id;
