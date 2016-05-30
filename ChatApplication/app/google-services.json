@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1022943856694",
+    "firebase_url": "https://chatapplicationn.firebaseio.com",
+    "project_id": "chatapplicationn",
+    "storage_bucket": "chatapplicationn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022943856694:android:12ba3356d1227d3d",
+        "android_client_info": {
+          "package_name": "com.example.faiz.mylogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022943856694-8cgd8b3bnli3qg9lmbifqvpli7519nvr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwTW6qrdPLYvri6G72yWBUNBh2HNTmgek"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
