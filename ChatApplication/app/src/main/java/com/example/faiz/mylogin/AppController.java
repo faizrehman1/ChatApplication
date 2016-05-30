@@ -29,7 +29,7 @@ public class AppController extends Application {
         /**
          * Remove this line from all activities
          * */
-        printHashKaey();
+     //   printHashKaey();
 
     }
 

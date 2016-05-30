@@ -29,10 +29,12 @@ import android.widget.TextView;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
 import com.example.faiz.mylogin.model.User;
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ public class Navigation_Activity extends AppCompatActivity
     private Group_Fragment groupFragment;
     Firebase firebase;
     Picasso picasso;
+    AuthData uUidData;
 
 
     @Override
@@ -77,7 +80,7 @@ public class Navigation_Activity extends AppCompatActivity
          final TextView user_name = (TextView)view.findViewById(R.id.user_name_NavBar);
          final TextView user_email = (TextView)view.findViewById(R.id.textView_email_NavBar);
 
-        firebase.child("User").child(firebase.getAuth().getUid()).addValueEventListener(new ValueEventListener() {
+       /* firebase.child("User").child(uUidData.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -92,14 +95,14 @@ public class Navigation_Activity extends AppCompatActivity
                           //  .resize(width,height)
                             .transform(new RoundImage())
                             .into(img);
-//                */
+//                *//*
             }
             //  }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        });*/
 
 
 
@@ -173,6 +176,8 @@ public class Navigation_Activity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         }   else if (id == R.id.nav_send) {
+            FirebaseAuth.getInstance().signOut();
+
             Intent intent = new Intent(Navigation_Activity.this,MainActivity.class);
             startActivity(intent);
         }

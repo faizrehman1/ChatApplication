@@ -8,19 +8,12 @@
         android:id="@+id/imageView_messages"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/ic_menu_camera"/>
+        />
 
     <TextView
         android:id="@+id/timeView_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_alignBottom="@+id/imageView_messages"
-        android:layout_toEndOf="@+id/imageView_messages"
-        android:layout_toRightOf="@+id/imageView_messages"
-        android:background="@drawable/bubble_view"
-=======
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
         android:text="TimeView"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_alignBottom="@+id/imageView_messages"
@@ -33,15 +26,6 @@
         android:id="@+id/messageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_above="@+id/timeView_messages"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView_messages"
-        android:background="@drawable/bubble_view"
-=======
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
         android:text="message_View"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/timeView_messages"

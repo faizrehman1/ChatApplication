@@ -10,11 +10,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-<<<<<<< HEAD
-import android.support.annotation.NonNull;
-=======
 import android.provider.MediaStore;
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,18 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-<<<<<<< HEAD
-=======
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
 import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
+import com.example.faiz.mylogin.util.AppLogs;
+import com.example.faiz.mylogin.util.SharedPref;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -45,8 +39,10 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -57,48 +53,34 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
-<<<<<<< HEAD
-import java.util.Arrays;
-=======
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-<<<<<<< HEAD
-    EditText email;
-    EditText pass;
-    EditText id;
-    EditText password;
-    EditText fname;
-    EditText lname;
-    EditText dob;
-    EditText gender;
-    EditText img_Url;
-    Firebase firebase;
-    LoginManager fbLoginMan;
-    Button buttonSignup, buttonSignin, buttonFb;
-    String first_namefire, last_namefire, emailfire, birthdayfire, uuidfire, dpfire, genderfire;
+    private Firebase firebase;
+    private LoginManager fbLoginMan;
     private CallbackManager callbackManager;
     private Profile profile;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-=======
-    EditText email, pass, id, password, fname, lname, dob, gender;
-    Firebase firebase;
-    Button buttonSignup, buttonSignin,btn_upload_image;
-    RadioButton radioButtonMale, radioButtonFemale;
-   //ImageView image;
-    Cloudinary cloudinary;
-    private static final int  Browse_image=1;
-    String selectedImagePath;
-    Bitmap bitmap;
-    String url_cloudinary;
-    TextView textView_imageName;
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+    private EditText email, pass, id, password, fname, lname, dob, gender;
+    private Button buttonSignup, buttonSignin, btn_upload_image, buttonFb;
+    private User user = new User();
+    //ImageView image;
+    private Cloudinary cloudinary;
+    private static final int Browse_image = 1;
+    private String selectedImagePath;
+    private Bitmap bitmap;
+    private String url_cloudinary;
+    private TextView textView_imageName;
+    private String fb_user_Uid;
+    private AuthData uUidData;
+    private boolean fbSignIn = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fbLoginMan = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
-        firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
+
         mAuth = FirebaseAuth.getInstance();
 
         buttonFb = (Button) findViewById(R.id.button_SignIn_CustomFb);
-
+        firebase=new Firebase("https://chatapplicationn.firebaseio.com");
         Map config = new HashMap();
         config.put("cloud_name", "fkcs14");
         config.put("api_key", "527495965545816");
@@ -128,15 +110,56 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                 if (currentUser != null) {
 
-                    Log.d("TAG", "onAuthStateChanged:signed_in:" + currentUser.getUid());
 
+                    if (fbSignIn) {
+                        /**
+                         * Face Book Auth
+                         * */
+                        user.setU_Id(currentUser.getUid());
+                        user.setPassword("");
+                        AppLogs.logd("Auth State User ID:" + currentUser.getUid());
+                        AppLogs.logd("Auth State User Email:" + currentUser.getEmail());
+                        AppLogs.logd("Auth State User PhotoUrl:" + currentUser.getPhotoUrl());
+                        AppLogs.logd("Auth State User Name:" + currentUser.getDisplayName());
+
+                        firebase.child("User").child(currentUser.getUid()).setValue(user, new Firebase.CompletionListener() {
+                            @Override
+                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                AppLogs.logd("User Logged In For FB:" + user.getEmail());
+
+                                SharedPref.setCurrentUser(MainActivity.this, user);
+                                openNavigationActivity();
+                            }
+
+                        });
+
+                    } else {
+                        firebase.child("User").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                AppLogs.logd("User Logged In For My Auth:" + user.getEmail());
+                                SharedPref.setCurrentUser(MainActivity.this, user);
+                                openNavigationActivity();
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                                AppLogs.loge("Error Logged In MYAUTH");
+                            }
+                        });
+
+
+                    }
 
                 } else {
-                    Log.d("TAG", "onAuthStateChanged:signed_out");
+                    AppLogs.loge("Auth Listener: User Not Signed In");
                 }
 
             }
         };
+
+
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 lname = (EditText) vv.findViewById(R.id.edtviewLastName);
                 dob = (EditText) vv.findViewById(R.id.editTextDob);
                 gender = (EditText) vv.findViewById(R.id.editGender);
-                btn_upload_image = (Button)vv.findViewById(R.id.BtnuploadImage);
-                textView_imageName = (TextView)vv.findViewById(R.id.image_Name);
-               // forImageUpload();
+                btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
+                textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
+                // forImageUpload();
                 btn_upload_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -175,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Map<String, Object> stringObjectMap) {
 
-<<<<<<< HEAD
+
                                 firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new
                                         User(fname.getText().toString(),
                                         lname.getText().toString(),
@@ -184,10 +207,8 @@ public class MainActivity extends AppCompatActivity {
                                         dob.getText().toString(),
                                         gender.getText().toString(),
                                         stringObjectMap.get("uid").toString(),
-                                        img_Url.getText().toString()));
-=======
-                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new User(fname.getText().toString(), lname.getText().toString(), id.getText().toString(), password.getText().toString(), dob.getText().toString(), gender.getText().toString(), stringObjectMap.get("uid").toString(), url_cloudinary));
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+                                        url_cloudinary));
+
 
 //                            Log.d("Data After Signup",""+stringObjectMap.get("uid"));
                                 Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
@@ -219,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         buttonFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                fbSignIn = true;
                 fbLoginMan.logInWithReadPermissions(MainActivity.this, Arrays.asList("email",
                         "user_birthday", "public_profile"));
 
@@ -244,38 +265,35 @@ public class MainActivity extends AppCompatActivity {
                                     String token = AccessToken.getCurrentAccessToken().getToken();
                                     Log.e("Graph Token:", "" + token);
 
-                                    first_namefire = object.getString("first_name");
+                                    String first_namefire = object.getString("first_name");
                                     Log.e("FirstName", "" + first_namefire);
-
-                                    last_namefire = object.getString("last_name");
+                                    user.setFname(first_namefire);
+                                    String last_namefire = object.getString("last_name");
                                     Log.e("LastName", "" + last_namefire);
-
-                                    emailfire = object.getString("email");
+                                    user.setLname(last_namefire);
+                                    String emailfire = object.getString("email");
                                     Log.e("Email", "" + emailfire);
-
-                                    birthdayfire = object.getString("birthday");
+                                    user.setEmail(emailfire);
+                                    String birthdayfire = object.getString("birthday");
                                     Log.e("birthday", "" + birthdayfire);
-
-                                    genderfire = object.getString("gender");
+                                    user.setDob(birthdayfire);
+                                    String genderfire = object.getString("gender");
                                     Log.e("gender :", "" + genderfire);
-
-                                    uuidfire = object.getString("id");
-                                    Log.e("id:", "" + uuidfire);
-
-                                    dpfire = Profile.getCurrentProfile().getProfilePictureUri(400, 400).toString();
+                                    user.setGender(genderfire);
+                                    String dpfire = Profile.getCurrentProfile().getProfilePictureUri(400, 400).toString();
                                     Log.e("Graph Dp:", "" + dpfire);
+                                    user.setImgUrl(dpfire);
+//                                    firebase.child("User").child(fb_user_Uid).setValue(new
+//                                            User(first_namefire,
+//                                            last_namefire,
+//                                            emailfire,
+//                                            "",
+//                                            birthdayfire,
+//                                            genderfire,
+//                                            fb_user_Uid,
+//                                            dpfire
+//                                    ));
 
-
-                                    firebase.child("User").child(uuidfire).setValue(new
-                                            User(first_namefire,
-                                            last_namefire,
-                                            emailfire,
-                                            "",
-                                            birthdayfire,
-                                            genderfire,
-                                            uuidfire,
-                                            dpfire
-                                    ));
 
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
@@ -291,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                         request.executeAsync();
 
                         /////////////////FB user data save and Sign in END/////////////////////
+
                         // user ka jo b data hai wo yaha per get ker k save kerwa k rakh do then jab user firevase se login ho jaye to
                         //tab wo sab data waha se auth.get id k ref per store kwerwa do
 
@@ -306,27 +325,29 @@ public class MainActivity extends AppCompatActivity {
                                 uuidfire,
                                 dpfire
                         ));*/
+//                        if (profile != null) {
+//                            Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
+//                            startActivity(intent);
+//                            Log.e("Emailactive", "" + emailfire);
+//
+//                        } else {
+//
+//                        }
 
                         handleFacebookAccessToken(loginResult.getAccessToken());
 
-                        if (profile != null) {
-                            Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
-                            startActivity(intent);
-                            Log.e("Emailactive", "" + emailfire);
-
-                        } else {
-
-                        }
 
                     }
 
                     @Override
                     public void onCancel() {
+                        fbSignIn = false;
                         Log.d("TAG", "facebook:onCancel");
                     }
 
                     @Override
                     public void onError(FacebookException error) {
+                        fbSignIn = false;
                         Log.d("TAG", "facebook:onError " + error);
                     }
                 });
@@ -338,14 +359,13 @@ public class MainActivity extends AppCompatActivity {
         buttonSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                fbSignIn = false;
                 firebase.authWithPassword(email.getText().toString(), pass.getText().toString(), new Firebase.AuthResultHandler() {
                     @Override
                     public void onAuthenticated(AuthData authData) {
 
-                        Toast.makeText(MainActivity.this, "Login Successfull", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
-                        startActivity(intent);
+                        Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
@@ -369,16 +389,15 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                         }
                     }
-
-
                 });
             }
         });
+    }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+    private void openNavigationActivity() {
+        Intent intent = new Intent(this, Navigation_Activity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
@@ -389,16 +408,14 @@ public class MainActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d("TAG", "signInWithCredential:onComplete:" + task.isSuccessful());
-
-
-
                 if (!task.isSuccessful()) {
                     Log.w("TAG", "signInWithCredential", task.getException());
                     Toast.makeText(MainActivity.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
-                }
+                } else {
+                    Toast.makeText(MainActivity.this, "Successfully Logged In.", Toast.LENGTH_LONG).show();
 
+                }
             }
         });
     }
@@ -417,11 +434,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -436,21 +448,18 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Browse_image) {
             if (resultCode == RESULT_OK) {
                 //   setDefaultLayout();
@@ -467,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
                 Log.d("Upload file is:", filePath);
-                selectedImagePath=filePath;
+                selectedImagePath = filePath;
                 textView_imageName.setText("Uploaded");
                 startUpload(filePath);
             }
@@ -484,7 +493,7 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage("Are you sure you want to upload picture?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                       //     image.setImageBitmap(bitmap);
+                            //     image.setImageBitmap(bitmap);
                             Log.d("File PATH IS ", selectedImagePath + "");
                             AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
                                 @Override
@@ -504,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 protected void onPostExecute(HashMap<String, Object> stringObjectHashMap) {
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
-                                    Log.d("LAG",url_cloudinary);
+                                    Log.d("LAG", url_cloudinary);
 //                                firebase.child("users").child(ME.getId()).child("image_url").setValue(url, new Firebase.CompletionListener() {
 //                                    @Override
 //                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {

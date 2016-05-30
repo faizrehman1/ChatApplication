@@ -4,30 +4,19 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+
     <ImageView
         android:id="@+id/imageView_messages"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-<<<<<<< HEAD
-        android:background="@drawable/ic_menu_camera"/>
-=======
-         />
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+        />
 
     <TextView
         android:id="@+id/timeView_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_below="@+id/messageView"
-        android:layout_toLeftOf="@+id/imageView_messages"
-        android:layout_toStartOf="@+id/imageView_messages"
-        android:background="@drawable/bubble_view"
-        android:text="TimeView"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
-=======
         android:text="TimeView"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_alignBottom="@+id/imageView_messages"
@@ -35,21 +24,11 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp" />
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
 
     <TextView
         android:id="@+id/messageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/imageView_messages"
-        android:background="@drawable/bubble_view"
-        android:text="messageView"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-=======
         android:text="messageView"
         android:textAppearance="?android:attr/textAppearanceMedium"
 
@@ -57,5 +36,5 @@
         android:layout_above="@+id/timeView_messages"
         android:layout_toLeftOf="@+id/imageView_messages"
         android:layout_toStartOf="@+id/imageView_messages" />
->>>>>>> 044ba1d3c5da3734e7c891428f6248e0b8906ba7
+
 </RelativeLayout>
