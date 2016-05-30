@@ -38,11 +38,6 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -50,6 +45,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
@@ -59,9 +59,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/*import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;*/
+
 public class MainActivity extends AppCompatActivity {
 
-    private Firebase firebase;
+
     private LoginManager fbLoginMan;
     private CallbackManager callbackManager;
     private Profile profile;
@@ -77,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private String url_cloudinary;
     private TextView textView_imageName;
-    private String fb_user_Uid;
-    private AuthData uUidData;
+
     private boolean fbSignIn = false;
 
 
@@ -89,10 +94,15 @@ public class MainActivity extends AppCompatActivity {
         fbLoginMan = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
 
+        final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+//        final DatabaseReference firebase = database.getReference("https://chatapplicationn.firebaseio.com");
+
         mAuth = FirebaseAuth.getInstance();
 
         buttonFb = (Button) findViewById(R.id.button_SignIn_CustomFb);
-        firebase=new Firebase("https://chatapplicationn.firebaseio.com");
+//        firebase=new Firebase("https://chatapplicationn.firebaseio.com");
+
+
         Map config = new HashMap();
         config.put("cloud_name", "fkcs14");
         config.put("api_key", "527495965545816");
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                 if (currentUser != null) {
-
+                    currentUser.getUid();
 
                     if (fbSignIn) {
                         /**
@@ -122,15 +132,13 @@ public class MainActivity extends AppCompatActivity {
                         AppLogs.logd("Auth State User PhotoUrl:" + currentUser.getPhotoUrl());
                         AppLogs.logd("Auth State User Name:" + currentUser.getDisplayName());
 
-                        firebase.child("User").child(currentUser.getUid()).setValue(user, new Firebase.CompletionListener() {
+                        firebase.child("User").child(currentUser.getUid()).setValue(user, new DatabaseReference.CompletionListener() {
                             @Override
-                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 AppLogs.logd("User Logged In For FB:" + user.getEmail());
-
                                 SharedPref.setCurrentUser(MainActivity.this, user);
                                 openNavigationActivity();
                             }
-
                         });
 
                     } else {
@@ -144,8 +152,9 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onCancelled(FirebaseError firebaseError) {
+                            public void onCancelled(DatabaseError databaseError) {
                                 AppLogs.loge("Error Logged In MYAUTH");
+
                             }
                         });
 
@@ -194,39 +203,30 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        firebase.createUser(id.getText().toString(), password.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
-                            @Override
-                            public void onSuccess(Map<String, Object> stringObjectMap) {
 
 
-                                firebase.child("User").child(stringObjectMap.get("uid").toString()).setValue(new
-                                        User(fname.getText().toString(),
-                                        lname.getText().toString(),
-                                        id.getText().toString(),
-                                        password.getText().toString(),
-                                        dob.getText().toString(),
-                                        gender.getText().toString(),
-                                        stringObjectMap.get("uid").toString(),
-                                        url_cloudinary));
+                        mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
+                                new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        firebase.child("User").child(mAuth.getCurrentUser().getUid()).setValue(new
+                                                User(fname.getText().toString(),
+                                                lname.getText().toString(),
+                                                id.getText().toString(),
+                                                password.getText().toString(),
+                                                dob.getText().toString(),
+                                                gender.getText().toString(),
+                                                mAuth.getCurrentUser().getUid(),
+                                                url_cloudinary));
 
+                                        Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                        AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
 
-//                            Log.d("Data After Signup",""+stringObjectMap.get("uid"));
-                                Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError(FirebaseError firebaseError) {
-                                switch (firebaseError.getCode()) {
-                                    case FirebaseError.EMAIL_TAKEN:
-                                        Toast.makeText(MainActivity.this, "Email Alreaddy Exists", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case FirebaseError.NETWORK_ERROR:
-                                        Toast.makeText(MainActivity.this, "Network Issue", Toast.LENGTH_SHORT).show();
-                                        break;
-
-                                }
-                            }
-                        });
+                                        if (!task.isSuccessful()) {
+                                            Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                     }
 
                 });
@@ -357,39 +357,26 @@ public class MainActivity extends AppCompatActivity {
 
 
         buttonSignin.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 fbSignIn = false;
-                firebase.authWithPassword(email.getText().toString(), pass.getText().toString(), new Firebase.AuthResultHandler() {
+                mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onAuthenticated(AuthData authData) {
-
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
                         Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        openNavigationActivity();
 
-                    }
-
-                    @Override
-                    public void onAuthenticationError(FirebaseError firebaseError) {
-
-                        switch (firebaseError.getCode()) {
-                            case FirebaseError.INVALID_EMAIL:
-                                Toast.makeText(MainActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
-                                break;
-                            case FirebaseError.INVALID_PASSWORD:
-                                Toast.makeText(MainActivity.this, "Invalid Password", Toast.LENGTH_SHORT).show();
-                                break;
-                            case FirebaseError.NETWORK_ERROR:
-                                Toast.makeText(MainActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
-                                break;
-                            case FirebaseError.AUTHENTICATION_PROVIDER_DISABLED:
-                                Toast.makeText(MainActivity.this, "Authentication Provider Disabled", Toast.LENGTH_SHORT).show();
-                                break;
-                            case FirebaseError.USER_DOES_NOT_EXIST:
-                                Toast.makeText(MainActivity.this, "User Does Not Exist", Toast.LENGTH_SHORT).show();
-                                break;
+                        if (!task.isSuccessful()) {
+                            AppLogs.logw("signInWithEmail" + task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
+
             }
         });
     }
