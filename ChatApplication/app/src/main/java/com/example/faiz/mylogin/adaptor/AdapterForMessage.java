@@ -21,6 +21,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.firebase.client.realtime.util.StringListReader;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     Picasso picasso;
     String U_ID;
     RoundImage mRoundImage;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
 
 
     public AdapterForMessage(ArrayList<Message> messages, Context context,User uid) {
@@ -59,11 +63,13 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        user = mAuth.getInstance().getCurrentUser();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View view;
 
 
-        if (messages.get(position).getU_id().equals(firebase.getAuth().getUid())) {
+        if (messages.get(position).getU_id().equals(user.getUid())) {
 
             U_ID = firebase.getAuth().getUid();
             view = inflater.inflate(R.layout.message_left_side_layout, null);

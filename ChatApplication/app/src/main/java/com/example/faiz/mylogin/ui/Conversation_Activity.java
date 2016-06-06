@@ -17,6 +17,7 @@ import com.example.faiz.mylogin.model.User;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,13 +43,14 @@ public class Conversation_Activity extends AppCompatActivity {
     private TempRefObj conversationData;
     private String conversationPushRef;
     private boolean isConversationOld = false;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_);
         firebase = FirebaseDatabase.getInstance().getReference();
-
+        user = mAuth.getInstance().getCurrentUser();
         try {
 //            mAuth = firebase.getAuth();
             friendData = getIntent().getParcelableExtra(ContactListAdapter.UUID_KEY);
@@ -69,14 +71,14 @@ public class Conversation_Activity extends AppCompatActivity {
     }
 
     private void checkConversationNewOROLD() {
-        firebase.child("user_conv").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child("user_conv").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         TempRefObj data = d.getValue(TempRefObj.class);
                         if (data.getUserId().equals(friendData.getU_Id())) {
-                            Log.d(data.getUserId().toString(), friendData.getU_Id().toString() + " " + mAuth.getCurrentUser().getUid());
+                            Log.d(data.getUserId().toString(), friendData.getU_Id().toString() + " " + user.getUid());
                             conversationData = data;
                             isConversationOld = true;
                             conversationPushRef = data.getConversationId();
@@ -111,13 +113,13 @@ public class Conversation_Activity extends AppCompatActivity {
     private void createNewConversation() {
         DatabaseReference pushRef = firebase.child("conversation").push();
         conversationPushRef = pushRef.getKey();
-        final TempRefObj tempRefObj = new TempRefObj(mAuth.getCurrentUser().getUid(), conversationPushRef);
+        final TempRefObj tempRefObj = new TempRefObj(user.getUid(), conversationPushRef);
         firebase.child("user_conv").child(friendData.getU_Id()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase f) {
                 if (firebaseError == null) {
                     tempRefObj.setUserId(friendData.getU_Id());
-                    firebase.child("user_conv").child(mAuth.getCurrentUser().getUid()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
+                    firebase.child("user_conv").child(user.getUid()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
                         @Override
                         public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                             if (firebaseError == null) {
@@ -166,7 +168,7 @@ public class Conversation_Activity extends AppCompatActivity {
                     Message m = new Message();
                     m.setMsg(messageField.getText().toString());
                     m.setTime(var);
-                    m.setU_id(mAuth.getCurrentUser().getUid());
+                    m.setU_id(user.getUid());
                     firebase.child("conversation").child(conversationPushRef).push().setValue(m);
                     Log.d("Message Send Button", "Clicked");
                     messageField.setText("");

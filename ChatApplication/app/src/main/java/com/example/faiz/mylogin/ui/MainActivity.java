@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttonFb = (Button) findViewById(R.id.button_SignIn_CustomFb);
 //        firebase=new Firebase("https://chatapplicationn.firebaseio.com");
-
+//        Log.d("idd",mAuth.getCurrentUser().getUid());
 
         Map config = new HashMap();
         config.put("cloud_name", "fkcs14");
@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user = dataSnapshot.getValue(User.class);
                                 AppLogs.logd("User Logged In For My Auth:" + user.getEmail());
+
                                 SharedPref.setCurrentUser(MainActivity.this, user);
                                 openNavigationActivity();
                             }
@@ -204,31 +205,34 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        try {
+                            mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
+                                    new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                           if(task.isSuccessful()) {
+                                               firebase.child("User").child(mAuth.getCurrentUser().getUid()).setValue(new
+                                                       User(fname.getText().toString(),
+                                                       lname.getText().toString(),
+                                                       id.getText().toString(),
+                                                       password.getText().toString(),
+                                                       dob.getText().toString(),
+                                                       gender.getText().toString(),
+                                                       mAuth.getCurrentUser().getUid(),
+                                                       url_cloudinary));
 
-                        mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
-                                new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        firebase.child("User").child(mAuth.getCurrentUser().getUid()).setValue(new
-                                                User(fname.getText().toString(),
-                                                lname.getText().toString(),
-                                                id.getText().toString(),
-                                                password.getText().toString(),
-                                                dob.getText().toString(),
-                                                gender.getText().toString(),
-                                                mAuth.getCurrentUser().getUid(),
-                                                url_cloudinary));
-
-                                        Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                        AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                               Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                               AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+                                           }
+                                           else if (!task.isSuccessful()) {
+                                                Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }catch(Exception ex){
+                            ex.printStackTrace();
+                        }
                     }
-
                 });
                 builder.setNegativeButton("Cancel", null);
 
@@ -361,22 +365,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fbSignIn = false;
-                mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
-                        Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        openNavigationActivity();
+                String emaill = email.getText().toString();
+                String passo = pass.getText().toString();
+                if(emaill.length()==0){
+                    email.setError("Required Field");
+                }else if(passo.length()==0){
+                    pass.setError("Required Field");
+                }
 
-                        if (!task.isSuccessful()) {
-                            AppLogs.logw("signInWithEmail" + task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
+
+                try {
+                    mAuth.signInWithEmailAndPassword(emaill,passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()) {
+                                AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
+                                Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                                openNavigationActivity();
+                            }
+                           else if (!task.isSuccessful()) {
+                                AppLogs.logw("signInWithEmail" + task.getException());
+                                Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
 
-
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
         });
     }

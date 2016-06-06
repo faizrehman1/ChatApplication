@@ -35,6 +35,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ public class Navigation_Activity extends AppCompatActivity
     Firebase firebase;
     Picasso picasso;
     AuthData uUidData;
+    private DatabaseReference db;
+    private FirebaseAuth auth;
 
 
     @Override
@@ -61,58 +65,55 @@ public class Navigation_Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        db = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
 
 
-
-        firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
+        //   firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
 
 
         Tab_ViewPager();
 
-//
+
         LayoutInflater inflater = (LayoutInflater) Navigation_Activity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.nav_header_navigation_,null);
+        View view = inflater.inflate(R.layout.nav_header_navigation_, null);
 
 
+        final ImageView img = (ImageView) view.findViewById(R.id.imageView_NavBar);
+        final TextView user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
+        final TextView user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
 
-
-         final ImageView img = (ImageView)view.findViewById(R.id.imageView_NavBar);
-         final TextView user_name = (TextView)view.findViewById(R.id.user_name_NavBar);
-         final TextView user_email = (TextView)view.findViewById(R.id.textView_email_NavBar);
-
-       /* firebase.child("User").child(uUidData.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                //  for (DataSnapshot d : dataSnapshot.getChildren()) {
-                User use = dataSnapshot.getValue(User.class);
-                Log.d("dataaName",dataSnapshot.getValue().toString());
-                Log.d("name",use.getFname());
-                     user_name.setText(use.getFname()+" "+use.getLname());
-                    user_email.setText(use.getEmail());
-                    picasso.with(Navigation_Activity.this).load(use.getImgUrl())
-                          //  .resize(width,height)
-                            .transform(new RoundImage())
-                            .into(img);
-//                *//*
-            }
-            //  }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });*/
-
-
-
+//        firebase.child("User").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//
+//                //  for (DataSnapshot d : dataSnapshot.getChildren()) {
+//                User use = dataSnapshot.getValue(User.class);
+//                Log.d("dataaName",dataSnapshot.getValue().toString());
+//                Log.d("name",use.getFname());
+//                     user_name.setText(use.getFname()+" "+use.getLname());
+//                    user_email.setText(use.getEmail());
+//                    picasso.with(Navigation_Activity.this).load(use.getImgUrl())
+//                          //  .resize(width,height)
+//                            .transform(new RoundImage())
+//                            .into(img);
+////                *//*
+//            }
+//            //  }
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
+//
+//
+//
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.addHeaderView(view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -175,10 +176,10 @@ public class Navigation_Activity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
-        }   else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send) {
             FirebaseAuth.getInstance().signOut();
 
-            Intent intent = new Intent(Navigation_Activity.this,MainActivity.class);
+            Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
             startActivity(intent);
         }
 
@@ -187,9 +188,9 @@ public class Navigation_Activity extends AppCompatActivity
         return true;
     }
 
-    public void Tab_ViewPager(){
-        tabLayout = (TabLayout)findViewById(R.id.tab_layout);
-        viewPager = (ViewPager)findViewById(R.id.view_pager);
+    public void Tab_ViewPager() {
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
@@ -203,34 +204,37 @@ public class Navigation_Activity extends AppCompatActivity
         fragments.add(groupFragment);
         fragments.add(contactFragment);
 
+        try {
+
+            final Tab_Adapter adapter = new Tab_Adapter(getSupportFragmentManager(), fragments);
+            //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
+            viewPager.setAdapter(adapter);
+
+            // viewPager.setOffscreenPageLimit(0);
+
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
 
 
-        final Tab_Adapter adapter = new Tab_Adapter(getSupportFragmentManager(),fragments);
-        //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
-        viewPager.setAdapter(adapter);
-
-        viewPager.setOffscreenPageLimit(0);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

@@ -14,9 +14,11 @@ import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -40,33 +42,36 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
         nameList = new ArrayList<>();
         adapter = new ContactListAdapter(getActivity(), nameList);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("id", mAuth.getCurrentUser().getUid());
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("uuid",user.getUid());
+
 
         //Getting Single value from fire base and setting it to list View
-        firebase.child("User").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.d("user:", user.getFname());
-                Log.d("idss", user.getU_Id());
+                for(DataSnapshot data:dataSnapshot.getChildren()) {
+                    User users = data.getValue(User.class);
 
-                if (user.getU_Id().equals(mAuth.getCurrentUser().getUid().toString())) {
-                    Log.d("LOL", user.getU_Id());
-                } else {
-                    String image = user.getImgUrl();
-                    nameList.add(new User(user.getFname(),
-                            user.getLname(),
-                            user.getEmail(),
-                            user.getPassword(),
-                            user.getDob(),
-                            user.getGender(),
-                            user.getU_Id(),
-                            image));
-                    adapter.notifyDataSetChanged();
+                    Log.d("idss", users.getU_Id());
+
+                    if (users.getU_Id().equals(user.getUid())) {
+                        Log.d("LOL", users.getU_Id());
+                    } else {
+                        String image = users.getImgUrl();
+                        nameList.add(new User(users.getFname(),
+                                users.getLname(),
+                                users.getEmail(),
+                                users.getPassword(),
+                                users.getDob(),
+                                users.getGender(),
+                                users.getU_Id(),
+                                image));
+                        adapter.notifyDataSetChanged();
 
 
+                    }
                 }
             }
 
@@ -74,8 +79,8 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 AppLogs.loge("database error" + databaseError.getMessage());
             }
-
         });
+
 
         listView.setAdapter(adapter);
         return view;
