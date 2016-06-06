@@ -203,32 +203,39 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String pass = password.getText().toString();
+                        if(pass.length() <=5){
+                            password.setError("Please Enter 6 Character Password");
+                        }
 
+                        try {
+                            mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
+                                    new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if(task.isSuccessful()) {
+                                                firebase.child("User").child(mAuth.getCurrentUser().getUid()).setValue(new
+                                                        User(fname.getText().toString(),
+                                                        lname.getText().toString(),
+                                                        id.getText().toString(),
+                                                        password.getText().toString(),
+                                                        dob.getText().toString(),
+                                                        gender.getText().toString(),
+                                                        mAuth.getCurrentUser().getUid(),
+                                                        url_cloudinary));
 
-                        mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
-                                new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        firebase.child("User").child(mAuth.getCurrentUser().getUid()).setValue(new
-                                                User(fname.getText().toString(),
-                                                lname.getText().toString(),
-                                                id.getText().toString(),
-                                                password.getText().toString(),
-                                                dob.getText().toString(),
-                                                gender.getText().toString(),
-                                                mAuth.getCurrentUser().getUid(),
-                                                url_cloudinary));
-
-                                        Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                        AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                                AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+                                            }
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }catch (Exception ex){
+                            ex.printStackTrace();
+                        }
                     }
-
                 });
                 builder.setNegativeButton("Cancel", null);
 
@@ -361,22 +368,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fbSignIn = false;
-                mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
-                        Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        openNavigationActivity();
+                String emails = email.getText().toString();
+                String passo = pass.getText().toString();
 
-                        if (!task.isSuccessful()) {
-                            AppLogs.logw("signInWithEmail" + task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
+                if(emails.length()==0){
+                    email.setError("This is Required Field");
+                }else if(passo.length()==0 && passo.length() <=5){
+                    pass.setError("This is Required Field");
+                }
+                try {
+                    mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
+                            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                            openNavigationActivity();
+
+                            if (!task.isSuccessful()) {
+                                AppLogs.logw("signInWithEmail" + task.getException());
+                                Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
 
-
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -501,17 +519,7 @@ public class MainActivity extends AppCompatActivity {
                                 protected void onPostExecute(HashMap<String, Object> stringObjectHashMap) {
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
-//                                firebase.child("users").child(ME.getId()).child("image_url").setValue(url, new Firebase.CompletionListener() {
-//                                    @Override
-//                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-//                                        if (firebaseError != null) {
-//                                            Toast.makeText(HomeActivity.this, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-//                                        } else {
-//                                            Toast.makeText(HomeActivity.this, "Upload Completed", Toast.LENGTH_LONG).show();
-//
-//                                        }
-//                                    }
-//                                });
+
                                 }
                             };
                             upload.execute(selectedImagePath);
@@ -524,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).show();
         } catch (Exception ex) {
-
+            ex.printStackTrace();
 
         }
 
