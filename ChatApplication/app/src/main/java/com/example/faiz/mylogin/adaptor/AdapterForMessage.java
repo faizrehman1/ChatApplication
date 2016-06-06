@@ -14,8 +14,9 @@ import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.TempRefObj;
 import com.example.faiz.mylogin.model.User;
-import com.example.faiz.mylogin.ui.RoundImage;
+
 import com.firebase.client.DataSnapshot;
+
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
@@ -32,6 +33,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     User uid;
     Picasso picasso;
     String U_ID;
+    RoundImage mRoundImage;
 
 
     public AdapterForMessage(ArrayList<Message> messages, Context context,User uid) {
@@ -67,8 +69,9 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
             view = inflater.inflate(R.layout.message_left_side_layout, null);
 
         } else {
-            view = inflater.inflate(R.layout.message_right_side_layout, null);
+
             U_ID = uid.getU_Id();
+            view = inflater.inflate(R.layout.message_right_side_layout, null);
             Log.d("TAGG",uid.getU_Id());
 
         }

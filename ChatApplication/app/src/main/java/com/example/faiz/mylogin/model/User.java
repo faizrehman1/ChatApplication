@@ -13,7 +13,7 @@ public class User implements Parcelable {
     private String U_Id;
     private String imgUrl;
 
-    //setting Up construtor for all the fields
+
 
 
     public User(String fname, String lname, String email, String password, String dob, String gender, String u_Id, String imgUrl) {
@@ -26,7 +26,6 @@ public class User implements Parcelable {
         this.U_Id = u_Id;
         this.imgUrl = imgUrl;
     }
-
     public User() {
     }
 
