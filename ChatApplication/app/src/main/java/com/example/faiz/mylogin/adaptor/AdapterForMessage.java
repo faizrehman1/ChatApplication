@@ -21,19 +21,28 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.firebase.client.realtime.util.StringListReader;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
-    Firebase firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
+
     private ArrayList<Message> messages;
     private Context context;
     User uid;
     Picasso picasso;
     String U_ID;
     RoundImage mRoundImage;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+
 
 
     public AdapterForMessage(ArrayList<Message> messages, Context context,User uid) {
@@ -59,13 +68,15 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        user = mAuth.getInstance().getCurrentUser();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View view;
 
 
-        if (messages.get(position).getU_id().equals(firebase.getAuth().getUid())) {
+        if (messages.get(position).getU_id().equals(user.getUid())) {
 
-            U_ID = firebase.getAuth().getUid();
+            U_ID = user.getUid();
             view = inflater.inflate(R.layout.message_left_side_layout, null);
 
         } else {
@@ -83,19 +94,17 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         timeView.setText(messages.get(position).getTime());
 
 
-        firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 picasso.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
-
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
 
 
         return view;

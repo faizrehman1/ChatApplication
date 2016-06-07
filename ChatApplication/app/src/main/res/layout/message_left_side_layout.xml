@@ -18,6 +18,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_alignBottom="@+id/imageView_messages"
         android:layout_alignParentRight="true"
+        android:textColor="#000"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="23dp"
         android:layout_marginEnd="23dp" />
@@ -27,8 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="message_View"
+        android:textColor="#000"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/timeView_messages"
-        android:layout_toRightOf="@+id/imageView_messages"
         android:layout_toEndOf="@+id/imageView_messages" />
 </RelativeLayout>
