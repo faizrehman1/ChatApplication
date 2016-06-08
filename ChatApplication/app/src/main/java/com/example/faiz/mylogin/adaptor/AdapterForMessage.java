@@ -41,7 +41,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     RoundImage mRoundImage;
     FirebaseAuth mAuth;
     FirebaseUser user;
-    DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference firebase;
 
 
 
@@ -68,7 +68,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View view;
@@ -92,21 +92,40 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         final ImageView img = (ImageView)view.findViewById(R.id.imageView_messages);
         msgView.setText(messages.get(position).getMsg());
         timeView.setText(messages.get(position).getTime());
+//for image in conversation Activity
+       try {
+
+          firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+              @Override
+              public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+
+                      User user = dataSnapshot.getValue(User.class);
+//                 user.getImgUrl()
+                Log.d("imaaa",user.getImgUrl());
+
+                 if(user.getImgUrl().equals("")){
+                    img.setImageResource(R.drawable.ic_menu_camera);
+
+                 }else{
+                  picasso.with(context).load(user.getImgUrl()).transform(new RoundImage()).into(img);
+
+              }
+              }
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+          });
+               //    Log.d("image",dataSnapshot.child("imgUrl").getValue().toString());
+               //    picasso.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
 
 
-        firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                picasso.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
+
+       }catch(Exception ex){
+           ex.printStackTrace();
+       }
         return view;
     }
 

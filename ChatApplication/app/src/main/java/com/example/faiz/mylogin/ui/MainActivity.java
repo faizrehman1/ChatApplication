@@ -177,79 +177,83 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Add");
-                builder.setMessage("Add New Email or Password");
-                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                View vv = inflater.inflate(R.layout.signup_view, null);
-                id = (EditText) vv.findViewById(R.id.edtviewEmail);
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Add");
+                    builder.setMessage("Add New Email or Password");
+                    LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                    View vv = inflater.inflate(R.layout.signup_view, null);
+                    id = (EditText) vv.findViewById(R.id.edtviewEmail);
 
-                password = (EditText) vv.findViewById(R.id.edtviewPassword);
-                fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
-                lname = (EditText) vv.findViewById(R.id.edtviewLastName);
-                dob = (EditText) vv.findViewById(R.id.editTextDob);
-                gender = (EditText) vv.findViewById(R.id.editGender);
-                btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
-                textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
-                // forImageUpload();
-                btn_upload_image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
-                    }
-                });
-
-
-                builder.setView(vv);
-                builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String pass = password.getText().toString();
-                        if(pass.length() <=5){
-                            password.setError("Please Enter 6 Character Password");
+                    password = (EditText) vv.findViewById(R.id.edtviewPassword);
+                    fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
+                    lname = (EditText) vv.findViewById(R.id.edtviewLastName);
+                    dob = (EditText) vv.findViewById(R.id.editTextDob);
+                    gender = (EditText) vv.findViewById(R.id.editGender);
+                    btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
+                    textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
+                    // forImageUpload();
+                    btn_upload_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
                         }
-
-                        try {
-                            mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
-                                    new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                    });
 
 
-                                           if(task.isSuccessful()) {
-                                               firebase.child("User").child(firebase_user.getUid()).setValue(new
-                                                       User(fname.getText().toString(),
-                                                       lname.getText().toString(),
-                                                       id.getText().toString(),
-                                                       password.getText().toString(),
-                                                       dob.getText().toString(),
-                                                       gender.getText().toString(),
-                                                       firebase_user.getUid(),
-                                                       url_cloudinary));
+                    builder.setView(vv);
+                    builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String pass = password.getText().toString();
+                            if (pass.length() <= 5) {
+                                password.setError("Please Enter 6 Character Password");
+                            }
 
-                                               Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                               AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
-                                           }
-                                           else if (!task.isSuccessful()) {
+                            try {
+                                mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
+                                        new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                                Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+
+                                                if (task.isSuccessful()) {
+                                                    firebase.child("User").child(firebase_user.getUid()).setValue(new
+                                                            User(fname.getText().toString(),
+                                                            lname.getText().toString(),
+                                                            id.getText().toString(),
+                                                            password.getText().toString(),
+                                                            dob.getText().toString(),
+                                                            gender.getText().toString(),
+                                                            firebase_user.getUid(),
+                                                            url_cloudinary));
+
+                                                    Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                                    AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+                                                } else if (!task.isSuccessful()) {
+
+                                                    Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
 
-                        }catch(Exception ex){
+                            } catch (Exception ex) {
 
-                            ex.printStackTrace();
+                                ex.printStackTrace();
+                            }
                         }
-                    }
-                });
-                builder.setNegativeButton("Cancel", null);
-        builder.setCancelable(false);
-                builder.show();
 
+                    });
+                    builder.setNegativeButton("Cancel", null);
+
+                    builder.show();
+
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -480,28 +484,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Browse_image) {
-            if (resultCode == RESULT_OK) {
-                //   setDefaultLayout();
-                Uri selectedImageUri = data.getData();
+        try {
+            if (requestCode == Browse_image) {
+                if (resultCode == RESULT_OK) {
+                    //   setDefaultLayout();
+                    Uri selectedImageUri = data.getData();
 
-                Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                Cursor cursor = getContentResolver().query(
-                        selectedImageUri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
+                    Cursor cursor = getContentResolver().query(
+                            selectedImageUri, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
-                Log.d("Upload file is:", filePath);
-                selectedImagePath = filePath;
-                textView_imageName.setText("Uploaded");
-                startUpload(filePath);
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+                    Log.d("Upload file is:", filePath);
+                    selectedImagePath = filePath;
+                    textView_imageName.setText("Uploaded");
+                    startUpload(filePath);
+                }
             }
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
-
     }
 
     public void startUpload(String path) {
