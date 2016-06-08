@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 builder.setNegativeButton("Cancel", null);
-
+        builder.setCancelable(false);
                 builder.show();
 
             }
