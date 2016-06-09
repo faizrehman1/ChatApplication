@@ -218,22 +218,23 @@ public class MainActivity extends AppCompatActivity {
                                         new OnCompleteListener<AuthResult>() {
                                             @Override
                                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                                String uid = mAuth.getCurrentUser().getUid();
 
-
-                                                if (task.isSuccessful()) {
-                                                    firebase.child("User").child(firebase_user.getUid()).setValue(new
+//                                                if (task.isSuccessful()) {
+                                                    firebase.child("User").child(uid).setValue(new
                                                             User(fname.getText().toString(),
                                                             lname.getText().toString(),
                                                             id.getText().toString(),
                                                             password.getText().toString(),
                                                             dob.getText().toString(),
                                                             gender.getText().toString(),
-                                                            firebase_user.getUid(),
+                                                            uid,
                                                             url_cloudinary));
 
                                                     Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
                                                     AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
-                                                } else if (!task.isSuccessful()) {
+//                                                } else
+                                                    if (!task.isSuccessful()) {
 
                                                     Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
                                                 }
