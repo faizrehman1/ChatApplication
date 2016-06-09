@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
                     //   setDefaultLayout();
                     Uri selectedImageUri = data.getData();
 
-                    Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
+                 //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(
