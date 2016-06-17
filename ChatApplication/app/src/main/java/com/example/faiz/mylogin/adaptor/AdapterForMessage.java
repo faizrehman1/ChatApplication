@@ -101,7 +101,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
                       User user = dataSnapshot.getValue(User.class);
 //                 user.getImgUrl()
-                Log.d("imaaa",user.getImgUrl());
+//                Log.d("imaaa",user.getImgUrl());
 
                  if(user.getImgUrl().equals("")){
                     img.setImageResource(R.drawable.ic_menu_camera);

@@ -1,45 +1,34 @@
 package com.example.faiz.mylogin.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
 import com.example.faiz.mylogin.model.User;
-import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,18 +36,17 @@ import java.util.ArrayList;
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Picasso picasso;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ArrayList<Fragment> fragments;
+
     private Chat_Fragment chatFragment;
     private Contact_Fragment contactFragment;
     private Group_Fragment groupFragment;
-
-    Picasso picasso;
-    AuthData uUidData;
+    private F_Request_Fragment f_requestfragment;
     private DatabaseReference firebase;
     private FirebaseAuth auth;
-    private FirebaseUser firebase_user;
 
 
     @Override
@@ -71,10 +59,6 @@ public class Navigation_Activity extends AppCompatActivity
 
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
-        firebase_user =auth.getCurrentUser();
-
-        //   firebase = new Firebase("https://chatapplicationn.firebaseio.com/");
-
 
         Tab_ViewPager();
 
@@ -89,19 +73,19 @@ public class Navigation_Activity extends AppCompatActivity
 
 //
 
-        firebase.child("User").child(firebase_user.getUid()).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+        firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 User use = dataSnapshot.getValue(User.class);
-                      Log.d("dataaName", dataSnapshot.getValue().toString());
-                      Log.d("name", use.getFname());
-                      user_name.setText(use.getFname() + " " + use.getLname());
-                      user_email.setText(use.getEmail());
-                      picasso.with(Navigation_Activity.this).load(use.getImgUrl())
-                              //  .resize(width,height)
-                              .transform(new RoundImage())
-                              .into(img);
+                Log.d("dataaName", dataSnapshot.getValue().toString());
+                Log.d("name", use.getFname());
 
+                user_name.setText(use.getFname() + " " + use.getLname());
+                user_email.setText(use.getEmail());
+                picasso.with(Navigation_Activity.this).load(use.getImgUrl())
+                        //  .resize(width,height)
+                        .transform(new RoundImage())
+                        .into(img);
             }
 
             @Override
@@ -111,21 +95,19 @@ public class Navigation_Activity extends AppCompatActivity
         });
 
 
-
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.addHeaderView(view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -183,6 +165,7 @@ public class Navigation_Activity extends AppCompatActivity
 
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -197,14 +180,19 @@ public class Navigation_Activity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
         tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
+        tabLayout.addTab(tabLayout.newTab().setText("FRequest"));
+
         chatFragment = new Chat_Fragment();
         contactFragment = new Contact_Fragment();
         groupFragment = new Group_Fragment();
+        f_requestfragment = new F_Request_Fragment();
+
 
         fragments = new ArrayList<>();
         fragments.add(chatFragment);
         fragments.add(groupFragment);
         fragments.add(contactFragment);
+        fragments.add(f_requestfragment);
 
         try {
 
@@ -212,7 +200,7 @@ public class Navigation_Activity extends AppCompatActivity
             //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
             viewPager.setAdapter(adapter);
 
-            // viewPager.setOffscreenPageLimit(0);
+            viewPager.setOffscreenPageLimit(3);
 
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
