@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <EditText
+            android:id="@+id/groupName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group Name"
+            android:layout_alignBottom="@+id/upload_image"
+            android:layout_toEndOf="@+id/grpPic"
+            android:layout_toRightOf="@+id/grpPic" />
+
+        <ImageView
+            android:id="@+id/grpPic"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+            />
+
+        <Button
+            android:id="@+id/upload_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grpPic"
+            android:text="Upload"
+            android:layout_toLeftOf="@+id/groupName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+        <ListView
+            android:id="@+id/contact_group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/groupName">
+
+        </ListView>
+
+
+
+
+
+
+</RelativeLayout>

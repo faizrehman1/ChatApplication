@@ -1,5 +1,6 @@
 package com.example.faiz.mylogin.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
@@ -118,14 +120,14 @@ public class Navigation_Activity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -206,7 +208,7 @@ public class Navigation_Activity extends AppCompatActivity
         fragments.add(groupFragment);
         fragments.add(contactFragment);
 
-        try {
+
 
             final Tab_Adapter adapter = new Tab_Adapter(getSupportFragmentManager(), fragments);
             //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
@@ -215,7 +217,8 @@ public class Navigation_Activity extends AppCompatActivity
             // viewPager.setOffscreenPageLimit(0);
 
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        try {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     viewPager.setCurrentItem(tab.getPosition());

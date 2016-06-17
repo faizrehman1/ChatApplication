@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /*import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -144,25 +145,29 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-                    } else {
-                        firebase.child("User").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                User user = dataSnapshot.getValue(User.class);
+                    }
+                    else  {
+                        try {
+                            firebase.child("User").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    User user = dataSnapshot.getValue(User.class);
 //                                AppLogs.logd("User Logged In For My Auth:" + user.getEmail());
 
-                                SharedPref.setCurrentUser(MainActivity.this, user);
-                                openNavigationActivity();
-                            }
+  //                                  SharedPref.setCurrentUser(MainActivity.this, user);
+                                    openNavigationActivity();
+                                }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                AppLogs.loge("Error Logged In MYAUTH");
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    AppLogs.loge("Error Logged In MYAUTH");
 
-                            }
-                        });
+                                }
+                            });
 
-
+                        }catch (Exception ex){
+                            ex.printStackTrace();
+                        }
                     }
 
                 } else {
@@ -209,9 +214,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String pass = password.getText().toString();
-                            if (pass.length() <= 5) {
-                                password.setError("Please Enter 6 Character Password");
-                            }
+//                            if (pass.length() <= 5) {
+//                                password.setError("Please Enter 6 Character Password");
+//                            }
 
                             try {
                                 mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,

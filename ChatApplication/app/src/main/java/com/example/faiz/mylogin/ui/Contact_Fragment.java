@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.faiz.mylogin.R;
@@ -83,6 +84,13 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
 
 
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("dpname",user.getDisplayName());
+            }
+        });
+
         return view;
 
     }
