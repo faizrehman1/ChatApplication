@@ -49,7 +49,7 @@ public class Create_Group extends AppCompatActivity {
     private static final int Browse_image = 1;
     private String selectedImagePath;
     private Bitmap bitmap;
-    private String url_cloudinary="";
+    private String url_cloudinary = "";
     private Cloudinary cloudinary;
     private FirebaseAuth mAuth;
     private FirebaseUser firebase_user;
@@ -78,7 +78,7 @@ public class Create_Group extends AppCompatActivity {
         groupdetail = new ArrayList<>();
         arrayList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
-       firebase  = FirebaseDatabase.getInstance().getReference();
+        firebase = FirebaseDatabase.getInstance().getReference();
 
         firebase_user = mAuth.getCurrentUser();
 
@@ -142,15 +142,13 @@ public class Create_Group extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                 grp = grpName.getText().toString();
+                grp = grpName.getText().toString();
                 if (grp.length() == 0) {
                     grpName.setError("This field is Required");
-                }
-                else if(url_cloudinary.length()==0){
-                    Toast.makeText(Create_Group.this,"Please upload picutre And then Add friends",Toast.LENGTH_LONG).show();
+                } else if (url_cloudinary.length() == 0) {
+                    Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_LONG).show();
 
-                }
-                else {
+                } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Create_Group.this);
                     builder.setTitle("Add Contact in Group");
                     builder.setMessage("You want to Add this Contact ?");
@@ -158,8 +156,8 @@ public class Create_Group extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp,SharedPref.getCurrentUser(Create_Group.this).getFname(),url_cloudinary));
-                            Toast.makeText(Create_Group.this,"Friend Add Successfuly",Toast.LENGTH_LONG).show();
+                            firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                            Toast.makeText(Create_Group.this, "Friend Add Successfuly", Toast.LENGTH_LONG).show();
                         }
                     });
                     builder.setPositiveButton("Back", null);
@@ -256,20 +254,33 @@ public class Create_Group extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        try {
+            if (id == R.id.action_done) {
 
-        if (id == R.id.action_done) {
+                if (grp.length() == 0) {
+                    grpName.setError("This field is Required");
+                } else if (url_cloudinary.length() == 0) {
+                    Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_LONG).show();
 
-            firebase.child("MyGroup").child(firebase_user.getUid()).child(grp).setValue(new Group_Detail(grp,SharedPref.getCurrentUser(Create_Group.this).getFname(),url_cloudinary));
-            firebase.child("Groupinfo").child(grp).setValue(new Group_Detail(grp,SharedPref.getCurrentUser(Create_Group.this).getFname(),url_cloudinary));
-            Toast.makeText(this, "Hahahah", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Create_Group.this,Navigation_Activity.class);
-            startActivity(intent);
-         //   getSupportFragmentManager().beginTransaction().add(R.id.main,new Group_Fragment()).addToBackStack(null).commit();
-            return true;
+                } else {
+
+                    firebase.child("MyGroup").child(firebase_user.getUid()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                    firebase.child("Groupinfo").child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                    Toast.makeText(this, "Hahahah", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Create_Group.this, Navigation_Activity.class);
+                    startActivity(intent);
+                    //   getSupportFragmentManager().beginTransaction().add(R.id.main,new Group_Fragment()).addToBackStack(null).commit();
+                    return true;
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

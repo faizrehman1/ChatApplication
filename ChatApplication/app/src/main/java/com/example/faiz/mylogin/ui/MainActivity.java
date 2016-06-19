@@ -69,6 +69,7 @@ import com.firebase.client.ValueEventListener;*/
 public class MainActivity extends AppCompatActivity {
 
 
+    private static final int Browse_image = 1;
     private LoginManager fbLoginMan;
     private CallbackManager callbackManager;
     private Profile profile;
@@ -79,13 +80,14 @@ public class MainActivity extends AppCompatActivity {
     private User user = new User();
     //ImageView image;
     private Cloudinary cloudinary;
-    private static final int Browse_image = 1;
     private String selectedImagePath;
     private Bitmap bitmap;
     private String url_cloudinary;
     private TextView textView_imageName;
-    private  FirebaseUser firebase_user;
+    private FirebaseUser firebase_user;
 
+
+    //wait jus see bc
     private boolean fbSignIn = false;
 
 
@@ -98,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
 //        final DatabaseReference firebase = database.getReference("https://chatapplicationn.firebaseio.com");
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -223,22 +224,23 @@ public class MainActivity extends AppCompatActivity {
                                         new OnCompleteListener<AuthResult>() {
                                             @Override
                                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                                String uid = mAuth.getCurrentUser().getUid();
 
+//                                                if (task.isSuccessful()) {
+                                                firebase.child("User").child(uid).setValue(new
+                                                        User(fname.getText().toString(),
+                                                        lname.getText().toString(),
+                                                        id.getText().toString(),
+                                                        password.getText().toString(),
+                                                        dob.getText().toString(),
+                                                        gender.getText().toString(),
+                                                        uid,
+                                                        url_cloudinary));
 
-                                                if (task.isSuccessful()) {
-                                                    firebase.child("User").child(firebase_user.getUid()).setValue(new
-                                                            User(fname.getText().toString(),
-                                                            lname.getText().toString(),
-                                                            id.getText().toString(),
-                                                            password.getText().toString(),
-                                                            dob.getText().toString(),
-                                                            gender.getText().toString(),
-                                                            firebase_user.getUid(),
-                                                            url_cloudinary));
-
-                                                    Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                                    AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
-                                                } else if (!task.isSuccessful()) {
+                                                Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                                AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+//                                                } else
+                                                if (!task.isSuccessful()) {
 
                                                     Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
                                                 }
@@ -252,11 +254,11 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     });
-                    builder.setNegativeButton("Cancel", null);
+            builder.setNegativeButton("Cancel", null);
 
                     builder.show();
 
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -391,23 +393,22 @@ public class MainActivity extends AppCompatActivity {
                 String passo = pass.getText().toString();
 
 
-                if(emails.length()==0){
+                if (emails.length() == 0) {
                     email.setError("This is Required Field");
-                }else if(passo.length()==0 && passo.length() <=5){
+                } else if (passo.length() == 0 && passo.length() <= 5) {
                     pass.setError("This is Required Field");
                 }
 
 
                 try {
-                    mAuth.signInWithEmailAndPassword(emails,passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(emails, passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
                                 Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                                 openNavigationActivity();
-                            }
-                           else if (!task.isSuccessful()) {
+                            } else if (!task.isSuccessful()) {
                                 AppLogs.logw("signInWithEmail" + task.getException());
                                 Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
                                         Toast.LENGTH_SHORT).show();
@@ -416,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
 
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -495,7 +496,9 @@ public class MainActivity extends AppCompatActivity {
                     //   setDefaultLayout();
                     Uri selectedImageUri = data.getData();
 
+
                  //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
+
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(
@@ -511,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
                     startUpload(filePath);
                 }
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

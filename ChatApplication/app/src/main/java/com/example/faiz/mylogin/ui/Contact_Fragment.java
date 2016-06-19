@@ -13,6 +13,7 @@ import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.ContactListAdapter;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
+import com.example.faiz.mylogin.util.NodeRef;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,11 +45,39 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
         adapter = new ContactListAdapter(getActivity(), nameList);
 
         final FirebaseUser user = mAuth.getCurrentUser();
-        Log.d("uuid",user.getUid());
+        Log.d("uuid", user.getUid());
 
 
         //Getting Single value from fire base and setting it to list View
-        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
+
+        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User users = data.getValue(User.class);
+                    AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
+                    nameList.add(new User(users.getFname(),
+                            users.getLname(),
+                            users.getEmail(),
+                            "",
+                            users.getDob(),
+                            users.getGender(),
+                            users.getU_Id(),
+                            users.getImgUrl()));
+                    adapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        /*firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -80,7 +109,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 AppLogs.loge("database error" + databaseError.getMessage());
             }
-        });
+        });*/
 
 
         listView.setAdapter(adapter);

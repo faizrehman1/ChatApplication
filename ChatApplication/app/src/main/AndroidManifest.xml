@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.faiz.mylogin">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 
     <application
@@ -30,15 +32,23 @@
         <activity
             android:name=".ui.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.Conversation_Activity" />
+
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.Conversation_Activity">
+        </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
+
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.Create_Group" />
         <activity android:name=".ui.Group_Chat_Act"></activity>
+
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name=".ui.FriendListActivity">
+        </activity>
+
     </application>
 
 </manifest>
