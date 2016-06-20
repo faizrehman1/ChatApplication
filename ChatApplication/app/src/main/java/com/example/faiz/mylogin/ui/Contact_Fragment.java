@@ -160,6 +160,27 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
 
                             }
                         });
+                        firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String uid = mAuth.getCurrentUser().getUid().toString();
+                                int i = 0 ;
+                                for (DataSnapshot data : dataSnapshot.getChildren()){
+                                    User user = data.getValue(User.class);
+                                    if (user.getU_Id().equals(uid)){
+                                        DatabaseReference refLoginUser = data.getRef();
+                                        AppLogs.loge("refLoginUser "+refLoginUser);
+                                        refLoginUser.removeValue();
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 });
                 builder.setCancelable(false);
