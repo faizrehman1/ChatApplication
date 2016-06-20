@@ -86,7 +86,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 TextView emailView = (TextView) view.findViewById(R.id.textView_alert_Email);
                 TextView dobView = (TextView) view.findViewById(R.id.textView_alert_Dob);
                 imgView_dialog = (ImageView) view.findViewById(R.id.imageView_userprofile);
-                Button textButton = (Button) view.findViewById(R.id.button_Text_alertBox);
+                Button textButton = (Button) view.findViewById(R.id.button_Message_alertBox);
                 Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
 
 

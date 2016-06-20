@@ -1,7 +1,10 @@
 package com.example.faiz.mylogin.ui;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +28,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class Contact_Fragment extends android.support.v4.app.Fragment {
+    public static final String UUID_KEY = "data_uudsdfgasdg";
     private ListView listView;
     private ArrayList<User> nameList;
     private ContactListAdapter adapter;
     private FirebaseAuth mAuth;
+
 
     @Nullable
     @Override
@@ -36,8 +41,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.contactview, null);
         super.onCreateView(inflater, container, savedInstanceState);
 
-
-        DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         listView = (ListView) view.findViewById(R.id.contact_ListView);
@@ -111,12 +115,56 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
             }
         });*/
 
-
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("dpname",user.getDisplayName());
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                final User user = nameList.get(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Delete Friend !!!");
+                builder.setMessage("Want to Delete " + user.getFname() + " from your Contacts ?");
+                builder.setNegativeButton("Message", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(getActivity(), Conversation_Activity.class);
+                        i.putExtra(UUID_KEY, nameList.get(position));
+                        startActivity(i);
+                    }
+                });
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppLogs.loge("USername " + user.getU_Id().toString());
+                        DatabaseReference ref = firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).getRef();
+                        AppLogs.loge("Unknown " + ref.toString());
+                        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int i = 0;
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                    if (i == position) {
+                                        DatabaseReference ref1 = data.getRef();
+
+                                        AppLogs.loge("REF! " + ref1.toString());
+
+                                        ref1.removeValue();
+                                        nameList.remove(position);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    i++;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                });
+                builder.setCancelable(false);
+
+                builder.create().show();
             }
         });
 

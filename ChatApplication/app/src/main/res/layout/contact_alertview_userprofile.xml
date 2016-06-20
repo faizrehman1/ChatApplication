@@ -56,13 +56,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textView_alert_Dob"
-            android:layout_toEndOf="@+id/button_Text_alertBox"
-            android:layout_toRightOf="@+id/button_Text_alertBox"
+            android:layout_toEndOf="@+id/button_Message_alertBox"
+            android:layout_toRightOf="@+id/button_Message_alertBox"
             android:text="Cancel"/>
 
         <Button
             android:layout_weight="1"
-            android:id="@+id/button_Text_alertBox"
+            android:id="@+id/button_Message_alertBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/textView_alert_Dob"

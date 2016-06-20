@@ -1,11 +1,5 @@
 package com.example.faiz.mylogin.ui;
 
-import com.example.faiz.mylogin.adaptor.Tab_Adapter;
-
-
-import android.app.AlertDialog;
-import android.content.Context;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -24,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
@@ -183,6 +176,7 @@ public class Navigation_Activity extends AppCompatActivity
     }
 
     public void Tab_ViewPager() {
+
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
 
@@ -204,19 +198,21 @@ public class Navigation_Activity extends AppCompatActivity
         fragments.add(f_requestfragment);
 
 
+        final Tab_Adapter adapter = new Tab_Adapter(getSupportFragmentManager(), fragments);
+        //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
+        viewPager.setAdapter(adapter);
 
-            final Tab_Adapter adapter = new Tab_Adapter(getSupportFragmentManager(), fragments);
-            //is line se tablayout k neche jo shade araaha hai woh change hoga pageviewer k mutabik
-            viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(0);
 
-            viewPager.setOffscreenPageLimit(3);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         try {
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
+                    adapter.notifyDataSetChanged();
                     viewPager.setCurrentItem(tab.getPosition());
+
 
                 }
 
@@ -235,6 +231,7 @@ public class Navigation_Activity extends AppCompatActivity
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
 
 }
