@@ -59,9 +59,6 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
 
         listView = (ListView) view.findViewById(R.id.fRequest_ListView2);
 
-        Toast.makeText(getActivity(), "frequestFragment", Toast.LENGTH_LONG).show();
-        AppLogs.loge("FrequestFragment");
-
         AppLogs.loge("CurrentUser " + mAuth.getCurrentUser().getUid().toString());
         AppLogs.loge("UID unknown " + firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()).toString());
         firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
