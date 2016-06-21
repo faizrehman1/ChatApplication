@@ -30,6 +30,8 @@ public class FriendListActivity extends AppCompatActivity {
     private ListView listView;
     private String userName;
     private User userCall;
+    private String myId;
+    private ArrayList<User> friendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +39,29 @@ public class FriendListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_firend_list);
         firebase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
+        friendsList = new ArrayList<>();
+        myId = mAuth.getCurrentUser().getUid();
         nameList = new ArrayList<>();
         adapter = new FriendList_adapter(FriendListActivity.this, nameList);
 
         listView = (ListView) findViewById(R.id.fRequest_ListView1);
+
+        firebase.child(NodeRef.Friends_Node).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User user = data.getValue(User.class);
+                    AppLogs.loge(data.getValue().toString());
+
+                    friendsList.add(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         final DatabaseReference user = firebase.child("User").child(mAuth.getCurrentUser().getUid()).getRef();
         user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,22 +96,14 @@ public class FriendListActivity extends AppCompatActivity {
                 builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                   /*     HashMap<String, Object> map = new HashMap<String, Object>();
-                        map.put("name", user.getFname());
-                        map.put("picUrl", user.getImgUrl());
-                        String currentUid = mAuth.getCurrentUser().getUid();
-                        FirebaseUser currentUser =
-                                mAuth.getCurrentUser();
-AppLogs.loge("Current User "+currentUser.getDisplayName());
 
-*/
                         AppLogs.loge("Selected User UID " + userFromList.getU_Id());
                         AppLogs.loge("USER NAME " + nameList.get(position).getFname());
 //                        AppLogs.loge("Unknown Name " + mAuth.getCurrentUser().getDisplayName());
 
-                        firebase.child(NodeRef.FRIEND_REQUEST).child(userFromList.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall   );
-//                        DatabaseReference friendRequest = firebase.child("FriendRequest").child(currentUid).getRef();
-//                        friendRequest.removeValue();
+                        firebase.child(NodeRef.FRIEND_REQUEST).child(userFromList.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
+
+
                         nameList.remove(position);
 
                         adapter.notifyDataSetChanged();
@@ -104,27 +116,34 @@ AppLogs.loge("Current User "+currentUser.getDisplayName());
         });
 
     }
+    private boolean userAddKerunYaNahin(String firebaseUserKiId) {
+        if (firebaseUserKiId.equals(myId)) {
+            AppLogs.loge("Meri id hai ye list me add nahi kia...");
+            return false;
+        } else {
+            for (User u : friendsList) {
+                if (u.getU_Id().equals(firebaseUserKiId)) {
 
+                    AppLogs.loge("Friend ki id hai ye add nahi kia...");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     private void membersfromFirebase() {
         firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    User users = data.getValue(User.class);
-                    if ((users.getU_Id()).equals(mAuth.getCurrentUser().getUid())) {
 
-                    } else {
-                        userName = users.getFname();
-                        String imgUrl = users.getImgUrl();
-                        nameList.add(new User(users.getFname(),
-                                users.getLname(),
-                                users.getEmail(),
-                                users.getPassword(),
-                                users.getDob(),
-                                users.getGender(),
-                                users.getU_Id(),
-                                imgUrl));
+                    User users = data.getValue(User.class);
+                    AppLogs.loge("User data me hai... : "+users.getFname());
+
+                    if (userAddKerunYaNahin(users.getU_Id())) {
+                        nameList.add(users);
+                        AppLogs.loge("User list me add ho gaya... : "+users.getFname());
                         adapter.notifyDataSetChanged();
                     }
                 }
