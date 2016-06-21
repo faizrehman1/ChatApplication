@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import com.example.faiz.mylogin.adaptor.ContactListAdapter;
 import com.example.faiz.mylogin.model.Group_Detail;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
+import com.example.faiz.mylogin.util.NodeRef;
 import com.example.faiz.mylogin.util.SharedPref;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,17 +42,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class Create_Group extends AppCompatActivity {
 
     private static final int Browse_image = 1;
     private String selectedImagePath;
     private Bitmap bitmap;
-    private String url_cloudinary = "";
+    private String url_cloudinary;
     private Cloudinary cloudinary;
     private FirebaseAuth mAuth;
     private FirebaseUser firebase_user;
@@ -63,6 +70,10 @@ public class Create_Group extends AppCompatActivity {
     private String grp;
     private User user = new User();
     private DatabaseReference firebase;
+    private File temp_path;
+    private final int COMPRESS = 100;
+    boolean imageFlag =true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,37 +113,62 @@ public class Create_Group extends AppCompatActivity {
 
         adapter = new ContactListAdapter(this, arrayList);
 
-        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
+//        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                    User users = data.getValue(User.class);
+//
+//                    Log.d("idss", users.getU_Id());
+//
+//                    if (users.getU_Id().equals(firebase_user.getUid())) {
+//                        Log.d("LOL", users.getU_Id());
+//                    } else {
+//                        String image = users.getImgUrl();
+//                        arrayList.add(new User(users.getFname(),
+//                                users.getLname(),
+//                                users.getEmail(),
+//                                users.getPassword(),
+//                                users.getDob(),
+//                                users.getGender(),
+//                                users.getU_Id(),
+//                                image));
+//                        adapter.notifyDataSetChanged();
+//
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                AppLogs.loge("database error" + databaseError.getMessage());
+//            }
+//        });
+
+        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     User users = data.getValue(User.class);
-
-                    Log.d("idss", users.getU_Id());
-
-                    if (users.getU_Id().equals(firebase_user.getUid())) {
-                        Log.d("LOL", users.getU_Id());
-                    } else {
-                        String image = users.getImgUrl();
-                        arrayList.add(new User(users.getFname(),
-                                users.getLname(),
-                                users.getEmail(),
-                                users.getPassword(),
-                                users.getDob(),
-                                users.getGender(),
-                                users.getU_Id(),
-                                image));
-                        adapter.notifyDataSetChanged();
-
-
-                    }
+                    AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
+                    arrayList.add(new User(users.getFname(),
+                            users.getLname(),
+                            users.getEmail(),
+                            "",
+                            users.getDob(),
+                            users.getGender(),
+                            users.getU_Id(),
+                            users.getImgUrl()));
+                    adapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                AppLogs.loge("database error" + databaseError.getMessage());
+
             }
         });
 
@@ -142,26 +178,30 @@ public class Create_Group extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                grp = grpName.getText().toString();
-                if (grp.length() == 0) {
-                    grpName.setError("This field is Required");
-                } else if (url_cloudinary.length() == 0) {
-                    Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_LONG).show();
+                try {
+                    grp = grpName.getText().toString();
+                    if (grp.length() == 0) {
+                        grpName.setError("This field is Required");
+                    } else if (imageFlag) {
+                        Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends",Toast.LENGTH_SHORT).show();
 
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Create_Group.this);
-                    builder.setTitle("Add Contact in Group");
-                    builder.setMessage("You want to Add this Contact ?");
-                    builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Create_Group.this);
+                        builder.setTitle("Add Contact in Group");
+                        builder.setMessage("You want to Add this Contact ?");
+                        builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                            firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
-                            Toast.makeText(Create_Group.this, "Friend Add Successfuly", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    builder.setPositiveButton("Back", null);
-                    builder.create().show();
+                                firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                                Toast.makeText(Create_Group.this, "Friend Add Successfuly", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.setPositiveButton("Back", null);
+                        builder.create().show();
+                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
                 }
             }
         });
@@ -175,30 +215,39 @@ public class Create_Group extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         try {
-            //  if (requestCode == Browse_image) {
-            if (data != null) {
-                //   setDefaultLayout();
-                Uri selectedImageUri = data.getData();
-
-                //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
+            if (Build.VERSION.SDK_INT < 19) {
+                Uri selectedImage = data.getData();
+                // System.out.println("selectedImage "+selectedImage);
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                Cursor cursor = getContentResolver().query(
-                        selectedImageUri, filePathColumn, null, null, null);
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                 cursor.moveToFirst();
-
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
+                selectedImagePath = cursor.getString(columnIndex);
                 cursor.close();
-                Log.d("Upload file is:", filePath);
-                selectedImagePath = filePath;
-                //  textView_imageName.setText("Uploaded");
-                startUpload(filePath);
+                System.out.println("smallImagePath" + selectedImagePath);
+                Log.d("Tag", selectedImagePath);
+
+                //   image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                //   encodeImage();
+            } else {
+                try {
+                    InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                    Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
+                    selectedImagePath = saveGalaryImageOnLitkat(bitmap);
+                    //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                    //  encodeImage();
+                    Log.d("Tag", selectedImagePath);
+                    startUpload(selectedImagePath);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // finishAndSetResult(RESULT_OK, picturePath, false);
             }
-            //  }
-        } catch (Exception ex) {
+        }catch (Exception ex){
             ex.printStackTrace();
         }
+
     }
 
     public void startUpload(String path) {
@@ -220,7 +269,7 @@ public class Create_Group extends AppCompatActivity {
                                     try {
                                         responseFromServer = (HashMap<String, Object>) cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
                                     } catch (IOException e) {
-                                        Toast.makeText(Create_Group.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(Create_Group.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_SHORT).show();
                                         e.printStackTrace();
                                     }
 
@@ -231,6 +280,7 @@ public class Create_Group extends AppCompatActivity {
                                 protected void onPostExecute(HashMap<String, Object> stringObjectHashMap) {
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
+                                    imageFlag = false;
 
                                 }
                             };
@@ -259,16 +309,16 @@ public class Create_Group extends AppCompatActivity {
 
                 if (grp.length() == 0) {
                     grpName.setError("This field is Required");
-                } else if (url_cloudinary.length() == 0) {
+                } else if (imageFlag) {
                     Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_LONG).show();
-
                 } else {
 
                     firebase.child("MyGroup").child(firebase_user.getUid()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
                     firebase.child("Groupinfo").child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
-                    Toast.makeText(this, "Hahahah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Group Created...", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Create_Group.this, Navigation_Activity.class);
                     startActivity(intent);
+                    finish();
                     //   getSupportFragmentManager().beginTransaction().add(R.id.main,new Group_Fragment()).addToBackStack(null).commit();
                     return true;
                 }
@@ -288,5 +338,29 @@ public class Create_Group extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main2, menu);
 
         return true;
+    }
+    private String saveGalaryImageOnLitkat(Bitmap bitmap) {
+        try {
+            File cacheDir;
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+                cacheDir = new File(Environment.getExternalStorageDirectory(), getResources().getString(R.string.app_name));
+            else
+                cacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!cacheDir.exists())
+                cacheDir.mkdirs();
+            String filename = System.currentTimeMillis() + ".jpg";
+            File file = new File(cacheDir, filename);
+            temp_path = file.getAbsoluteFile();
+            // if(!file.exists())
+            file.createNewFile();
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS, out);
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 }

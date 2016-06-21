@@ -65,7 +65,7 @@ public class Group_Chat_Act extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     adapter = new GroupMessageAdapter(arrayList,Group_Chat_Act.this);
                     listView.setAdapter(adapter);
-                    // arrayList.clear();
+                     arrayList.clear();
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         Message message = d.getValue(Message.class);
                         arrayList.add(new Message(message.getMsg(),message.getU_id(),message.getTime()));
@@ -97,6 +97,7 @@ public class Group_Chat_Act extends AppCompatActivity {
                 msg.setTime(var);
                 msg.setU_id(user.getUid());
                 firebase.child("GroupData").child(getName).child("Conversation").push().setValue(msg);
+                edtmessage.setText("");
 
             }
         });

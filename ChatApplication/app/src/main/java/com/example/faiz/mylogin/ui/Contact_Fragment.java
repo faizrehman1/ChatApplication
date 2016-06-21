@@ -116,7 +116,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("dpname",user.getDisplayName());
+//                Log.d("dpname",user.getDisplayName());
             }
         });
 

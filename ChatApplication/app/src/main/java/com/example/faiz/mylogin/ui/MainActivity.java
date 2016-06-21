@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +56,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
     private String url_cloudinary;
     private TextView textView_imageName;
     private FirebaseUser firebase_user;
-
+    private File temp_path;
+    private final int COMPRESS = 100;
 
     //wait jus see bc
     private boolean fbSignIn = false;
@@ -152,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
                             firebase.child("User").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-//                                    User user = dataSnapshot.getValue(User.class);
+                                    User user = dataSnapshot.getValue(User.class);
 //                                AppLogs.logd("User Logged In For My Auth:" + user.getEmail());
 
-  //                                  SharedPref.setCurrentUser(MainActivity.this, user);
+                                    SharedPref.setCurrentUser(MainActivity.this, user);
                                     openNavigationActivity();
                                 }
 
@@ -490,34 +496,69 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (requestCode == Browse_image) {
-                if (resultCode == RESULT_OK) {
-                    //   setDefaultLayout();
-                    Uri selectedImageUri = data.getData();
+//        try {
+//            if (requestCode == Browse_image) {
+//                if (resultCode == RESULT_OK) {
+//                    //   setDefaultLayout();
+//                    Uri selectedImageUri = data.getData();
+//
+//
+//                 //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
+//
+//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+//                    Cursor cursor = getContentResolver().query(
+//                            selectedImageUri, filePathColumn, null, null, null);
+//                    cursor.moveToFirst();
+//
+//                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                    String filePath = cursor.getString(columnIndex);
+//                    cursor.close();
+//                    Log.d("Upload file is:", filePath);
+//                    selectedImagePath = filePath;
+//                    textView_imageName.setText("Uploaded");
+//                    startUpload(filePath);
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+         try {
+             if (Build.VERSION.SDK_INT < 19) {
+                 Uri selectedImage = data.getData();
+                 // System.out.println("selectedImage "+selectedImage);
+                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                 Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                 cursor.moveToFirst();
+                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                 selectedImagePath = cursor.getString(columnIndex);
+                 cursor.close();
+                 System.out.println("smallImagePath" + selectedImagePath);
+                 Log.d("Tag", selectedImagePath);
 
-
-                 //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
-
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(
-                            selectedImageUri, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-                    Log.d("Upload file is:", filePath);
-                    selectedImagePath = filePath;
-                    textView_imageName.setText("Uploaded");
-                    startUpload(filePath);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+                 //   image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                 //   encodeImage();
+             } else {
+                 try {
+                     InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
+                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
+                     //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                     //  encodeImage();
+                     Log.d("Tag", selectedImagePath);
+                     startUpload(selectedImagePath);
+                     textView_imageName.setText("Uploaded");
+                 } catch (FileNotFoundException e) {
+                     e.printStackTrace();
+                 }
+                 // finishAndSetResult(RESULT_OK, picturePath, false);
+             }
+         }catch (Exception ex){
+             ex.printStackTrace();
+         }
     }
+
+
 
     public void startUpload(String path) {
         try {
@@ -565,6 +606,31 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace();
 
         }
+
+    }
+
+    private String saveGalaryImageOnLitkat(Bitmap bitmap) {
+        try {
+            File cacheDir;
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+                cacheDir = new File(Environment.getExternalStorageDirectory(), getResources().getString(R.string.app_name));
+            else
+                cacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!cacheDir.exists())
+                cacheDir.mkdirs();
+            String filename = System.currentTimeMillis() + ".jpg";
+            File file = new File(cacheDir, filename);
+            temp_path = file.getAbsoluteFile();
+            // if(!file.exists())
+            file.createNewFile();
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS, out);
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 }

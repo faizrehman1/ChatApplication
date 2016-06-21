@@ -188,7 +188,7 @@ public class Navigation_Activity extends AppCompatActivity
 
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
-        tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
+        tabLayout.addTab(tabLayout.newTab().setText("Friends"));
         tabLayout.addTab(tabLayout.newTab().setText("FRequest"));
 
         chatFragment = new Chat_Fragment();

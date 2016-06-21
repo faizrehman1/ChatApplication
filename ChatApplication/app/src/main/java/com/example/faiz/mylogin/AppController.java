@@ -22,7 +22,7 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Firebase.setAndroidContext(this);
+      //  Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         //when anyone install this app it shows in analytics at Fb.developer page
         AppEventsLogger.activateApp(this);
@@ -33,21 +33,21 @@ public class AppController extends Application {
 
     }
 
-    private void printHashKaey() {
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.faiz.mylogin",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
-    }
+//    private void printHashKaey() {
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    "com.example.faiz.mylogin",
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//
+//        } catch (NoSuchAlgorithmException e) {
+//
+//        }
+//    }
 
 }

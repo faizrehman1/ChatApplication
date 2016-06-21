@@ -14,6 +14,7 @@ import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -66,7 +67,9 @@ public class GroupMessageAdapter extends BaseAdapter {
 
        if(arrayList.get(position).getU_id().equals(user.getUid())){
            view = inflater.inflate(R.layout.message_left_side_layout,null);
+
        }else{
+
            view= inflater.inflate(R.layout.message_right_side_layout,null);
 
        }
@@ -76,6 +79,44 @@ public class GroupMessageAdapter extends BaseAdapter {
         final ImageView img = (ImageView)view.findViewById(R.id.imageView_messages);
         msgView.setText(arrayList.get(position).getMsg());
         timeView.setText(arrayList.get(position).getTime());
+
+        U_ID = arrayList.get(position).getU_id();
+
+        try {
+
+            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                @Override
+                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+
+                    User user = dataSnapshot.getValue(User.class);
+//                 user.getImgUrl()
+
+//                Log.d("imaaa",user.getImgUrl());
+
+                    if(user.getImgUrl().equals("")){
+                        img.setImageResource(R.drawable.ic_menu_camera);
+
+                    }else{
+                        picasso.with(context).load(user.getImgUrl()).transform(new RoundImage()).into(img);
+
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            //    Log.d("image",dataSnapshot.child("imgUrl").getValue().toString());
+            //    picasso.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
+
+
+
+
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+
 
 
 

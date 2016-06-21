@@ -20,9 +20,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by Kamran ALi on 5/13/2016.
- */
 //setting Adapter class for the COntact list View in Fragment
 public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
