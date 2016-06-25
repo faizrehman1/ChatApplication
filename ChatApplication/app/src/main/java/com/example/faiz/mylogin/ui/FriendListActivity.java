@@ -41,6 +41,7 @@ public class FriendListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         friendsList = new ArrayList<>();
         myId = mAuth.getCurrentUser().getUid();
+
         nameList = new ArrayList<>();
         adapter = new FriendList_adapter(FriendListActivity.this, nameList);
 
