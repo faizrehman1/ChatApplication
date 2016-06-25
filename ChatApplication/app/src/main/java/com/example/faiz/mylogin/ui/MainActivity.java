@@ -2,6 +2,7 @@ package com.example.faiz.mylogin.ui;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,13 +16,17 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
     private Profile profile;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private EditText email, pass, id, password, fname, lname, dob, gender;
+    private EditText email, pass, id, password, fname, lname, dob;
+    private AutoCompleteTextView gender;
+    //, gender;
     private Button buttonSignup, buttonSignin, btn_upload_image, buttonFb;
     private User user = new User();
     //ImageView image;
@@ -88,11 +95,15 @@ public class MainActivity extends AppCompatActivity {
     private String selectedImagePath;
     private Bitmap bitmap;
     private String url_cloudinary;
-    private TextView textView_imageName;
+    private TextView textView_imageName,per;
     private FirebaseUser firebase_user;
     private File temp_path;
     private final int COMPRESS = 100;
+     private static final String[] Gender = new String[] {
+            "Male","Female"
+    };
 
+    ProgressBar progressBar;
     //wait jus see bc
     private boolean fbSignIn = false;
 
@@ -196,12 +207,20 @@ public class MainActivity extends AppCompatActivity {
                     LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
                     View vv = inflater.inflate(R.layout.signup_view, null);
                     id = (EditText) vv.findViewById(R.id.edtviewEmail);
-
                     password = (EditText) vv.findViewById(R.id.edtviewPassword);
+
+
+
                     fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
                     lname = (EditText) vv.findViewById(R.id.edtviewLastName);
                     dob = (EditText) vv.findViewById(R.id.editTextDob);
-                    gender = (EditText) vv.findViewById(R.id.editGender);
+
+                    gender = (AutoCompleteTextView) vv.findViewById(R.id.editGender);
+
+                    //  AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.actv_country);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, Gender);
+                    gender.setAdapter(adapter);
+
                     btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
                     textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
                     // forImageUpload();
@@ -214,59 +233,68 @@ public class MainActivity extends AppCompatActivity {
                             startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
                         }
                     });
-
-
                     builder.setView(vv);
-                    builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String pass = password.getText().toString();
-//                            if (pass.length() <= 5) {
-//                                password.setError("Please Enter 6 Character Password");
-//                            }
 
-                            try {
-                                mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
-                                        new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                String uid = mAuth.getCurrentUser().getUid();
+
+
+
+                    builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String pass = password.getText().toString();
+                                if(pass.length() <= 6){
+                                    main(pass);
+                                }else{
+
+
+                                try {
+                                    mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
+                                            new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    String uid = mAuth.getCurrentUser().getUid();
+
 
 //                                                if (task.isSuccessful()) {
-                                                firebase.child("User").child(uid).setValue(new
-                                                        User(fname.getText().toString(),
-                                                        lname.getText().toString(),
-                                                        id.getText().toString(),
-                                                        password.getText().toString(),
-                                                        dob.getText().toString(),
-                                                        gender.getText().toString(),
-                                                        uid,
-                                                        url_cloudinary));
+                                                    firebase.child("User").child(uid).setValue(new
+                                                            User(fname.getText().toString(),
+                                                            lname.getText().toString(),
+                                                            id.getText().toString(),
+                                                            password.getText().toString(),
+                                                            dob.getText().toString(),
+                                                            gender.getText().toString(),
+                                                            uid,
+                                                            url_cloudinary));
 
-                                                Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                                AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+                                                    Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
+                                                    AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
 //                                                } else
-                                                if (!task.isSuccessful()) {
+                                                    if (!task.isSuccessful()) {
 
-                                                    Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
 
-                            } catch (Exception ex) {
+                                } catch (Exception ex) {
 
-                                ex.printStackTrace();
+                                    ex.printStackTrace();
+                                }
+                                }
                             }
-                        }
 
-                    });
-            builder.setNegativeButton("Cancel", null);
 
-                    builder.show();
+                        });
+                        builder.setNegativeButton("Cancel", null);
 
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                    //    builder.setCancelable(false);
+                        builder.show();
+
+                    }catch(Exception ex){
+                        ex.printStackTrace();
+                    }
+
+
             }
         });
 
@@ -430,6 +458,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void main(String pass) {
+
+        Toast.makeText(MainActivity.this,pass+"\n You Password is no longer Stronger",Toast.LENGTH_SHORT).show();
+
+    }
+
+
     private void openNavigationActivity() {
         Intent intent = new Intent(this, Navigation_Activity.class);
         startActivity(intent);
@@ -545,6 +580,30 @@ public class MainActivity extends AppCompatActivity {
                      selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                      //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                      //  encodeImage();
+                     final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+                     dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                     dialog.setMessage("Uploading Image...");
+                     dialog.setCancelable(true);
+                     dialog.setMax(100);
+                     dialog.setProgress(0);
+                     dialog.show();
+
+                     Thread t = new Thread(new Runnable() {
+                         public void run() {
+                             while (dialog.getProgress() < dialog.getMax()) {
+                                 dialog.incrementProgressBy(1);
+                                 try {
+                                     Thread.sleep(50);
+                                 } catch (Exception e) {/* no-op */}
+                             }
+                             dialog.dismiss();
+                         }
+                     });
+                     t.start();
+
+
+
+
                      Log.d("Tag", selectedImagePath);
                      startUpload(selectedImagePath);
                      textView_imageName.setText("Uploaded");

@@ -1,5 +1,7 @@
 package com.example.faiz.mylogin.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,10 +49,10 @@ public class Add_memeber_Activity extends AppCompatActivity {
         firebase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         grpname = getIntent().getStringExtra("groupName");
-        AppLogs.logd("grpName " + grpname);
-
         grpAdminName = getIntent().getStringExtra("groupAdminName");
         groupUrl = getIntent().getStringExtra("groupUrl");
+        AppLogs.logd("grpName " + grpname);
+
 
         arrayList = new ArrayList<>();
         listView = (ListView) findViewById(R.id.memberList);
@@ -61,61 +63,62 @@ public class Add_memeber_Activity extends AppCompatActivity {
         userName = user.getKey();
         AppLogs.logd("group: " + userName);
 
-
+           main();
 //        membersfromFirebase();
 
-
-        firebase.child("MyGroup").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-
-                    AppLogs.logd("Tag " + dataSnapshot.getKey());
-                    AppLogs.logd("Tag1 " + data.getKey());
+//
 
 
-                    if (data.hasChild(grpname)) {
-
-                    } else {
-                        key = data.getKey();
-                        AppLogs.logd("Ley "+key);
-                        main();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
+    }
+
+    public void addfriend(){
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                firebase.child("MyGroup").child(users.getU_Id()).setValue(new Group_Detail(grpname,grpAdminName,groupUrl));
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Add_memeber_Activity.this);
+                builder.setTitle("You want to Add this Friend.?");
+                builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grpname).setValue(new Group_Detail(grpname, grpAdminName, groupUrl));
+                        arrayList.remove(position);
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+                builder.setPositiveButton("Back",null);
+                builder.create().show();
+
             }
         });
-
     }
+
     public void main(){
 
-        AppLogs.logd("Aloo"+key);
-        try {
-            firebase.child("User").child(key).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
 
-               //     AppLogs.logd(dataSnapshot);
+        AppLogs.logd("Aloo "+key);
+try {
+    firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (final DataSnapshot data : dataSnapshot.getChildren()) {
 
-//                    if (dataSnapshot.hasChild(grpname)){
-//
-//                   }else {
-                     //   for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            users = dataSnapshot.getValue(User.class);
-                            AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
+                AppLogs.logd("LOLOA "+data.getKey());
+                key = data.getKey();
+                firebase.child("MyGroup").child(data.getKey()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        AppLogs.logd("as"+dataSnapshot.getValue());
+                        if(dataSnapshot.hasChild(grpname)){
+
+                        }else {
+                             users = data.getValue(User.class);
+                       //     AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
                             arrayList.add(new User(users.getFname(),
                                     users.getLname(),
                                     users.getEmail(),
@@ -125,22 +128,33 @@ public class Add_memeber_Activity extends AppCompatActivity {
                                     users.getU_Id(),
                                     users.getImgUrl()));
                             adapter.notifyDataSetChanged();
-                    //    }
+                        }
+                    }
 
-//                    }
-//'
- //                   }
-                }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
 
-                }
-            });
 
-        }catch (Exception rx){
-            rx.printStackTrace();
+
+            }
+
         }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    });
+
+
+}catch (Exception ex){
+    ex.printStackTrace();
+}
+
+    addfriend();
     }
 }
 

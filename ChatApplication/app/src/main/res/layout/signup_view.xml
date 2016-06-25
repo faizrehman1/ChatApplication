@@ -46,7 +46,11 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/edtviewEmail"
         android:hint="Password"
-        android:password="true"/>
+        android:password="true">
+
+    </EditText>
+
+
 
 
     <EditText
@@ -62,13 +66,25 @@
         android:hint="Date/Month/Year"
         android:inputType="date"/>
 
-    <EditText
-        android:id="@+id/editGender"
-        android:layout_width="match_parent"
+    <!--<EditText-->
+        <!--android:id="@+id/editGender"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/editTextDob"-->
+        <!--android:hint="Gender: Male Or Female"-->
+        <!--/>-->
+
+    <AutoCompleteTextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/editGender"
+        android:hint="Gender"
+
         android:layout_below="@+id/editTextDob"
-        android:hint="Gender: Male Or Female"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 
@@ -88,5 +104,6 @@
         android:id="@+id/image_Name"
         android:layout_below="@+id/BtnuploadImage"
         android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

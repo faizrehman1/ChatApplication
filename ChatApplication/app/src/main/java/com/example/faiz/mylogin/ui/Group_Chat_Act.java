@@ -1,8 +1,11 @@
 package com.example.faiz.mylogin.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +29,7 @@ import java.util.Locale;
 
 public class Group_Chat_Act extends AppCompatActivity {
 
-    private String getName;
+    private String getName,grpAdminName,grpImgUrl;
     private EditText edtmessage;
     private Button btnsend;
     private ListView listView;
@@ -44,6 +47,9 @@ public class Group_Chat_Act extends AppCompatActivity {
         user = mAuth.getInstance().getCurrentUser();
         arrayList = new ArrayList<>();
         getName = getIntent().getStringExtra("value");
+        grpAdminName = getIntent().getStringExtra("adminvalue");
+      //  intent.putExtra("imagevalue",arraylist.get(position).getImgUrl());
+        grpImgUrl = getIntent().getStringExtra("imagevalue");
 
         edtmessage = (EditText)findViewById(R.id.group_Conversation_message);
         btnsend = (Button)findViewById(R.id.groupButton_Conversation_send);
@@ -108,6 +114,47 @@ public class Group_Chat_Act extends AppCompatActivity {
 
 
 
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_createGroup) {
+            Intent intent = new Intent(this,Create_Group.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+      else  if (id == R.id.action_addmember) {
+
+            Intent intent = new Intent(Group_Chat_Act.this,Add_memeber_Activity.class);
+            intent.putExtra("groupName",getName);
+            intent.putExtra("groupAdminName",grpAdminName);
+            intent.putExtra("groupUrl",grpImgUrl);
+            startActivity(intent);
+
+
+            return true;
+        }
+        else  if (id == R.id.action_leaveGroup) {
+
+        //  Group_Fragment group_fragment = new Group_Fragment();
+        //    group_fragment.leavegroup();
+
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main2, menu);
+
+        return true;
 
     }
 }

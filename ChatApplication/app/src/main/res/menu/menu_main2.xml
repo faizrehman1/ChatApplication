@@ -2,15 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    tools:context=".ui.Create_Group"
+    tools:context=".ui.Group_Chat_Act"
 
-    >
+        >
+
+
 
     <item
-        android:id="@+id/action_done"
-        android:icon="@drawable/tick"
-        android:title="@string/create_group"
-        app:showAsAction="always" />
+        android:id="@+id/action_createGroup"
+
+        android:title="Create Group"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_addmember"
+
+        android:title="Add Friend"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_leaveGroup"
+
+        android:title="Leave Group"
+        app:showAsAction="never" />
 
 
 </menu>

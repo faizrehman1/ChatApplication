@@ -32,6 +32,9 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.GroupListAdapter;
 import com.example.faiz.mylogin.model.Group_Detail;
+import com.example.faiz.mylogin.model.User;
+import com.example.faiz.mylogin.util.AppLogs;
+import com.example.faiz.mylogin.util.SharedPref;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,19 +59,23 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
     private FirebaseUser firebase_user;
     private GroupListAdapter adapter;
     private ArrayList<Group_Detail> arraylist;
+    private User users;
+    private ArrayList<User> userlist;
+    private ListView list;
+    private  DatabaseReference firebase;
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.groupchatview,null);
-        final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+        firebase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         arraylist = new ArrayList<>();
         firebase_user = mAuth.getCurrentUser();
 
 
 
-        ListView list = (ListView)view.findViewById(R.id.group_list);
+         list = (ListView)view.findViewById(R.id.group_list);
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.add_group);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -104,10 +111,14 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
 
                 Intent intent = new Intent(getActivity(),Group_Chat_Act.class);
                 intent.putExtra("value",arraylist.get(position).getGroupName());
+                intent.putExtra("adminvalue",arraylist.get(position).getAdminName());
+                intent.putExtra("imagevalue",arraylist.get(position).getImgUrl());
                 startActivity(intent);
 
             }
         });
+
+        leavegroup();
 
         try {
 //            firebase.child("MyGroup").child(firebase_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,5 +163,109 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    public void leavegroup(){
 
-}
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+//                 users = userlist.get(position);
+
+                //  final User user = userlist.get(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Leave Group");
+                builder.setPositiveButton("Back",null);
+                builder.setNegativeButton("Leave", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            if(SharedPref.getCurrentUser(getActivity()).getFname().equals(arraylist.get(position).getAdminName())) {
+                                firebase.child("Groupinfo").child(arraylist.get(position).getGroupName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int i = 0;
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                            if (i == position) {
+                                                DatabaseReference ref = data.getRef();
+                                                ref.removeValue();
+//                                        arraylist.remove(position);
+                                                adapter.notifyDataSetChanged();
+                                            }
+
+                                        }
+
+
+                                    }
+
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                firebase.child("MyGroup").child(firebase_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int i = 0;
+                                        AppLogs.logd("idsss"+dataSnapshot);
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                            if (i == position) {
+                                                DatabaseReference ref = data.getRef();
+                                                ref.removeValue();
+                                                arraylist.remove(position);
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                            //    i++;
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
+
+                            }else {
+                                firebase.child("MyGroup").child(firebase_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int i = 0;
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                            if (i == position) {
+                                                DatabaseReference ref = data.getRef();
+                                                ref.removeValue();
+                                                arraylist.remove(position);
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                            //    i++;
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                        }catch (Exception ex){
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                builder.create().show();
+
+
+
+                return true;
+            }
+        });
+
+    }
+
+
+
+     }
+

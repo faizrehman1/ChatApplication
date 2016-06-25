@@ -1,6 +1,7 @@
 package com.example.faiz.mylogin.ui;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -180,12 +181,13 @@ public class Create_Group extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 try {
                     grp = grpName.getText().toString();
-                    if (grp.length() == 0) {
-                        grpName.setError("This field is Required");
-                    } else if (imageFlag) {
+                     if (imageFlag) {
                         Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends",Toast.LENGTH_SHORT).show();
 
-                    } else {
+                    }
+                   else if (grp.length() == 0) {
+                        grpName.setError("This field is Required");
+                    }  else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Create_Group.this);
                         builder.setTitle("Add Contact in Group");
                         builder.setMessage("You want to Add this Contact ?");
@@ -236,6 +238,27 @@ public class Create_Group extends AppCompatActivity {
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                     //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                     //  encodeImage();
+                    final ProgressDialog dialog = new ProgressDialog(Create_Group.this);
+                    dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    dialog.setMessage("Uploading Image...");
+                    dialog.setCancelable(true);
+                    dialog.setMax(100);
+                    dialog.setProgress(0);
+                    dialog.show();
+
+                    Thread t = new Thread(new Runnable() {
+                        public void run() {
+                            while (dialog.getProgress() < dialog.getMax()) {
+                                dialog.incrementProgressBy(1);
+                                try {
+                                    Thread.sleep(50);
+                                } catch (Exception e) {/* no-op */}
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+                    t.start();
+
                     Log.d("Tag", selectedImagePath);
                     startUpload(selectedImagePath);
 
@@ -335,7 +358,7 @@ public class Create_Group extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_main2, menu);
+        getMenuInflater().inflate(R.menu.menu_signin, menu);
 
         return true;
     }

@@ -111,7 +111,7 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
                                 intent.putExtra("groupUrl",groupData.get(position).getImgUrl());
                                 context.startActivity(intent);
 
-                                Toast.makeText(context,"LOL",Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(context,"LOL",Toast.LENGTH_SHORT).show();
                             }
                         });
                         builder.setPositiveButton("Delete Group", null);
