@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                          * */
                         user.setU_Id(currentUser.getUid());
                         user.setPassword("");
+                        user.setImgUrl(currentUser.getPhotoUrl().toString());
                         AppLogs.logd("Auth State User ID:" + currentUser.getUid());
                         AppLogs.logd("Auth State User Email:" + currentUser.getEmail());
                         AppLogs.logd("Auth State User PhotoUrl:" + currentUser.getPhotoUrl());
