@@ -26,9 +26,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.Signin"
-            android:label="@string/title_activity_signin" />
-        <activity
             android:name=".ui.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
             android:theme="@style/AppTheme.NoActionBar" />

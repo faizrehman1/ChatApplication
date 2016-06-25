@@ -344,16 +344,6 @@ public class MainActivity extends AppCompatActivity {
                                     String dpfire = Profile.getCurrentProfile().getProfilePictureUri(400, 400).toString();
                                     Log.e("Graph Dp:", "" + dpfire);
                                     user.setImgUrl(dpfire);
-//                                    firebase.child("User").child(fb_user_Uid).setValue(new
-//                                            User(first_namefire,
-//                                            last_namefire,
-//                                            emailfire,
-//                                            "",
-//                                            birthdayfire,
-//                                            genderfire,
-//                                            fb_user_Uid,
-//                                            dpfire
-//                                    ));
 
 
                                 } catch (Exception ex) {
@@ -371,29 +361,6 @@ public class MainActivity extends AppCompatActivity {
 
                         /////////////////FB user data save and Sign in END/////////////////////
 
-                        // user ka jo b data hai wo yaha per get ker k save kerwa k rakh do then jab user firevase se login ho jaye to
-                        //tab wo sab data waha se auth.get id k ref per store kwerwa do
-
-                        //yeh b karlia h
-
-                       /* firebase.child("User").child(uuidfire).setValue(new
-                                User(first_namefire,
-                                last_namefire,
-                                emailfire,
-                                "",
-                                birthdayfire,
-                                genderfire,
-                                uuidfire,
-                                dpfire
-                        ));*/
-//                        if (profile != null) {
-//                            Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
-//                            startActivity(intent);
-//                            Log.e("Emailactive", "" + emailfire);
-//
-//                        } else {
-//
-//                        }
 
                         handleFacebookAccessToken(loginResult.getAccessToken());
 
@@ -409,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(FacebookException error) {
                         fbSignIn = false;
+                        Toast.makeText(MainActivity.this,""+error, Toast.LENGTH_SHORT).show();
                         Log.d("TAG", "facebook:onError " + error);
                     }
                 });
