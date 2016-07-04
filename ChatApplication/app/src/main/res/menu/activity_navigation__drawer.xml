@@ -5,16 +5,16 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Update Status" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Update Profile" />
 
 
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Account Setting">
         <menu>
 
             <item

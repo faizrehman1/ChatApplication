@@ -1,7 +1,18 @@
 package com.example.faiz.mylogin.ui;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,10 +29,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
 import com.example.faiz.mylogin.model.User;
+import com.example.faiz.mylogin.util.AppLogs;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +46,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,7 +69,16 @@ public class Navigation_Activity extends AppCompatActivity
     private F_Request_Fragment f_requestfragment;
     private DatabaseReference firebase;
     private FirebaseAuth auth;
-
+    private static    int Browse_image=1;
+    private String selectedImagePath;
+    private Bitmap bitmap;
+    private String url_cloudinary;
+    private File temp_path;
+    private final int COMPRESS = 100;
+    private ProgressDialog progressDialog;
+    private Cloudinary cloudinary;
+    private ImageView img;
+    private TextView user_name,user_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +87,14 @@ public class Navigation_Activity extends AppCompatActivity
         Firebase.setAndroidContext(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Map config = new HashMap();
+        config.put("cloud_name", "fkcs14");
+        config.put("api_key", "527495965545816");
+        config.put("api_secret", "RI0k_mpmGjDa0TVkZABkVQwutf0");
+        cloudinary = new Cloudinary(config);
+
+
 
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
@@ -67,9 +106,9 @@ public class Navigation_Activity extends AppCompatActivity
         View view = inflater.inflate(R.layout.nav_header_navigation_, null);
 
 
-        final ImageView img = (ImageView) view.findViewById(R.id.imageView_NavBar);
-        final TextView user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
-        final TextView user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
+          img = (ImageView) view.findViewById(R.id.imageView_NavBar);
+         user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
+         user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
 
 //
 
@@ -98,6 +137,29 @@ public class Navigation_Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.addHeaderView(view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Navigation_Activity.this);
+                builder.setTitle("Change Image");
+                builder.setMessage("You want to Change your Picture");
+                builder.setNegativeButton("Change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
+                    }
+                });
+                builder.setPositiveButton("Back",null);
+                builder.create().show();
+            }
+        });
+
 
 
 
@@ -234,4 +296,170 @@ public class Navigation_Activity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try {
+            if (Build.VERSION.SDK_INT < 19) {
+                Uri selectedImage = data.getData();
+                // System.out.println("selectedImage "+selectedImage);
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                selectedImagePath = cursor.getString(columnIndex);
+                cursor.close();
+                System.out.println("smallImagePath" + selectedImagePath);
+                Log.d("Tag", selectedImagePath);
+
+                //   image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                //   encodeImage();
+            } else {
+                try {
+                    InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                    Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
+                    selectedImagePath = saveGalaryImageOnLitkat(bitmap);
+
+
+                    Log.d("Tag", selectedImagePath);
+                    startUpload(selectedImagePath);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // finishAndSetResult(RESULT_OK, picturePath, false);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void startUpload(String path) {
+        try {
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            bitmap = BitmapFactory.decodeFile(path, o);
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Upload Picture")
+                    .setMessage("Are you sure you want to upload picture?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, int which) {
+                                 img.setImageBitmap(bitmap);
+                            Log.d("File PATH IS ", selectedImagePath + "");
+                            AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
+                                @Override
+                                protected HashMap<String, Object> doInBackground(String... params) {
+                                    File file = new File(selectedImagePath);
+                                    HashMap<String, Object> responseFromServer = null;
+                                    try {
+                                        responseFromServer = (HashMap<String, Object>) cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+
+                                    } catch (IOException e) {
+                                        Toast.makeText(Navigation_Activity.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    }
+
+                                    return responseFromServer;
+                                }
+
+                                @Override
+                                protected void onPostExecute(final HashMap<String, Object> stringObjectHashMap) {
+
+                                    url_cloudinary = (String) stringObjectHashMap.get("url");
+                                    Log.d("LAG", url_cloudinary);
+                                    progressDialog.dismiss();
+                                  //  textView_imageName.setText("Uploaded");
+                                    firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                           // int i=0;
+                                  //          for(DataSnapshot data:dataSnapshot.getChildren()){
+                                             //   User user = data.getValue(User.class);
+
+                                                    DatabaseReference ref =dataSnapshot.getRef();
+                                                AppLogs.logd(ref.toString());
+                                                ref.child("imgUrl").setValue(url_cloudinary);
+                                            Toast.makeText(Navigation_Activity.this,"You Have Successfully Change Picture..",Toast.LENGTH_LONG).show();
+
+                                    //        }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
+
+
+                                }
+                                @Override
+                                protected void onPreExecute() {
+//                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
+//                                    progressDialog.show();
+                                    progressDialog = new ProgressDialog(Navigation_Activity.this);
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    progressDialog.setMessage("Uploading Image...");
+                                    //   progressDialog.setCancelable(true);
+                                    progressDialog.setMax(100);
+                                    progressDialog.setProgress(0);
+                                    progressDialog.show();
+
+                                    Thread t = new Thread(new Runnable() {
+                                        public void run() {
+                                            while (progressDialog.getProgress() < progressDialog.getMax()) {
+                                                progressDialog.incrementProgressBy(1);
+                                                try {
+                                                    Thread.sleep(250);
+                                                } catch (Exception e) {/* no-op */}
+                                            }
+                                            // dialog.dismiss();
+                                        }
+                                    });
+                                    t.start();
+//                                    AppLogs.logd("Hello");
+                                }
+                            };
+                            upload.execute(selectedImagePath);
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    }).show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+
+    }
+
+    private String saveGalaryImageOnLitkat(Bitmap bitmap) {
+        try {
+            File cacheDir;
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+                cacheDir = new File(Environment.getExternalStorageDirectory(), getResources().getString(R.string.app_name));
+            else
+                cacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!cacheDir.exists())
+                cacheDir.mkdirs();
+            String filename = System.currentTimeMillis() + ".jpg";
+            File file = new File(cacheDir, filename);
+            temp_path = file.getAbsoluteFile();
+            // if(!file.exists())
+            file.createNewFile();
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS, out);
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
 }

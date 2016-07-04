@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
 
-        android:src="@android:drawable/ic_menu_add"
+        android:src="@drawable/addgroup"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="35dp"
         android:layout_alignParentBottom="true"

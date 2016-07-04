@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             "Male","Female"
     };
 
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
     //wait jus see bc
     private boolean fbSignIn = false;
 
@@ -221,10 +221,12 @@ public class MainActivity extends AppCompatActivity {
                     //  AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.actv_country);
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, Gender);
                     gender.setAdapter(adapter);
-
                     btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
                     textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
                     // forImageUpload();
+
+
+
                     btn_upload_image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -245,7 +247,9 @@ public class MainActivity extends AppCompatActivity {
                                 String pass = password.getText().toString();
                                 if(pass.length() <= 6){
                                     main(pass);
-                                }else{
+                                }
+
+                                else{
 
 
                                 try {
@@ -289,7 +293,10 @@ public class MainActivity extends AppCompatActivity {
                         builder.setNegativeButton("Cancel", null);
 
                     //    builder.setCancelable(false);
-                        builder.show();
+
+                    builder.create().show();
+
+
 
                     }catch(Exception ex){
                         ex.printStackTrace();
@@ -549,33 +556,33 @@ public class MainActivity extends AppCompatActivity {
                      selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                      //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                      //  encodeImage();
-                     final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-                     dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                     dialog.setMessage("Uploading Image...");
-                     dialog.setCancelable(true);
-                     dialog.setMax(100);
-                     dialog.setProgress(0);
-                     dialog.show();
-
-                     Thread t = new Thread(new Runnable() {
-                         public void run() {
-                             while (dialog.getProgress() < dialog.getMax()) {
-                                 dialog.incrementProgressBy(1);
-                                 try {
-                                     Thread.sleep(50);
-                                 } catch (Exception e) {/* no-op */}
-                             }
-                             dialog.dismiss();
-                         }
-                     });
-                     t.start();
+//                     final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+//                     dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//                     dialog.setMessage("Uploading Image...");
+//                     dialog.setCancelable(true);
+//                     dialog.setMax(100);
+//                     dialog.setProgress(0);
+//                     dialog.show();
+//
+//                     Thread t = new Thread(new Runnable() {
+//                         public void run() {
+//                             while (dialog.getProgress() < dialog.getMax()) {
+//                                 dialog.incrementProgressBy(1);
+//                                 try {
+//                                     Thread.sleep(50);
+//                                 } catch (Exception e) {/* no-op */}
+//                             }
+//                             dialog.dismiss();
+//                         }
+//                     });
+//                     t.start();
 
 
 
 
                      Log.d("Tag", selectedImagePath);
                      startUpload(selectedImagePath);
-                     textView_imageName.setText("Uploaded");
+
                  } catch (FileNotFoundException e) {
                      e.printStackTrace();
                  }
@@ -596,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("Upload Picture")
                     .setMessage("Are you sure you want to upload picture?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(final DialogInterface dialog, int which) {
                             //     image.setImageBitmap(bitmap);
                             Log.d("File PATH IS ", selectedImagePath + "");
                             AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
@@ -606,6 +613,7 @@ public class MainActivity extends AppCompatActivity {
                                     HashMap<String, Object> responseFromServer = null;
                                     try {
                                         responseFromServer = (HashMap<String, Object>) cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+
                                     } catch (IOException e) {
                                         Toast.makeText(MainActivity.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_LONG).show();
                                         e.printStackTrace();
@@ -615,10 +623,39 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                protected void onPostExecute(HashMap<String, Object> stringObjectHashMap) {
+                                protected void onPostExecute(final HashMap<String, Object> stringObjectHashMap) {
+
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
+                                    progressDialog.dismiss();
+                                    textView_imageName.setText("Uploaded");
 
+                                }
+                                @Override
+                                protected void onPreExecute() {
+//                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
+//                                    progressDialog.show();
+                                     progressDialog = new ProgressDialog(MainActivity.this);
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    progressDialog.setMessage("Uploading Image...");
+                                 //   progressDialog.setCancelable(true);
+                                    progressDialog.setMax(100);
+                                    progressDialog.setProgress(0);
+                                    progressDialog.show();
+
+                                    Thread t = new Thread(new Runnable() {
+                                        public void run() {
+                                            while (progressDialog.getProgress() < progressDialog.getMax()) {
+                                                progressDialog.incrementProgressBy(1);
+                                                try {
+                                                    Thread.sleep(250);
+                                                } catch (Exception e) {/* no-op */}
+                                            }
+                                             // dialog.dismiss();
+                                        }
+                                    });
+                                    t.start();
+//                                    AppLogs.logd("Hello");
                                 }
                             };
                             upload.execute(selectedImagePath);

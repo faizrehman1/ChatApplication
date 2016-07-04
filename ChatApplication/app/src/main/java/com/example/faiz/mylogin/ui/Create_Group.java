@@ -74,6 +74,7 @@ public class Create_Group extends AppCompatActivity {
     private File temp_path;
     private final int COMPRESS = 100;
     boolean imageFlag =true;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -300,11 +301,39 @@ public class Create_Group extends AppCompatActivity {
                                 }
 
                                 @Override
-                                protected void onPostExecute(HashMap<String, Object> stringObjectHashMap) {
+                                protected void onPostExecute(final HashMap<String, Object> stringObjectHashMap) {
+
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
-                                    imageFlag = false;
+                                    progressDialog.dismiss();
+                                  //  textView_imageName.setText("Uploaded");
 
+                                }
+                                @Override
+                                protected void onPreExecute() {
+//                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
+//                                    progressDialog.show();
+                                    progressDialog = new ProgressDialog(Create_Group.this);
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    progressDialog.setMessage("Uploading Image...");
+                                    //   progressDialog.setCancelable(true);
+                                    progressDialog.setMax(100);
+                                    progressDialog.setProgress(0);
+                                    progressDialog.show();
+
+                                    Thread t = new Thread(new Runnable() {
+                                        public void run() {
+                                            while (progressDialog.getProgress() < progressDialog.getMax()) {
+                                                progressDialog.incrementProgressBy(1);
+                                                try {
+                                                    Thread.sleep(250);
+                                                } catch (Exception e) {/* no-op */}
+                                            }
+                                            // dialog.dismiss();
+                                        }
+                                    });
+                                    t.start();
+//                                    AppLogs.logd("Hello");
                                 }
                             };
                             upload.execute(selectedImagePath);
