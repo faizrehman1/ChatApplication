@@ -22,5 +22,14 @@
         android:layout_toRightOf="@+id/image_View_GroupList"
         android:layout_toEndOf="@+id/image_View_GroupList" />
 
+    <ImageView
+
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:src="@drawable/groups"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>

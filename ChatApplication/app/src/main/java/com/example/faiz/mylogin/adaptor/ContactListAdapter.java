@@ -104,12 +104,13 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                     }
                 });
 //                builder.setCancelable(false);
-                cancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        builder.create().dismiss();
-                    }
-                });
+                cancelButton.setOnClickListener(null);
+                        // View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        builder.create().dismiss();
+//                    }
+//                });
                 builder.setView(view);
 
 

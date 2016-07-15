@@ -37,7 +37,11 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="Android API 20 Platform" project-jdk-type="Android SDK">
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="Android API 23 Platform" project-jdk-type="Android SDK">
+>>>>>>> 67cd95c8f2d44ced3c7ddf84a24402ca281c6620
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
