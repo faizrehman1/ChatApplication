@@ -27,11 +27,7 @@
         android:background="@drawable/ic_menu_send"
         />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:fillViewport="true"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/group_Conversation_message">
+
         <ListView
             android:id="@+id/GroupmessagesListView"
             android:layout_width="match_parent"
@@ -44,7 +40,7 @@
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"/>
-    </ScrollView>
+
 
 
 </RelativeLayout>
