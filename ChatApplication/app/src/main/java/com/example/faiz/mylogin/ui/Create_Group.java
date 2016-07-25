@@ -198,6 +198,8 @@ public class Create_Group extends AppCompatActivity {
 
                                 firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
                                 Toast.makeText(Create_Group.this, "Friend Add Successfuly", Toast.LENGTH_SHORT).show();
+                                arrayList.remove(position);
+                                adapter.notifyDataSetChanged();
                             }
                         });
                         builder.setPositiveButton("Back", null);
@@ -239,26 +241,26 @@ public class Create_Group extends AppCompatActivity {
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                     //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                     //  encodeImage();
-                    final ProgressDialog dialog = new ProgressDialog(Create_Group.this);
-                    dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    dialog.setMessage("Uploading Image...");
-                    dialog.setCancelable(true);
-                    dialog.setMax(100);
-                    dialog.setProgress(0);
-                    dialog.show();
-
-                    Thread t = new Thread(new Runnable() {
-                        public void run() {
-                            while (dialog.getProgress() < dialog.getMax()) {
-                                dialog.incrementProgressBy(1);
-                                try {
-                                    Thread.sleep(50);
-                                } catch (Exception e) {/* no-op */}
-                            }
-                            dialog.dismiss();
-                        }
-                    });
-                    t.start();
+//                    final ProgressDialog dialog = new ProgressDialog(Create_Group.this);
+//                    dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//                    dialog.setMessage("Uploading Image...");
+//                    dialog.setCancelable(true);
+//                    dialog.setMax(100);
+//                    dialog.setProgress(0);
+//                    dialog.show();
+//
+//                    Thread t = new Thread(new Runnable() {
+//                        public void run() {
+//                            while (dialog.getProgress() < dialog.getMax()) {
+//                                dialog.incrementProgressBy(1);
+//                                try {
+//                                    Thread.sleep(50);
+//                                } catch (Exception e) {/* no-op */}
+//                            }
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    t.start();
 
                     Log.d("Tag", selectedImagePath);
                     startUpload(selectedImagePath);
@@ -305,6 +307,7 @@ public class Create_Group extends AppCompatActivity {
 
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
+                                    imageFlag=false;
                                     progressDialog.dismiss();
                                   //  textView_imageName.setText("Uploaded");
 
@@ -316,7 +319,7 @@ public class Create_Group extends AppCompatActivity {
                                     progressDialog = new ProgressDialog(Create_Group.this);
                                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     progressDialog.setMessage("Uploading Image...");
-                                    //   progressDialog.setCancelable(true);
+                                       progressDialog.setCancelable(false);
                                     progressDialog.setMax(100);
                                     progressDialog.setProgress(0);
                                     progressDialog.show();

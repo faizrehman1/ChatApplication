@@ -638,7 +638,7 @@ public class MainActivity extends AppCompatActivity {
                                      progressDialog = new ProgressDialog(MainActivity.this);
                                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     progressDialog.setMessage("Uploading Image...");
-                                 //   progressDialog.setCancelable(true);
+                                    progressDialog.setCancelable(false);
                                     progressDialog.setMax(100);
                                     progressDialog.setProgress(0);
                                     progressDialog.show();
