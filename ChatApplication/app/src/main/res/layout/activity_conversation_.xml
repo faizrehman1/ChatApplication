@@ -8,18 +8,11 @@
     android:padding="10dp"
     tools:context=".ui.Conversation_Activity">
 
-    <ScrollView
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_Conversation_send"
-        android:layout_alignParentTop="true"
-        android:fillViewport="true">
 
         <ListView
             android:id="@+id/messagesListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/editText_Conversation_message"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
@@ -28,7 +21,7 @@
             android:divider="@null"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"/>
-    </ScrollView>
+
 
 
     <EditText
