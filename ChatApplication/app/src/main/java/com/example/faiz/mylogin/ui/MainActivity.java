@@ -686,6 +686,7 @@ public class MainActivity extends AppCompatActivity {
             String filename = System.currentTimeMillis() + ".jpg";
             File file = new File(cacheDir, filename);
             temp_path = file.getAbsoluteFile();
+
             // if(!file.exists())
             file.createNewFile();
             FileOutputStream out = new FileOutputStream(file);
