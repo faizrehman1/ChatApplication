@@ -45,16 +45,22 @@ public class Group_Chat_Act extends AppCompatActivity {
         setContentView(R.layout.activity_group__chat_);
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
-        arrayList = new ArrayList<>();
+        edtmessage = (EditText)findViewById(R.id.group_Conversation_message);
+        btnsend = (Button)findViewById(R.id.groupButton_Conversation_send);
+        listView = (ListView)findViewById(R.id.GroupmessagesListView);
+
+
+
+
         getName = getIntent().getStringExtra("value");
         grpAdminName = getIntent().getStringExtra("adminvalue");
       //  intent.putExtra("imagevalue",arraylist.get(position).getImgUrl());
         grpImgUrl = getIntent().getStringExtra("imagevalue");
 
-        edtmessage = (EditText)findViewById(R.id.group_Conversation_message);
-        btnsend = (Button)findViewById(R.id.groupButton_Conversation_send);
-        listView = (ListView)findViewById(R.id.GroupmessagesListView);
 
+        arrayList = new ArrayList<>();
+        adapter = new GroupMessageAdapter(arrayList,Group_Chat_Act.this);
+        listView.setAdapter(adapter);
 
         Date date = new Date(System.currentTimeMillis());
 
@@ -69,8 +75,8 @@ public class Group_Chat_Act extends AppCompatActivity {
             firebase.child("GroupData").child(getName).child("Conversation").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    adapter = new GroupMessageAdapter(arrayList,Group_Chat_Act.this);
-                    listView.setAdapter(adapter);
+
+
                      arrayList.clear();
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         Message message = d.getValue(Message.class);
@@ -98,13 +104,14 @@ public class Group_Chat_Act extends AppCompatActivity {
         btnsend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message msg = new Message();
-                msg.setMsg(edtmessage.getText().toString());
-                msg.setTime(var);
-                msg.setU_id(user.getUid());
-                firebase.child("GroupData").child(getName).child("Conversation").push().setValue(msg);
-                edtmessage.setText("");
-
+                if (edtmessage.getText().length() > 1) {
+                    Message msg = new Message();
+                    msg.setMsg(edtmessage.getText().toString());
+                    msg.setTime(var);
+                    msg.setU_id(user.getUid());
+                    firebase.child("GroupData").child(getName).child("Conversation").push().setValue(msg);
+                    edtmessage.setText("");
+                }
             }
         });
 

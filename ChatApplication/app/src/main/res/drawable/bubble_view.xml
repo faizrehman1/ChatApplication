@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:id="http://schemas.android.com/apk/res-auto">
     <item>
         <shape>
             <stroke
@@ -14,7 +15,9 @@
                 android:right="5dp"
                 android:top="2dp"/>
 
-            <corners android:radius="8dp"/>
+            <corners android:radius="8dp"
+
+                />
         </shape>
     </item>
 </layer-list>

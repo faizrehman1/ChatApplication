@@ -285,7 +285,7 @@ public class Create_Group extends AppCompatActivity {
                     .setMessage("Are you sure you want to upload picture?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            imageView.setImageBitmap(bitmap);
+
                             Log.d("File PATH IS ", selectedImagePath + "");
                             AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
                                 @Override
@@ -307,6 +307,7 @@ public class Create_Group extends AppCompatActivity {
 
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
+                                    imageView.setImageBitmap(bitmap);
                                     imageFlag=false;
                                     progressDialog.dismiss();
                                   //  textView_imageName.setText("Uploaded");
