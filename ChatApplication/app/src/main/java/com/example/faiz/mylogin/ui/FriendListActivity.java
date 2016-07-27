@@ -70,7 +70,7 @@ public class FriendListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                for (DataSnapshot data : dataSnapshot.getChildren()) {
                 User u = dataSnapshot.getValue(User.class);
-                userCall = new User(u.getFname(), u.getLname(), u.getEmail(), u.getPassword(), u.getDob(), u.getGender(), u.getU_Id(), u.getImgUrl());
+                userCall = new User(u.getFname(), u.getLname(), u.getEmail(), u.getPassword(), u.getDob(), u.getGender(), u.getU_Id(), u.getImgUrl(),u.getStatus());
                 AppLogs.loge(dataSnapshot.getValue().toString());
 //                }
 

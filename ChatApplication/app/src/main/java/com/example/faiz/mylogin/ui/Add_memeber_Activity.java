@@ -126,7 +126,7 @@ try {
                                     users.getDob(),
                                     users.getGender(),
                                     users.getU_Id(),
-                                    users.getImgUrl()));
+                                    users.getImgUrl(),users.getStatus()));
                             adapter.notifyDataSetChanged();
                         }
                     }
