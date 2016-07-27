@@ -9,8 +9,8 @@
     <application
         android:name=".AppController"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/mainlogo"
+        android:label="Chat Application"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -27,19 +27,29 @@
         </activity>
         <activity
             android:name=".ui.Navigation_Activity"
-            android:label="@string/title_activity_navigation_"
+            android:label="My Chat Application"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.Conversation_Activity"></activity>
+        <activity android:name=".ui.Conversation_Activity"
+            android:label="Conversation Room"
+            ></activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".ui.Create_Group" />
-        <activity android:name=".ui.Group_Chat_Act" />
+        <activity android:name=".ui.Create_Group"
+            android:label="Create Group"
+            />
+        <activity android:name=".ui.Group_Chat_Act"
+            android:label="Group Chat Room"
+            />
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name=".ui.FriendListActivity"></activity>
-        <activity android:name=".ui.Add_memeber_Activity"></activity>
+        <activity android:name=".ui.FriendListActivity"
+            android:label="Find Friends"
+            ></activity>
+        <activity android:name=".ui.Add_memeber_Activity"
+            android:label="Find Group Members"
+            ></activity>
     </application>
 
 </manifest>

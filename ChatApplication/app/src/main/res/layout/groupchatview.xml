@@ -10,7 +10,9 @@
         android:id="@+id/group_list"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"></ListView>
+
+
+        ></ListView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_group"
