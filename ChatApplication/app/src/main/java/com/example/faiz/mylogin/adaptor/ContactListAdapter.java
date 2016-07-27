@@ -3,6 +3,7 @@ package com.example.faiz.mylogin.adaptor;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,30 +18,29 @@ import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.ui.Conversation_Activity;
 import com.example.faiz.mylogin.ui.RoundImage;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 //setting Adapter class for the COntact list View in Fragment
 public class ContactListAdapter extends BaseAdapter implements ListAdapter {
-    private Context context;
-    private ArrayList<User> userData;
     public static final String UUID_KEY = "data_uudsdfgasdg";
+    private ImageView imgView_dialog;
+    private Context context;
+    private ArrayList<User> usersList;
     private Picasso picasso;
-    ImageView imgView_dialog;
 
     public ContactListAdapter(Context context, ArrayList<User> message) {
         this.context = context;
-        this.userData = message;
+        this.usersList = message;
     }
 
     @Override
     public int getCount() {
-        return userData.size();
+        return usersList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return userData.get(position);
+        return usersList.get(position);
     }
 
     @Override
@@ -57,19 +57,21 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         TextView nameView = (TextView) view.findViewById(R.id.name_View_ContacList);
         ImageView imgView = (ImageView) view.findViewById(R.id.image_View_ContacList);
 
-        User msg = userData.get(position);
+        User msg = usersList.get(position);
+
         String imgUrl = msg.getImgUrl();
 
 
         String fname = msg.getFname().toString();
         nameView.setText(fname);
         // imgView.setImageDrawable(imgUrl);
-
+        Log.d("Contact_adapter","User Name "+fname.toString());
 
         picasso.with(context)
-                .load(userData.get(position).getImgUrl())
+                .load(usersList.get(position).getImgUrl())
                 .transform(new RoundImage())
                 .into(imgView);
+
         // imgView.setImageResource(R.drawable.ic_menu_camera);
 
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -87,25 +89,25 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
 
 
-                nameView.setText(userData.get(position).getFname());
-                emailView.setText(userData.get(position).getEmail());
-                dobView.setText(userData.get(position).getDob());
+                nameView.setText(usersList.get(position).getFname());
+                emailView.setText(usersList.get(position).getEmail());
+                dobView.setText(usersList.get(position).getDob());
                 picasso.with(context)
-                        .load(userData.get(position).getImgUrl())
+                        .load(usersList.get(position).getImgUrl())
                         .transform(new RoundImage())
                         .into(imgView_dialog);
                 textButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(context, Conversation_Activity.class);
-                        i.putExtra(UUID_KEY, userData.get(position));
+                        i.putExtra(UUID_KEY, usersList.get(position));
                         context.startActivity(i);
 
                     }
                 });
 //                builder.setCancelable(false);
                 cancelButton.setOnClickListener(null);
-                        // View.OnClickListener() {
+                // View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
 //                        builder.create().dismiss();

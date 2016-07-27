@@ -79,42 +79,6 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
             }
         });
 
-
-
-        /*firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot data:dataSnapshot.getChildren()) {
-                    User users = data.getValue(User.class);
-
-                    Log.d("idss", users.getU_Id());
-
-                    if (users.getU_Id().equals(user.getUid())) {
-                        Log.d("LOL", users.getU_Id());
-                    } else {
-                        String image = users.getImgUrl();
-                        nameList.add(new User(users.getFname(),
-                                users.getLname(),
-                                users.getEmail(),
-                                users.getPassword(),
-                                users.getDob(),
-                                users.getGender(),
-                                users.getU_Id(),
-                                image));
-                        adapter.notifyDataSetChanged();
-
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                AppLogs.loge("database error" + databaseError.getMessage());
-            }
-        });*/
-
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -166,12 +130,12 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String uid = mAuth.getCurrentUser().getUid().toString();
-                                int i = 0 ;
-                                for (DataSnapshot data : dataSnapshot.getChildren()){
+                                int i = 0;
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     User user = data.getValue(User.class);
-                                    if (user.getU_Id().equals(uid)){
+                                    if (user.getU_Id().equals(uid)) {
                                         DatabaseReference refLoginUser = data.getRef();
-                                        AppLogs.loge("refLoginUser "+refLoginUser);
+                                        AppLogs.loge("refLoginUser " + refLoginUser);
                                         refLoginUser.removeValue();
 
                                     }
@@ -185,7 +149,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
                         });
                     }
                 });
-                builder.setCancelable(false);
+//                builder.setCancelable(false);
 
                 builder.create().show();
 
