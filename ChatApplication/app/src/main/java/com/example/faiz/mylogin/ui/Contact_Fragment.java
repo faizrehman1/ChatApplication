@@ -69,6 +69,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
                             users.getU_Id(),
                             users.getImgUrl(),users.getStatus()));
                     adapter.notifyDataSetChanged();
+
                 }
 
             }

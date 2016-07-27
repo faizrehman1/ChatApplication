@@ -82,11 +82,13 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 .transform(new RoundImage())
                 .into(imgView);
 
-        if(msg.getStatus()=="true"){
+        Log.d("status",msg.getStatus());
+
+        if(usersList.get(position).getStatus().equals("true")){
+
             imgStatus.setVisibility(View.VISIBLE);
-        }else{
-            imgStatus.setVisibility(View.INVISIBLE);
         }
+
         // imgView.setImageResource(R.drawable.ic_menu_camera);
 
 
@@ -94,14 +96,6 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
 
         firebaseDatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
-
-
-
-
-
-
-
-
 
 
 
