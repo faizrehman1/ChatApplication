@@ -99,7 +99,8 @@ public class Navigation_Activity extends AppCompatActivity
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-        firebase.child("status").child(auth.getCurrentUser().getUid().toString()).setValue(true);
+
+
 
         Tab_ViewPager();
 
@@ -135,6 +136,7 @@ public class Navigation_Activity extends AppCompatActivity
             }
         });
 
+        firebase.child("User").child(auth.getCurrentUser().getUid()).child("status").setValue("true");
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.addHeaderView(view);
@@ -227,7 +229,7 @@ public class Navigation_Activity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_send) {
-            firebase.child("status").child(auth.getCurrentUser().getUid()).setValue(false);
+            firebase.child("User").child(auth.getCurrentUser().getUid()).child("status").setValue("false");
             FirebaseAuth.getInstance().signOut();
 
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);

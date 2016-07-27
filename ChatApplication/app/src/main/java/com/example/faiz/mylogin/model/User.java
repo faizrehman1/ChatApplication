@@ -23,16 +23,18 @@ public class User implements Parcelable {
     private String gender;
     private String U_Id;
     private String imgUrl;
+    private String status;
 
-    public User(String fname, String lname, String email, String password, String dob, String gender, String u_Id, String imgUrl) {
+    public User(String fname, String lname, String email, String password, String dob, String gender, String u_Id, String imgUrl, String  status) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
         this.password = password;
         this.dob = dob;
         this.gender = gender;
-        this.U_Id = u_Id;
+        U_Id = u_Id;
         this.imgUrl = imgUrl;
+        this.status = status;
     }
 
     public User() {
@@ -47,8 +49,17 @@ public class User implements Parcelable {
         this.gender = in.readString();
         this.U_Id = in.readString();
         this.imgUrl = in.readString();
+        this.status=in.readString();
     }
 
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getImgUrl() {
         return imgUrl;

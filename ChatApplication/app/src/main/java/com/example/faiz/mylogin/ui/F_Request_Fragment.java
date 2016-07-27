@@ -72,6 +72,7 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
                     String email = (String) messageSnapshot.child("email").getValue();
                     String gender = (String) messageSnapshot.child("gender").getValue();
                     String u_Id = (String) messageSnapshot.child("u_Id").getValue();
+                    String status = (String) messageSnapshot.child("status").getValue();
                     AppLogs.loge("Name " + fname + " lname " + lname);
                     AppLogs.loge("imgUrl " + imgUrl + " dob " + dob);
                     AppLogs.loge("gender " + gender + " Uid " + u_Id);
@@ -83,7 +84,7 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
                             dob,
                             gender,
                             u_Id,
-                            imgUrl));
+                            imgUrl,status));
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -100,7 +101,7 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
-                userCall = new User(u.getFname(), u.getLname(), u.getEmail(), u.getPassword(), u.getDob(), u.getGender(), u.getU_Id(), u.getImgUrl());
+                userCall = new User(u.getFname(), u.getLname(), u.getEmail(), u.getPassword(), u.getDob(), u.getGender(), u.getU_Id(), u.getImgUrl(),u.getStatus());
                 AppLogs.loge(dataSnapshot.getValue().toString());
             }
 

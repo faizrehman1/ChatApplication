@@ -63,6 +63,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         View view = inflater.inflate(R.layout.contact_viewadapter, null);
 
         final ImageView imgStatus= (ImageView) view.findViewById(R.id.imagestatus);
+        imgStatus.setVisibility(View.INVISIBLE);
         TextView nameView = (TextView) view.findViewById(R.id.name_View_ContacList);
         ImageView imgView = (ImageView) view.findViewById(R.id.image_View_ContacList);
 
@@ -81,6 +82,11 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 .transform(new RoundImage())
                 .into(imgView);
 
+        if(msg.getStatus()=="true"){
+            imgStatus.setVisibility(View.VISIBLE);
+        }else{
+            imgStatus.setVisibility(View.INVISIBLE);
+        }
         // imgView.setImageResource(R.drawable.ic_menu_camera);
 
 
@@ -88,23 +94,6 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
 
         firebaseDatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
-
-        firebaseDatabase.child("status").child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("STatus",dataSnapshot.toString());
-                if(dataSnapshot.hasChild("true")){
-                    imgStatus.setVisibility(View.VISIBLE);
-                }else{
-                    imgStatus.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
 

@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         user.setU_Id(currentUser.getUid());
                         user.setPassword("");
                         user.setImgUrl(currentUser.getPhotoUrl().toString());
+                        user.setStatus("true");
                         AppLogs.logd("Auth State User ID:" + currentUser.getUid());
                         AppLogs.logd("Auth State User Email:" + currentUser.getEmail());
                         AppLogs.logd("Auth State User PhotoUrl:" + currentUser.getPhotoUrl());
@@ -269,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
                                                             dob.getText().toString(),
                                                             gender.getText().toString(),
                                                             uid,
-                                                            url_cloudinary));
+                                                            url_cloudinary
+                                                    ,"true"));
 
                                                     Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
                                                     AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());

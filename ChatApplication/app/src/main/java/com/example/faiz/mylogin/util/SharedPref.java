@@ -19,6 +19,7 @@ public class SharedPref {
     private static String U_IMG_URL = "iamgurl";
     private static String U_DOB = "u_dob";
     private static String U_GEND = "u_gea";
+    private static String U_STATUS = "u_status";
 
     public static void setCurrentUser(Context context, User user) {
         SharedPreferences preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
@@ -29,6 +30,7 @@ public class SharedPref {
         preferences.edit().putString(U_ID, user.getU_Id()).apply();
         preferences.edit().putString(U_EMAIL, user.getEmail()).apply();
         preferences.edit().putString(U_GEND, user.getGender()).apply();
+        preferences.edit().putString(U_STATUS,user.getStatus()).apply();
     }
 
     public static User getCurrentUser(Context context) {
@@ -41,6 +43,7 @@ public class SharedPref {
         user.setDob(preferences.getString(U_DOB, ""));
         user.setGender(preferences.getString(U_GEND, ""));
         user.setImgUrl(preferences.getString(U_IMG_URL, ""));
+        user.setStatus(preferences.getString(U_STATUS, ""));
         return user;
     }
 
