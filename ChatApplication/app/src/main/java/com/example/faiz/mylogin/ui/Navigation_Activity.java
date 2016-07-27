@@ -39,6 +39,7 @@ import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,7 +80,7 @@ public class Navigation_Activity extends AppCompatActivity
     private Cloudinary cloudinary;
     private ImageView img;
     private TextView user_name,user_email;
-
+    private String status="true";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +114,8 @@ public class Navigation_Activity extends AppCompatActivity
          user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
          user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
 
-//
+
+        testing(status);
 
         firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -166,17 +168,6 @@ public class Navigation_Activity extends AppCompatActivity
 
 
 
-
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -212,6 +203,8 @@ public class Navigation_Activity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+
             return true;
         }
 
@@ -229,12 +222,17 @@ public class Navigation_Activity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_send) {
-            firebase.child("User").child(auth.getCurrentUser().getUid()).child("status").setValue("false");
-            FirebaseAuth.getInstance().signOut();
 
+            status ="false";
+            testing(status);
+
+            auth.getInstance().signOut();
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
             startActivity(intent);
+
             finish();
+
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -465,6 +463,38 @@ public class Navigation_Activity extends AppCompatActivity
         }
 
         return null;
+
+    }
+
+    public void testing(final String status){
+
+        final FirebaseUser users;
+        users = auth.getCurrentUser();
+        Log.d("tagg",users.getUid());
+
+        firebase.child("Friends").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User user = data.getValue(User.class);
+                    if (data.hasChild(users.getUid())) {
+                        DatabaseReference ref = data.getRef();
+                        String keys = ref.getKey();
+                        Log.d("tag1", ref.getKey());
+                        firebase.child("Friends").child(keys).child(users.getUid()).child("status").setValue(status);
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        firebase.child("User").child(auth.getCurrentUser().getUid()).child("status").setValue(status);
 
     }
 }
