@@ -33,7 +33,17 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="3dp"
-        android:src="@drawable/contact"/>
+        android:src="@drawable/contact"
+        android:id="@+id/imageView3" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/imagestatus"
+        android:src="@drawable/online"
+        android:layout_marginEnd="8dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/imageView3" />
 
 
 </RelativeLayout>

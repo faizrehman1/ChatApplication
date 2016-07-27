@@ -17,6 +17,12 @@ import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.ui.Conversation_Activity;
 import com.example.faiz.mylogin.ui.RoundImage;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
@@ -27,6 +33,8 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
     private ArrayList<User> usersList;
     private Picasso picasso;
+    private DatabaseReference firebaseDatabase;
+    private FirebaseAuth firebaseAuth;
 
     public ContactListAdapter(Context context, ArrayList<User> message) {
         this.context = context;
@@ -54,6 +62,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.contact_viewadapter, null);
 
+        final ImageView imgStatus= (ImageView) view.findViewById(R.id.imagestatus);
         TextView nameView = (TextView) view.findViewById(R.id.name_View_ContacList);
         ImageView imgView = (ImageView) view.findViewById(R.id.image_View_ContacList);
 
@@ -73,6 +82,42 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 .into(imgView);
 
         // imgView.setImageResource(R.drawable.ic_menu_camera);
+
+
+        //status Code
+
+        firebaseDatabase = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseDatabase.child("status").child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("STatus",dataSnapshot.toString());
+                if(dataSnapshot.hasChild("true")){
+                    imgStatus.setVisibility(View.VISIBLE);
+                }else{
+                    imgStatus.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +166,8 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 builder.create().show();
             }
         });
+
+
 
         return view;
     }

@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
                                 Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+
                                 openNavigationActivity();
                             } else if (!task.isSuccessful()) {
                                 AppLogs.logw("signInWithEmail" + task.getException());

@@ -99,6 +99,8 @@ public class Navigation_Activity extends AppCompatActivity
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
+        firebase.child("status").child(auth.getCurrentUser().getUid().toString()).setValue(true);
+
         Tab_ViewPager();
 
 
@@ -225,6 +227,7 @@ public class Navigation_Activity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_send) {
+            firebase.child("status").child(auth.getCurrentUser().getUid()).setValue(false);
             FirebaseAuth.getInstance().signOut();
 
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
@@ -402,7 +405,7 @@ public class Navigation_Activity extends AppCompatActivity
                                     progressDialog = new ProgressDialog(Navigation_Activity.this);
                                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     progressDialog.setMessage("Uploading Image...");
-                                    //   progressDialog.setCancelable(true);
+                                       progressDialog.setCancelable(false);
                                     progressDialog.setMax(100);
                                     progressDialog.setProgress(0);
                                     progressDialog.show();
