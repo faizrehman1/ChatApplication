@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
 
 
     >
@@ -14,34 +14,32 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"/>
 
     <TextView
         android:id="@+id/timeView_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
+        android:layout_alignParentLeft="true"
 
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/messageView"
         android:text="TimeView"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/messageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:textColor="#000"/>
 
     <TextView
         android:id="@+id/messageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/imageView_messages"
+        android:gravity="right"
         android:text="messageView"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#000"
-        android:gravity="right"
-
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/imageView_messages"
-
-        android:layout_alignParentStart="false" />
+        android:textColor="#000"/>
 
 </RelativeLayout>
