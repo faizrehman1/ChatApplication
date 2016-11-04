@@ -278,7 +278,7 @@ public class Navigation_Activity extends AppCompatActivity
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    adapter.notifyDataSetChanged();
+                 //   adapter.notifyDataSetChanged();
                     viewPager.setCurrentItem(tab.getPosition());
 
 
