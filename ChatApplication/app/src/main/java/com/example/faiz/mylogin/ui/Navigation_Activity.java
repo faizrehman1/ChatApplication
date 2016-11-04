@@ -103,6 +103,7 @@ public class Navigation_Activity extends AppCompatActivity
         cloudinary = new Cloudinary(config);
 
 
+
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 

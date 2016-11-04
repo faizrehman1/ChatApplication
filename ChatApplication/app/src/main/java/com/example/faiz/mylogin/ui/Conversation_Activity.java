@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -71,6 +72,9 @@ public class Conversation_Activity extends AppCompatActivity {
     private StorageReference rootStorageRef, imageRef, folderRef, fileStorageRef;
     private ProgressDialog mProgressDialog;
     private long fileLenght;
+    private Date date;
+    private SimpleDateFormat dateFormat;
+    private String var;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,9 @@ public class Conversation_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation_);
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
+        date = new Date(System.currentTimeMillis());
+        dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+        var = dateFormat.format(date);
         Log.d("TAG",user.getUid());
         try {
 //            mAuth = firebase.getAuth();
@@ -93,7 +100,7 @@ public class Conversation_Activity extends AppCompatActivity {
         messages = new ArrayList<Message>();
         adapter = new AdapterForMessage(messages, Conversation_Activity.this, friendData);
         messagesListView.setAdapter(adapter);
-        rootStorageRef = 
+        rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("chat");
 
 
@@ -102,7 +109,7 @@ public class Conversation_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(Conversation_Activity.this);
                 builder.setMessage("Upload File Or Image !!!!");
-                builder.setTitle("What Kind Of Stuff you Want to Upload");
+                builder.setTitle("What Kind Of Stuff you Want to Upload...??");
                 builder.setPositiveButton("File", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -127,6 +134,8 @@ public class Conversation_Activity extends AppCompatActivity {
         });
 
         checkConversationNewOROLD();
+
+
 
     }
 
@@ -244,6 +253,11 @@ public class Conversation_Activity extends AppCompatActivity {
                         String downloadUrl = taskSnapshot.getDownloadUrl().toString();
                         Log.d("DownloadURL", downloadUrl.toString());
 
+                        Message m = new Message();
+                        m.setMsg(downloadUrl);
+                        m.setTime(var);
+                        m.setU_id(user.getUid());
+                        firebase.child("conversation").child(conversationPushRef).push().setValue(m);
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -295,7 +309,11 @@ public class Conversation_Activity extends AppCompatActivity {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     String downloadUrl = taskSnapshot.getDownloadUrl().toString();
                     Log.e("Image ka URL", "" + downloadUrl);
-                    //  messageEditText.setText(downloadUrl);
+                    Message m = new Message();
+                    m.setMsg(downloadUrl);
+                    m.setTime(var);
+                    m.setU_id(user.getUid());
+                    firebase.child("conversation").child(conversationPushRef).push().setValue(m);
                     mProgressDialog.dismiss();
                     //  messageEditText.setText("");
                 }
@@ -408,11 +426,9 @@ public class Conversation_Activity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date date = new Date(System.currentTimeMillis());
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
 
-                final String var = dateFormat.format(date);
+
                 if (messageField.getText().length() > 1) {
                     Message m = new Message();
                     m.setMsg(messageField.getText().toString());
