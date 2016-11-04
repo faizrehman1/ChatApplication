@@ -53,111 +53,196 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
 
 
         //Getting Single value from fire base and setting it to list View
+        try {
 
-        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    User users = data.getValue(User.class);
-                    AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
-                    nameList.add(new User(users.getFname(),
-                            users.getLname(),
-                            users.getEmail(),
-                            "",
-                            users.getDob(),
-                            users.getGender(),
-                            users.getU_Id(),
-                            users.getImgUrl(),users.getStatus()));
-                    adapter.notifyDataSetChanged();
+            firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        User users = data.getValue(User.class);
+                        AppLogs.loge("USer in COntact " + dataSnapshot.getValue().toString());
+                        nameList.add(new User(users.getFname(),
+                                users.getLname(),
+                                users.getEmail(),
+                                "",
+                                users.getDob(),
+                                users.getGender(),
+                                users.getU_Id(),
+                                users.getImgUrl(), users.getStatus()));
+                        adapter.notifyDataSetChanged();
+
+                    }
 
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
-            }
-        });
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
 
 //                Log.d("dpname",user.getDisplayName());
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                final User user = nameList.get(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Delete Friend !!!");
-                builder.setMessage("Want to Delete " + user.getFname() + " from your Contacts ?");
-                builder.setNegativeButton("Message", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(getActivity(), Conversation_Activity.class);
-                        i.putExtra(UUID_KEY, nameList.get(position));
-                        startActivity(i);
-                    }
-                });
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AppLogs.loge("USername " + user.getU_Id().toString());
-                        DatabaseReference ref = firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).getRef();
-                        AppLogs.loge("Unknown " + ref.toString());
-                        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                int i = 0;
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    if (i == position) {
-                                        DatabaseReference ref1 = data.getRef();
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+//                final User user = nameList.get(position);
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setTitle("Delete Friend !!!");
+//                builder.setMessage("Want to Delete " + user.getFname() + " from your Contacts ?");
+//                builder.setNegativeButton("Message", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+                    Intent i = new Intent(getActivity(), Conversation_Activity.class);
+                    i.putExtra(UUID_KEY, nameList.get(position));
+                    startActivity(i);
+//                    }
+//                });
+//                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        AppLogs.loge("USername " + user.getU_Id().toString());
+//                        DatabaseReference ref = firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).getRef();
+//                        AppLogs.loge("Unknown " + ref.toString());
+//                        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                int i = 0;
+//                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                                    if (i == position) {
+//                                        DatabaseReference ref1 = data.getRef();
+//
+//                                        AppLogs.loge("REF! " + ref1.toString());
+//
+//                                        ref1.removeValue();
+//                                        nameList.remove(position);
+//                                        adapter.notifyDataSetChanged();
+//                                    }
+//                                    i++;
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                        firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                String uid = mAuth.getCurrentUser().getUid().toString();
+//                                int i = 0;
+//                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                                    User user = data.getValue(User.class);
+//                                    if (user.getU_Id().equals(uid)) {
+//                                        DatabaseReference refLoginUser = data.getRef();
+//                                        AppLogs.loge("refLoginUser " + refLoginUser);
+//                                        refLoginUser.removeValue();
+//
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//                    }
+//                });
+////                builder.setCancelable(false);
+//
+//                builder.create().show();
 
-                                        AppLogs.loge("REF! " + ref1.toString());
+                }
+            });
 
-                                        ref1.removeValue();
-                                        nameList.remove(position);
-                                        adapter.notifyDataSetChanged();
+
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                    final User user = nameList.get(position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Delete Friend !!!");
+                    builder.setMessage("Want to Delete " + user.getFname() + " from your Contacts ?");
+                    builder.setNegativeButton("Message", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(getActivity(), Conversation_Activity.class);
+                            i.putExtra(UUID_KEY, nameList.get(position));
+                            startActivity(i);
+                        }
+                    });
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AppLogs.loge("USername " + user.getU_Id().toString());
+                            DatabaseReference ref = firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).getRef();
+                            AppLogs.loge("Unknown " + ref.toString());
+                            firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    int i = 0;
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        if (i == position) {
+                                            DatabaseReference ref1 = data.getRef();
+
+                                            AppLogs.loge("REF! " + ref1.toString());
+
+                                            ref1.removeValue();
+                                            nameList.remove(position);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                        i++;
                                     }
-                                    i++;
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                        firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                String uid = mAuth.getCurrentUser().getUid().toString();
-                                int i = 0;
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    User user = data.getValue(User.class);
-                                    if (user.getU_Id().equals(uid)) {
-                                        DatabaseReference refLoginUser = data.getRef();
-                                        AppLogs.loge("refLoginUser " + refLoginUser);
-                                        refLoginUser.removeValue();
+                                }
+                            });
+                            firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String uid = mAuth.getCurrentUser().getUid().toString();
+                                    int i = 0;
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        User user = data.getValue(User.class);
+                                        if (user.getU_Id().equals(uid)) {
+                                            DatabaseReference refLoginUser = data.getRef();
+                                            AppLogs.loge("refLoginUser " + refLoginUser);
+                                            refLoginUser.removeValue();
 
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
-                });
+                                }
+                            });
+
+
+
+
+                        }
+                    });
 //                builder.setCancelable(false);
 
-                builder.create().show();
+                    builder.create().show();
 
-            }
-        });
 
+                    return true;
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return view;
+
 
     }
 }

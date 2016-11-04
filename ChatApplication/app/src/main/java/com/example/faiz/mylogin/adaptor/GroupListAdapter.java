@@ -25,6 +25,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupListAdapter extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Group_Detail> groupData;
@@ -67,7 +69,7 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
         View view = inflater.inflate(R.layout.group_viewadapter,null);
 
         TextView nameView = (TextView) view.findViewById(R.id.name_View_groupList);
-        ImageView imgView = (ImageView) view.findViewById(R.id.image_View_GroupList);
+        CircleImageView imgView = (CircleImageView) view.findViewById(R.id.image_View_GroupList);
 
         final Group_Detail msg = groupData.get(position);
 
@@ -129,6 +131,7 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
 
                 return view;
             }
+
         }
 
 

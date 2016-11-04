@@ -3,6 +3,7 @@ package com.example.faiz.mylogin.adaptor;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,19 +19,18 @@ import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.ui.Conversation_Activity;
 import com.example.faiz.mylogin.ui.RoundImage;
+import com.example.faiz.mylogin.util.AppLogs;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 //setting Adapter class for the COntact list View in Fragment
-public class ContactListAdapter extends BaseAdapter implements ListAdapter {
+public class ChatListAdapter extends BaseAdapter implements ListAdapter {
     public static final String UUID_KEY = "data_uudsdfgasdg";
     private ImageView imgView_dialog;
     private Context context;
@@ -40,10 +40,10 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     private FirebaseAuth firebaseAuth;
     private LayoutInflater inflater;
 
-    public ContactListAdapter(Context context, ArrayList<User> message) {
+    public ChatListAdapter(Context context, ArrayList<User> message) {
         this.context = context;
         this.usersList = message;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -64,11 +64,15 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         //Setting Inflator or new layout for list View in Contacts:
-        ViewHolder viewHolder ;
-                if(convertView == null){
+
+//
+//        View view = inflater.inflate(R.layout.contact_viewadapter, null);
+
+        ViewHolder viewHolder;
+        if(convertView == null){
             convertView = inflater.inflate(R.layout.contact_viewadapter,parent,false);
             viewHolder = new ViewHolder();
-            viewHolder.imgStatus= (ImageView) convertView.findViewById(R.id.imagestatus);
+           viewHolder.imgStatus= (ImageView) convertView.findViewById(R.id.imagestatus);
             viewHolder.nameView = (TextView) convertView.findViewById(R.id.name_View_ContacList);
             viewHolder.imgView = (CircleImageView) convertView.findViewById(R.id.image_View_ContacList);
             convertView.setTag(viewHolder);
@@ -77,19 +81,15 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-
-
-       viewHolder.imgStatus.setVisibility(View.INVISIBLE);
+        firebaseDatabase = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         User msg = usersList.get(position);
-
-        String imgUrl = msg.getImgUrl();
-
-
-        String fname = msg.getFname().toString();
-       viewHolder.nameView.setText(fname);
+        AppLogs.logd("Tag value "+usersList.get(position).getFname());
+        viewHolder.nameView.setText(msg.getFname());
+        viewHolder.imgStatus.setVisibility(View.GONE);
         // imgView.setImageDrawable(imgUrl);
-        Log.d("Contact_adapter","User Name "+fname.toString());
+        Log.d("Contact_adapter","User Name "+msg.getFname());
 
         picasso.with(context)
                 .load(usersList.get(position).getImgUrl())
@@ -98,22 +98,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
 
         Log.d("status",msg.getStatus());
 
-        if(usersList.get(position).getStatus().equals("true")){
-
-            viewHolder.imgStatus.setVisibility(View.VISIBLE);
-        }
-
-        // imgView.setImageResource(R.drawable.ic_menu_camera);
-
-
         //status Code
-
-        firebaseDatabase = FirebaseDatabase.getInstance().getReference();
-        firebaseAuth = FirebaseAuth.getInstance();
-
-
-
-
 
 
         viewHolder.imgView.setOnClickListener(new View.OnClickListener() {
@@ -168,11 +153,11 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
 
         return convertView;
     }
-    private class ViewHolder{
-        ImageView imgStatus;
-        TextView nameView;
-        CircleImageView imgView;
 
+   private class ViewHolder{
+       ImageView imgStatus;
+       TextView nameView;
+       CircleImageView imgView;
     }
 
 }

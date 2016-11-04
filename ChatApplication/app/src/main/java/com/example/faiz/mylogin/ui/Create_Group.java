@@ -73,7 +73,7 @@ public class Create_Group extends AppCompatActivity {
     private DatabaseReference firebase;
     private File temp_path;
     private final int COMPRESS = 100;
-    boolean imageFlag =true;
+    boolean imageFlag = true;
     private ProgressDialog progressDialog;
 
 
@@ -162,7 +162,7 @@ public class Create_Group extends AppCompatActivity {
                             users.getDob(),
                             users.getGender(),
                             users.getU_Id(),
-                            users.getImgUrl(),users.getStatus()));
+                            users.getImgUrl(), users.getStatus()));
                     adapter.notifyDataSetChanged();
                 }
 
@@ -182,13 +182,12 @@ public class Create_Group extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 try {
                     grp = grpName.getText().toString();
-                     if (imageFlag) {
-                        Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends",Toast.LENGTH_SHORT).show();
+                    if (imageFlag) {
+                        Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_SHORT).show();
 
-                    }
-                   else if (grp.length() == 0) {
+                    } else if (grp.length() == 0) {
                         grpName.setError("This field is Required");
-                    }  else {
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Create_Group.this);
                         builder.setTitle("Add Contact in Group");
                         builder.setMessage("You want to Add this Contact ?");
@@ -205,7 +204,7 @@ public class Create_Group extends AppCompatActivity {
                         builder.setPositiveButton("Back", null);
                         builder.create().show();
                     }
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -270,7 +269,7 @@ public class Create_Group extends AppCompatActivity {
                 }
                 // finishAndSetResult(RESULT_OK, picturePath, false);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -308,11 +307,12 @@ public class Create_Group extends AppCompatActivity {
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
                                     imageView.setImageBitmap(bitmap);
-                                    imageFlag=false;
+                                    imageFlag = false;
                                     progressDialog.dismiss();
-                                  //  textView_imageName.setText("Uploaded");
+                                    //  textView_imageName.setText("Uploaded");
 
                                 }
+
                                 @Override
                                 protected void onPreExecute() {
 //                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
@@ -320,7 +320,7 @@ public class Create_Group extends AppCompatActivity {
                                     progressDialog = new ProgressDialog(Create_Group.this);
                                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     progressDialog.setMessage("Uploading Image...");
-                                       progressDialog.setCancelable(false);
+                                    progressDialog.setCancelable(false);
                                     progressDialog.setMax(100);
                                     progressDialog.setProgress(0);
                                     progressDialog.show();
@@ -387,7 +387,6 @@ public class Create_Group extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -395,6 +394,7 @@ public class Create_Group extends AppCompatActivity {
 
         return true;
     }
+
     private String saveGalaryImageOnLitkat(Bitmap bitmap) {
         try {
             File cacheDir;

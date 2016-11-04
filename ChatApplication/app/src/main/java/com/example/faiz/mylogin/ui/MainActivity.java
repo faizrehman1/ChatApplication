@@ -324,7 +324,9 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d("accessToken", " " + accessToken);
 
+
                         profile = Profile.getCurrentProfile();
+
 
                         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 

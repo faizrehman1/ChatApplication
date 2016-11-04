@@ -1,5 +1,6 @@
 package com.example.faiz.mylogin.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
+import com.example.faiz.mylogin.util.NodeRef;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,6 +58,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -70,7 +74,7 @@ public class Navigation_Activity extends AppCompatActivity
     private F_Request_Fragment f_requestfragment;
     private DatabaseReference firebase;
     private FirebaseAuth auth;
-    private static    int Browse_image=1;
+    private static int Browse_image = 1;
     private String selectedImagePath;
     private Bitmap bitmap;
     private String url_cloudinary;
@@ -78,9 +82,12 @@ public class Navigation_Activity extends AppCompatActivity
     private final int COMPRESS = 100;
     private ProgressDialog progressDialog;
     private Cloudinary cloudinary;
-    private ImageView img;
-    private TextView user_name,user_email;
-    private String status="true";
+    private CircleImageView img;
+    private TextView user_name, user_email;
+    private String status = "true";
+    private FirebaseUser users;
+    private Uri selectedImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,11 +103,11 @@ public class Navigation_Activity extends AppCompatActivity
         cloudinary = new Cloudinary(config);
 
 
-
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
 
+        users = auth.getCurrentUser();
 
 
         Tab_ViewPager();
@@ -110,9 +117,9 @@ public class Navigation_Activity extends AppCompatActivity
         View view = inflater.inflate(R.layout.nav_header_navigation_, null);
 
 
-          img = (ImageView) view.findViewById(R.id.imageView_NavBar);
-         user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
-         user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
+        img = (CircleImageView) view.findViewById(R.id.imageView_NavBar);
+        user_name = (TextView) view.findViewById(R.id.user_name_NavBar);
+        user_email = (TextView) view.findViewById(R.id.textView_email_NavBar);
 
 
         testing(status);
@@ -154,18 +161,14 @@ public class Navigation_Activity extends AppCompatActivity
                 builder.setNegativeButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
+                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, Browse_image);
                     }
                 });
-                builder.setPositiveButton("Back",null);
+                builder.setPositiveButton("Back", null);
                 builder.create().show();
             }
         });
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -223,7 +226,7 @@ public class Navigation_Activity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-            status ="false";
+            status = "false";
             testing(status);
 
             auth.getInstance().signOut();
@@ -302,9 +305,23 @@ public class Navigation_Activity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+
         try {
-            if (Build.VERSION.SDK_INT < 19) {
-                Uri selectedImage = data.getData();
+            if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+                selectedImage = data.getData();
+
+                Intent intent = new Intent("com.android.camera.action.CROP");
+                intent.setData(selectedImage);
+                intent.putExtra("crop", true);
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("outputX", 96);
+                intent.putExtra("outputY", 96);
+                intent.putExtra("noFaceDetection", true);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent, 2);
+            } else if (Build.VERSION.SDK_INT < 19) {
+                selectedImage = data.getData();
                 // System.out.println("selectedImage "+selectedImage);
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
@@ -319,11 +336,10 @@ public class Navigation_Activity extends AppCompatActivity
                 //   encodeImage();
             } else {
                 try {
-                    InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                    InputStream imInputStream = getContentResolver().openInputStream(selectedImage);
+                 //   Bitmap bitmap = data.getParcelableExtra("data");
                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
-
-
                     Log.d("Tag", selectedImagePath);
                     startUpload(selectedImagePath);
 
@@ -332,7 +348,7 @@ public class Navigation_Activity extends AppCompatActivity
                 }
                 // finishAndSetResult(RESULT_OK, picturePath, false);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -348,7 +364,7 @@ public class Navigation_Activity extends AppCompatActivity
                     .setMessage("Are you sure you want to upload picture?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, int which) {
-                                 img.setImageBitmap(bitmap);
+                            img.setImageBitmap(bitmap);
                             Log.d("File PATH IS ", selectedImagePath + "");
                             AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
                                 @Override
@@ -372,20 +388,43 @@ public class Navigation_Activity extends AppCompatActivity
                                     url_cloudinary = (String) stringObjectHashMap.get("url");
                                     Log.d("LAG", url_cloudinary);
                                     progressDialog.dismiss();
-                                  //  textView_imageName.setText("Uploaded");
+                                    //  textView_imageName.setText("Uploaded");
                                     firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                           // int i=0;
-                                  //          for(DataSnapshot data:dataSnapshot.getChildren()){
-                                             //   User user = data.getValue(User.class);
+                                            // int i=0;
+                                            //          for(DataSnapshot data:dataSnapshot.getChildren()){
+                                            //   User user = data.getValue(User.class);
 
-                                                    DatabaseReference ref =dataSnapshot.getRef();
-                                                AppLogs.logd(ref.toString());
-                                                ref.child("imgUrl").setValue(url_cloudinary);
-                                            Toast.makeText(Navigation_Activity.this,"You Have Successfully Change Picture..",Toast.LENGTH_LONG).show();
+                                            DatabaseReference ref = dataSnapshot.getRef();
+                                            AppLogs.logd(ref.toString());
+                                            ref.child("imgUrl").setValue(url_cloudinary);
+                                            Toast.makeText(Navigation_Activity.this, "You Have Successfully Change Picture..", Toast.LENGTH_LONG).show();
 
-                                    //        }
+                                            //        }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                User user = data.getValue(User.class);
+                                                if (data.hasChild(users.getUid())) {
+                                                    DatabaseReference ref = data.getRef();
+                                                    String keys = ref.getKey();
+                                                    Log.d("tag1", ref.getKey());
+                                                    firebase.child("Friends").child(keys).child(users.getUid()).child("imgUrl").setValue(url_cloudinary);
+
+
+                                                }
+                                            }
                                         }
 
                                         @Override
@@ -395,9 +434,8 @@ public class Navigation_Activity extends AppCompatActivity
                                     });
 
 
-
-
                                 }
+
                                 @Override
                                 protected void onPreExecute() {
 //                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
@@ -405,7 +443,7 @@ public class Navigation_Activity extends AppCompatActivity
                                     progressDialog = new ProgressDialog(Navigation_Activity.this);
                                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     progressDialog.setMessage("Uploading Image...");
-                                       progressDialog.setCancelable(false);
+                                    progressDialog.setCancelable(false);
                                     progressDialog.setMax(100);
                                     progressDialog.setProgress(0);
                                     progressDialog.show();
@@ -466,18 +504,16 @@ public class Navigation_Activity extends AppCompatActivity
 
     }
 
-    public void testing(final String status){
+    public void testing(final String status) {
 
-        final FirebaseUser users;
-        users = auth.getCurrentUser();
-        Log.d("tagg",users.getUid());
+        Log.d("tagg", users.getUid());
 
-        firebase.child("Friends").addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    User user = data.getValue(User.class);
+                  //  User user = data.getValue(User.class);
                     if (data.hasChild(users.getUid())) {
                         DatabaseReference ref = data.getRef();
                         String keys = ref.getKey();
