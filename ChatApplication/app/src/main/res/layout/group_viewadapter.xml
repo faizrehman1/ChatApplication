@@ -4,10 +4,13 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_View_GroupList"
-        android:layout_width="54dp"
-        android:layout_height="54dp" />
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/name_View_groupList"

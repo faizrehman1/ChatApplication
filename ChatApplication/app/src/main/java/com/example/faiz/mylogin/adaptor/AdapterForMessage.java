@@ -30,6 +30,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
 
@@ -89,7 +91,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
         TextView msgView = (TextView) view.findViewById(R.id.messageView);
         TextView timeView = (TextView) view.findViewById(R.id.timeView_messages);
-        final ImageView img = (ImageView)view.findViewById(R.id.imageView_messages);
+        final CircleImageView img = (CircleImageView)view.findViewById(R.id.imageView_messages);
         msgView.setText(messages.get(position).getMsg());
         timeView.setText(messages.get(position).getTime());
 //for image in conversation Activity

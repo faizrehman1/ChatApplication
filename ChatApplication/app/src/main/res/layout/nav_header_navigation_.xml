@@ -10,21 +10,6 @@
     android:weightSum="1">
 
 
-
-    <ImageView
-        android:id="@+id/imageView_NavBar"
-        android:layout_width="100dp"
-        android:layout_height="90dp"
-        android:src="@android:drawable/sym_def_app_icon"
-
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
-
     <TextView
         android:id="@+id/user_name_NavBar"
         android:layout_width="wrap_content"
@@ -44,9 +29,12 @@
         android:layout_alignLeft="@+id/user_name_NavBar"
         android:layout_alignStart="@+id/user_name_NavBar" />
 
-
-
-
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView_NavBar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

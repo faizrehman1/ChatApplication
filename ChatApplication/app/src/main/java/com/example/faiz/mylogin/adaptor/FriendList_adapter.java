@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Kamran ALi on 6/14/2016.
  */
@@ -22,11 +24,13 @@ public class FriendList_adapter extends BaseAdapter implements ListAdapter {
     private ArrayList<User> user;
     private Context context;
     private Picasso picasso;
+    private LayoutInflater inflater;
 
 
     public FriendList_adapter(Context context, ArrayList<User> user) {
         this.context = context;
         this.user = user;
+        this.inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -46,23 +50,36 @@ public class FriendList_adapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.frequest_layout, null);
 
-        TextView nameView = (TextView) view.findViewById(R.id.name_View_FriendList);
-        ImageView imgView = (ImageView) view.findViewById(R.id.image_View_FriendList);
+     //   View view = inflater.inflate(R.layout.frequest_layout, null);
+
+        ViewHolder viewHolder;
+        if(convertView == null){
+            convertView = inflater.inflate(R.layout.frequest_layout,parent,false);
+            viewHolder = new ViewHolder();
+            viewHolder.nameView = (TextView) convertView.findViewById(R.id.name_View_FriendList);
+            viewHolder.imgView = (CircleImageView) convertView.findViewById(R.id.image_View_FriendList);
+            convertView.setTag(viewHolder);
+        }
+        else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
         User msg = user.get(position);
         String imgUrl = msg.getImgUrl();
 
 
         String fname = msg.getFname().toString();
-        nameView.setText(fname);
+        viewHolder.nameView.setText(fname);
 
         picasso.with(context)
                 .load(user.get(position).getImgUrl())
                 .transform(new com.example.faiz.mylogin.ui.RoundImage())
-                .into(imgView);
-        return view;
+                .into(viewHolder.imgView);
+        return convertView;
+    }
+    private class ViewHolder{
+        TextView nameView;
+        CircleImageView imgView;
     }
 }

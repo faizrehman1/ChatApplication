@@ -265,6 +265,9 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
 
     }
 
+    private class ViewHolder{
+
+    }
 
 
      }
