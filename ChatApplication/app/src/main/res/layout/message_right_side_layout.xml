@@ -28,6 +28,19 @@
         android:id="@+id/rootLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="-4dp"
+        android:layout_toStartOf="@+id/imageView_messages"
+        android:layout_toLeftOf="@+id/imageView_messages"
+        android:autoLink="web"
+        android:minWidth="300dp"
+        android:orientation="vertical"
+        >
+
+    </LinearLayout>
+
+
+    <TextView
         android:layout_below="@+id/imageView_messages"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="-4dp"
