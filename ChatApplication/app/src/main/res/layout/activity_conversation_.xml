@@ -30,9 +30,9 @@
 
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/button_Conversation_send"
         android:autoText="true"
-        android:hint="type message"/>
+        android:hint="type message"
+        android:layout_toStartOf="@+id/attachbtn" />
 
     <Button
         android:id="@+id/button_Conversation_send"
@@ -43,6 +43,14 @@
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:background="@drawable/ic_menu_send"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/sendfile"
+        android:id="@+id/attachbtn"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/button_Conversation_send" />
 
 
 </RelativeLayout>

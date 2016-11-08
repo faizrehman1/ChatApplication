@@ -14,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.Group_Detail;
 import com.example.faiz.mylogin.model.User;
@@ -21,7 +22,6 @@ import com.example.faiz.mylogin.ui.Add_memeber_Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,6 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Group_Detail> groupData;
     private Context context;
-    private Picasso picasso;
     ImageView imgView_dialog;
     AddGroupmemberAdapter adapter;
     private ArrayList<User> user;
@@ -76,9 +75,8 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
 
         nameView.setText(msg.getGroupName());
 
-        picasso.with(context)
+        Glide.with(context)
                 .load(msg.getImgUrl())
-                .transform(new RoundImage())
                 .into(imgView);
 
 
@@ -99,9 +97,8 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
                 nameView.setText("Group Name: " + groupData.get(position).getGroupName());
                 adminView.setText("Admin Name: " + groupData.get(position).getAdminName());
 
-                picasso.with(context)
+                Glide.with(context)
                         .load(groupData.get(position).getImgUrl())
-                        .transform(new com.example.faiz.mylogin.ui.RoundImage())
                         .into(imgView_dialog);
 
                 builder.setNegativeButton("Add Friends", new DialogInterface.OnClickListener() {

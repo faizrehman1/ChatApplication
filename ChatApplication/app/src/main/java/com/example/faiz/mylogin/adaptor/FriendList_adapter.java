@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendList_adapter extends BaseAdapter implements ListAdapter {
     private ArrayList<User> user;
     private Context context;
-    private Picasso picasso;
     private LayoutInflater inflater;
 
 
@@ -72,9 +71,8 @@ public class FriendList_adapter extends BaseAdapter implements ListAdapter {
         String fname = msg.getFname().toString();
         viewHolder.nameView.setText(fname);
 
-        picasso.with(context)
+        Glide.with(context)
                 .load(user.get(position).getImgUrl())
-                .transform(new com.example.faiz.mylogin.ui.RoundImage())
                 .into(viewHolder.imgView);
         return convertView;
     }

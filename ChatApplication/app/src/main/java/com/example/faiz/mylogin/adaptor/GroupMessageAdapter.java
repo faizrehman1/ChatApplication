@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.GroupMessage;
 import com.example.faiz.mylogin.model.Message;
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.ArrayList;
 
@@ -28,9 +29,7 @@ public class GroupMessageAdapter extends BaseAdapter {
   //  private ArrayList<Message> messages;
 
     User uid;
-    Picasso picasso;
     String U_ID;
-    RoundImage mRoundImage;
     FirebaseAuth mAuth;
     FirebaseUser user;
     DatabaseReference firebase;
@@ -97,7 +96,7 @@ public class GroupMessageAdapter extends BaseAdapter {
                         img.setImageResource(R.drawable.ic_menu_camera);
 
                     }else{
-                        picasso.with(context).load(user.getImgUrl()).transform(new RoundImage()).into(img);
+                        Glide.with(context).load(user.getImgUrl()).into(img);
 
                     }
                 }
@@ -107,7 +106,7 @@ public class GroupMessageAdapter extends BaseAdapter {
                 }
             });
             //    Log.d("image",dataSnapshot.child("imgUrl").getValue().toString());
-            //    picasso.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
+            //    Glide.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
 
 
 

@@ -35,6 +35,8 @@
         android:autoLink="web"
         android:minWidth="300dp"
         android:orientation="vertical"
+        android:layout_alignTop="@+id/imageView_messages"
+
         >
 
     </LinearLayout>
@@ -42,7 +44,7 @@
     <TextView
         android:id="@+id/messageView"
         android:layout_width="wrap_content"
-        android:layout_height="43dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="-4dp"
         android:visibility="visible"
@@ -68,6 +70,16 @@
         app:border_width="2dp"
         android:layout_alignTop="@+id/timeView_messages"
         android:layout_alignParentEnd="true" />
+
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/imagepic"
+        android:visibility="gone"
+        android:layout_below="@+id/timeView_messages"
+        android:layout_toStartOf="@+id/imageView_messages" />
+
 
 
 </RelativeLayout>

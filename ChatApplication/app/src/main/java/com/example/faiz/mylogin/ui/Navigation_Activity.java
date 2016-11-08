@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
@@ -47,7 +48,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,7 +64,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Navigation_Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Picasso picasso;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ArrayList<Fragment> fragments;
@@ -103,6 +103,7 @@ public class Navigation_Activity extends AppCompatActivity
         cloudinary = new Cloudinary(config);
 
 
+
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
@@ -133,9 +134,8 @@ public class Navigation_Activity extends AppCompatActivity
 
                 user_name.setText(use.getFname() + " " + use.getLname());
                 user_email.setText(use.getEmail());
-                picasso.with(Navigation_Activity.this).load(use.getImgUrl())
+                Glide.with(Navigation_Activity.this).load(use.getImgUrl())
                         //  .resize(width,height)
-                        .transform(new RoundImage())
                         .into(img);
             }
 
@@ -278,7 +278,7 @@ public class Navigation_Activity extends AppCompatActivity
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    adapter.notifyDataSetChanged();
+                 //   adapter.notifyDataSetChanged();
                     viewPager.setCurrentItem(tab.getPosition());
 
 
