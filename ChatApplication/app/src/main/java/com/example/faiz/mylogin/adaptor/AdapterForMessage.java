@@ -22,6 +22,7 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.TempRefObj;
@@ -38,7 +39,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -55,21 +55,24 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Message> messages;
     private Context context;
-    User uid;
-    Picasso picasso;
-    String U_ID;
-    RoundImage mRoundImage;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    DatabaseReference firebase;
-    String fileExtenstion;
-    ProgressDialog mProgressDialogforFileAndPic;
+  private   User uid;
+   private String U_ID;
+   private FirebaseAuth mAuth;
+   private FirebaseUser user;
+  private   DatabaseReference firebase;
+   private String fileExtenstion;
+   private ProgressDialog mProgressDialogforFileAndPic;
+   private LayoutInflater inflater;
+   private ImageView sendImagePic;
+   private TextView msgView,timeView;
+   private CircleImageView img;
 
 
     public AdapterForMessage(ArrayList<Message> messages, Context context, User uid) {
         this.messages = messages;
         this.context = context;
         this.uid = uid;
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -88,34 +91,40 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     }
 
     @Override
-    public View getView(int position, final View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
 
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view;
         boolean flagURL;
 
         if (messages.get(position).getU_id().equals(user.getUid())) {
 
             U_ID = user.getUid();
-            view = inflater.inflate(R.layout.message_left_side_layout, null);
+            convertView = inflater.inflate(R.layout.message_left_side_layout, null);
 
         } else {
 
             U_ID = uid.getU_Id();
-            view = inflater.inflate(R.layout.message_right_side_layout, null);
+            convertView = inflater.inflate(R.layout.message_right_side_layout, null);
             Log.d("TAGG", uid.getU_Id());
 
         }
 
-        final TextView msgView = (TextView) view.findViewById(R.id.messageView);
-        TextView timeView = (TextView) view.findViewById(R.id.timeView_messages);
-        final CircleImageView img = (CircleImageView) view.findViewById(R.id.imageView_messages);
-        ImageView sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
+            sendImagePic = (ImageView) convertView.findViewById(R.id.imagepic);
+           msgView = (TextView) convertView.findViewById(R.id.messageView);
+            timeView = (TextView) convertView.findViewById(R.id.timeView_messages);
+            img = (CircleImageView) convertView.findViewById(R.id.imageView_messages);
+
+
+
+
+
+
+
+        // ImageView
       //  ProgressBar prog = (ProgressBar)view.findViewById(R.id.progressBarpic);
         msgView.setText(messages.get(position).getMsg());
-        timeView.setText(messages.get(position).getTime());
+       timeView.setText(messages.get(position).getTime());
 //for image in conversation Activity
         final String getMsg = messages.get(position).getMsg();
         String messageObject = getMsg;
@@ -123,22 +132,32 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         fileExtenstion = MimeTypeMap.getFileExtensionFromUrl(url);
         Log.d("fileExtension", fileExtenstion);
         final String name = URLUtil.guessFileName(url, null, fileExtenstion);
+        final String fileURl = getMsg;
+        Log.d("FileURL", fileURl);
+        String fileExtenstion = MimeTypeMap.getFileExtensionFromUrl(fileURl);
+        Log.d("FILEEXTENSION", fileExtenstion);
+        int dot = fileURl.lastIndexOf('.');
+        String base = (dot == -1) ? fileURl : fileURl.substring(0, dot);
+        String extension = (dot == -1) ? "" : fileURl.substring(dot + 1);
         if (messages.get(position).getMsg().contains("https://")) {
-            msgView.setVisibility(View.GONE);
+          msgView.setVisibility(View.GONE);
+           sendImagePic.setVisibility(View.VISIBLE);
             if (getMsg.contains(".jpg") || getMsg.contains(".png") || getMsg.contains(".jpeg") || getMsg.contains(".gif")) {
-                flagURL = true;
+                Glide.with(context).load(messages.get(position).getMsg()).into(sendImagePic);
             } else {
-                flagURL = false;
+                Glide.with(context).load(R.drawable.docs_icon).into(sendImagePic);
             }
 
-            getImageFromUrl(getMsg, sendImagePic, flagURL, name);
+
+
+
 
         }
 
         sendImagePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Drawable dr = ((ImageView) imageView).getDrawable();
+                //  Drawable dr = ((ImageView) sendImagePic).getDrawable();
 
                 //        String tag = (String) imageView.getTag();
                 final String fileURl = getMsg;
@@ -155,32 +174,22 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
                 Log.d("NameFile", "" + name);
 
                 if (finalextension.equals("jpg") || finalextension.equals("png") || getMsg.contains(".jpeg") || getMsg.contains(".gif")) {
-//                    imgArrayList = new ArrayList<>();
-                    //  Bitmap bmp = ((GlideBitmapDrawable) dr.getCurrent()).getBitmap();
+//
+                    final String Path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ChatApp";
 
-//                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/Employee");
-//                    if (!file.exists()){
-//                        file.mkdir();
-//                    }
-                    final String outPutDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "ChatApp";
-                    Log.d("ImageADdress", outPutDir);
-//                        final String fileDes = outPutDir.getAbsolutePath();
-//                        if (!outPutDir.mkdirs()) {
-//                            AppLog.d("LOG", "Directory not created");
-//                        }
                     try {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle("IMAGE");
                         LayoutInflater inflater = LayoutInflater.from(context);
                         View view1 = inflater.inflate(R.layout.attach_alert_view, null);
                         ImageView alertImageView = (ImageView) view1.findViewById(R.id.imageView_Alert);
-                        Picasso.with(context).load(getMsg).into(alertImageView);
+                        Glide.with(context).load(getMsg).into(alertImageView);
                         builder.setPositiveButton("Download", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 mProgressDialogforFileAndPic = ProgressDialog.show(context, "Downloading", "loading...", true, false);
                                 mProgressDialogforFileAndPic.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                startDownLoad(context, fileURl, outPutDir, name, mProgressDialogforFileAndPic);
+                                startDownLoad(context, fileURl, Path, name, mProgressDialogforFileAndPic);
 
                             }
                         });
@@ -194,9 +203,9 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
                 } else {
                     mProgressDialogforFileAndPic = ProgressDialog.show(context, "Downloading", "loading...", true, false);
                     mProgressDialogforFileAndPic.setProgressStyle(ProgressDialog.STYLE_SPINNER);//        imgArrayList = new ArrayList<>();
-                    String PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+                    final String Path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/ChatApp";
                     //   AppLog.d("PATH", PATH);
-                    startDownLoad(context, fileURl, PATH, name, mProgressDialogforFileAndPic);
+                    startDownLoad(context, fileURl, Path, name, mProgressDialogforFileAndPic);
 
                 }
                 //   mProgressDialogforFileAndPic.dismiss();
@@ -216,7 +225,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
                  if(user.getImgUrl().equals("")){
                     img.setImageResource(R.drawable.ic_menu_camera);
                  }else{
-                  picasso.with(context).load(user.getImgUrl()).transform(new RoundImage()).into(img);
+                  Glide.with(context).load(user.getImgUrl()).into(img);
               }
               }
               @Override
@@ -231,21 +240,10 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
        }catch(Exception ex){
            ex.printStackTrace();
        }
-        return view;
+        return convertView;
     }
 
-    private void getImageFromUrl(String getMsg, ImageView sendImagePic, boolean flagURL, String name) {
-        sendImagePic.setVisibility(View.VISIBLE);
-        if (flagURL) {
-            Picasso.with(context).load(getMsg).into(sendImagePic);
-           // imageName.setText(name);
-        } else {
-          //  AppLog.d("DocName", name);
 
-            Picasso.with(context).load(R.drawable.docs_icon).into(sendImagePic);
-          //  imageName.setText(name);
-        }
-    }
 
     public void startDownLoad(Context context, String sourceUrl, String destinationPath, String filename, ProgressDialog progressDialog) {
         new DownLoadFileThread(context, sourceUrl, destinationPath, filename, progressDialog).start();
@@ -351,17 +349,12 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
                 } catch (Exception e) {
                     Log.e("11ERROR", "Failed to close urlInputStream(From finally block)..");
                 }
-                MediaScannerConnection.scanFile(context, new String[]{outputFile.getAbsolutePath()},
-                        null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
-                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ChatApp")));
-                            }
-                        });
+
                 progressDialog.dismiss();
 
             }
         }
     }
+
+
 }

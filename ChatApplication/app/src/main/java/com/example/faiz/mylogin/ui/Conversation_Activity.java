@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.AdapterForMessage;
 import com.example.faiz.mylogin.adaptor.ContactListAdapter;
@@ -43,7 +44,7 @@ import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
+
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -103,7 +104,7 @@ public class Conversation_Activity extends AppCompatActivity {
         rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("chat");
 
-
+        checkConversationNewOROLD();
         attachBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,7 +134,7 @@ public class Conversation_Activity extends AppCompatActivity {
             }
         });
 
-        checkConversationNewOROLD();
+
 
 
 
@@ -159,7 +160,7 @@ public class Conversation_Activity extends AppCompatActivity {
                     View view1 = inflater.inflate(R.layout.attach_alert_view, null);
                     ImageView alertImageView = (ImageView) view1.findViewById(R.id.imageView_Alert);
                     if (Conversation_Activity.this != null) {
-                        Picasso.with(Conversation_Activity.this).load(uri).into(alertImageView);
+                        Glide.with(Conversation_Activity.this).load(uri).into(alertImageView);
                     }
                     builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         @Override

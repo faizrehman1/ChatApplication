@@ -3,8 +3,6 @@ package com.example.faiz.mylogin.adaptor;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +13,14 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.ui.Conversation_Activity;
-import com.example.faiz.mylogin.ui.RoundImage;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -35,7 +32,6 @@ public class ChatListAdapter extends BaseAdapter implements ListAdapter {
     private ImageView imgView_dialog;
     private Context context;
     private ArrayList<User> usersList;
-    private Picasso picasso;
     private DatabaseReference firebaseDatabase;
     private FirebaseAuth firebaseAuth;
     private LayoutInflater inflater;
@@ -91,9 +87,8 @@ public class ChatListAdapter extends BaseAdapter implements ListAdapter {
         // imgView.setImageDrawable(imgUrl);
         Log.d("Contact_adapter","User Name "+msg.getFname());
 
-        picasso.with(context)
+        Glide.with(context)
                 .load(usersList.get(position).getImgUrl())
-                .transform(new RoundImage())
                 .into(viewHolder.imgView);
 
         Log.d("status",msg.getStatus());
@@ -119,9 +114,8 @@ public class ChatListAdapter extends BaseAdapter implements ListAdapter {
                 nameView.setText(usersList.get(position).getFname());
                 emailView.setText(usersList.get(position).getEmail());
                 dobView.setText(usersList.get(position).getDob());
-                picasso.with(context)
+                Glide.with(context)
                         .load(usersList.get(position).getImgUrl())
-                        .transform(new RoundImage())
                         .into(imgView_dialog);
                 textButton.setOnClickListener(new View.OnClickListener() {
                     @Override

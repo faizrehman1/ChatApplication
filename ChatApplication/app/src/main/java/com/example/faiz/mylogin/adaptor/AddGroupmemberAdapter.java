@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class AddGroupmemberAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<User> user;
     private Context context;
-    private Picasso picasso;
+
 
 
     public AddGroupmemberAdapter(Context context, ArrayList<User> user) {
@@ -57,9 +57,8 @@ public class AddGroupmemberAdapter extends BaseAdapter implements ListAdapter {
         String fname = msg.getFname().toString();
         nameView.setText(fname);
 
-        picasso.with(context)
+        Glide.with(context)
                 .load(user.get(position).getImgUrl())
-                .transform(new com.example.faiz.mylogin.ui.RoundImage())
                 .into(imgView);
 
 
