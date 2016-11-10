@@ -13,11 +13,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -55,7 +59,6 @@ import java.util.Locale;
 public class Conversation_Activity extends AppCompatActivity {
     private EditText messageField;
     private Button sendButton;
-    private Button attachBtn;
     private DatabaseReference firebase;
     private ListView messagesListView;
     private AdapterForMessage adapter;
@@ -76,6 +79,11 @@ public class Conversation_Activity extends AppCompatActivity {
     private Date date;
     private SimpleDateFormat dateFormat;
     private String var;
+    private RelativeLayout relative;
+    private boolean flag = true;
+    private  View view;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,44 +105,23 @@ public class Conversation_Activity extends AppCompatActivity {
         messageField = (EditText) findViewById(R.id.editText_Conversation_message);
         sendButton = (Button) findViewById(R.id.button_Conversation_send);
         messagesListView = (ListView) findViewById(R.id.messagesListView);
-        attachBtn = (Button)findViewById(R.id.attachbtn);
         messages = new ArrayList<Message>();
         adapter = new AdapterForMessage(messages, Conversation_Activity.this, friendData);
         messagesListView.setAdapter(adapter);
         rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("chat");
-
+        relative = (RelativeLayout)findViewById(R.id.attach_container);
+        view = (View)findViewById(R.id.cover);
         checkConversationNewOROLD();
-        attachBtn.setOnClickListener(new View.OnClickListener() {
+
+
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(Conversation_Activity.this);
-                builder.setMessage("Upload File Or Image !!!!");
-                builder.setTitle("What Kind Of Stuff you Want to Upload...??");
-                builder.setPositiveButton("File", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        chooseFlag = false;
-                        //  intent.setType("application/pdf");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        intent.setType("application/*");
-                        startActivityForResult(intent, SELECT_DOC_DIALOG);
-                    }
-                });
-                builder.setNegativeButton("Image", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        chooseFlag = true;
-                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(i, SELECTED_PICTURE);
-                    }
-                });
-                builder.create().show();
+            public void onClick(View view) {
+                relative.setVisibility(View.GONE);
+                flag = true;
             }
         });
-
-
 
 
 
@@ -442,5 +429,50 @@ public class Conversation_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.attach_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        if(id == R.id.action_attach && flag){
+            relative.setVisibility(View.VISIBLE);
+            view.setVisibility(View.VISIBLE);
+            flag = false;
+        }else {
+            relative.setVisibility(View.GONE);
+            flag = true;
+        }
+//        }else if(id == R.id.action_attachfile){
+//            Intent intent = new Intent();
+//            chooseFlag = false;
+//            //  intent.setType("application/pdf");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            intent.setType("application/*");
+//            startActivityForResult(intent, SELECT_DOC_DIALOG);
+//
+//        }else if(id == R.id.action_attachimage){
+//            chooseFlag = true;
+//            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            startActivityForResult(i, SELECTED_PICTURE);
+//        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
 
