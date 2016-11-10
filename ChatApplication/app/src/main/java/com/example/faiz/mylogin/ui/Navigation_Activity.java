@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -37,10 +38,13 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
+import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.example.faiz.mylogin.util.NodeRef;
 import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +52,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.io.File;
@@ -56,6 +63,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,12 +89,13 @@ public class Navigation_Activity extends AppCompatActivity
     private File temp_path;
     private final int COMPRESS = 100;
     private ProgressDialog progressDialog;
-    private Cloudinary cloudinary;
     private CircleImageView img;
     private TextView user_name, user_email;
-    private String status = "true";
+    private boolean status = true;
     private FirebaseUser users;
     private Uri selectedImage;
+    private StorageReference rootStorageRef, folderRef,imageRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +105,9 @@ public class Navigation_Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Map config = new HashMap();
-        config.put("cloud_name", "fkcs14");
-        config.put("api_key", "527495965545816");
-        config.put("api_secret", "RI0k_mpmGjDa0TVkZABkVQwutf0");
-        cloudinary = new Cloudinary(config);
+
+        rootStorageRef = FirebaseStorage.getInstance().getReference();
+        folderRef = rootStorageRef.child("profileImages");
 
 
 
@@ -224,17 +231,14 @@ public class Navigation_Activity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.logout) {
 
-            status = "false";
+            status = false;
             testing(status);
-
             auth.getInstance().signOut();
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
             startActivity(intent);
-
             finish();
-
 
         }
 
@@ -364,106 +368,87 @@ public class Navigation_Activity extends AppCompatActivity
                     .setMessage("Are you sure you want to upload picture?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, int which) {
-                            img.setImageBitmap(bitmap);
                             Log.d("File PATH IS ", selectedImagePath + "");
-                            AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
-                                @Override
-                                protected HashMap<String, Object> doInBackground(String... params) {
-                                    File file = new File(selectedImagePath);
-                                    HashMap<String, Object> responseFromServer = null;
-                                    try {
-                                        responseFromServer = (HashMap<String, Object>) cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-
-                                    } catch (IOException e) {
-                                        Toast.makeText(Navigation_Activity.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_LONG).show();
-                                        e.printStackTrace();
+                          //  File file = new File(selectedImagePath);
+                            try {
+                                File fileRef = new File(selectedImagePath);
+                                Date date = new Date(System.currentTimeMillis());
+                                String filenew = fileRef.getName();
+                                Log.d("fileNewName", filenew);
+                                int dot = filenew.lastIndexOf('.');
+                                String base = (dot == -1) ? filenew : filenew.substring(0, dot);
+                                String extension = (dot == -1) ? "" : filenew.substring(dot + 1);
+                                Log.d("extensionsss", extension);
+                                final ProgressDialog mProgressDialog = ProgressDialog.show(Navigation_Activity.this, "Sending Image", "loading...", true, false);
+                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                UploadTask uploadTask;
+                                Uri file = Uri.fromFile(new File(selectedImagePath));
+                                imageRef = folderRef.child(base + "" + String.valueOf(date) + "." + extension);
+                                uploadTask = imageRef.putFile(file);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Handle unsuccessful uploads
+                                        Toast.makeText(Navigation_Activity.this, "UPLOAD FAILD", Toast.LENGTH_LONG).show();
                                     }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                        final String downloadUrl = taskSnapshot.getDownloadUrl().toString();
+                                        Log.e("Image ka URL", "" + downloadUrl);
+                                        firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                // int i=0;
+                                                //          for(DataSnapshot data:dataSnapshot.getChildren()){
+                                                //   User user = data.getValue(User.class);
 
-                                    return responseFromServer;
-                                }
+                                                DatabaseReference ref = dataSnapshot.getRef();
+                                                AppLogs.logd(ref.toString());
+                                                ref.child("imgUrl").setValue(downloadUrl);
+                                                Toast.makeText(Navigation_Activity.this, "You Have Successfully Change Picture..", Toast.LENGTH_LONG).show();
+                                                img.setImageBitmap(bitmap);
 
-                                @Override
-                                protected void onPostExecute(final HashMap<String, Object> stringObjectHashMap) {
+                                                //        }
+                                            }
 
-                                    url_cloudinary = (String) stringObjectHashMap.get("url");
-                                    Log.d("LAG", url_cloudinary);
-                                    progressDialog.dismiss();
-                                    //  textView_imageName.setText("Uploaded");
-                                    firebase.child("User").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            // int i=0;
-                                            //          for(DataSnapshot data:dataSnapshot.getChildren()){
-                                            //   User user = data.getValue(User.class);
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                            DatabaseReference ref = dataSnapshot.getRef();
-                                            AppLogs.logd(ref.toString());
-                                            ref.child("imgUrl").setValue(url_cloudinary);
-                                            Toast.makeText(Navigation_Activity.this, "You Have Successfully Change Picture..", Toast.LENGTH_LONG).show();
-
-                                            //        }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                    firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
-                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                User user = data.getValue(User.class);
-                                                if (data.hasChild(users.getUid())) {
-                                                    DatabaseReference ref = data.getRef();
-                                                    String keys = ref.getKey();
-                                                    Log.d("tag1", ref.getKey());
-                                                    firebase.child("Friends").child(keys).child(users.getUid()).child("imgUrl").setValue(url_cloudinary);
+                                            }
+                                        });
+                                        firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
+                                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                    User user = data.getValue(User.class);
+                                                    if (data.hasChild(users.getUid())) {
+                                                        DatabaseReference ref = data.getRef();
+                                                        String keys = ref.getKey();
+                                                        Log.d("tag1", ref.getKey());
+                                                        firebase.child("Friends").child(keys).child(users.getUid()).child("imgUrl").setValue(downloadUrl);
 
 
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
-
-
-                                }
-
-                                @Override
-                                protected void onPreExecute() {
-//                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
-//                                    progressDialog.show();
-                                    progressDialog = new ProgressDialog(Navigation_Activity.this);
-                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                    progressDialog.setMessage("Uploading Image...");
-                                    progressDialog.setCancelable(false);
-                                    progressDialog.setMax(100);
-                                    progressDialog.setProgress(0);
-                                    progressDialog.show();
-
-                                    Thread t = new Thread(new Runnable() {
-                                        public void run() {
-                                            while (progressDialog.getProgress() < progressDialog.getMax()) {
-                                                progressDialog.incrementProgressBy(1);
-                                                try {
-                                                    Thread.sleep(250);
-                                                } catch (Exception e) {/* no-op */}
                                             }
-                                            // dialog.dismiss();
-                                        }
-                                    });
-                                    t.start();
-//                                    AppLogs.logd("Hello");
-                                }
-                            };
-                            upload.execute(selectedImagePath);
+                                        });
+
+                                        mProgressDialog.dismiss();
+                                        //  messageEditText.setText("");
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
 
                         }
                     })
@@ -476,6 +461,11 @@ public class Navigation_Activity extends AppCompatActivity
             ex.printStackTrace();
 
         }
+
+
+
+
+
 
     }
 
@@ -504,7 +494,7 @@ public class Navigation_Activity extends AppCompatActivity
 
     }
 
-    public void testing(final String status) {
+    public void testing(final boolean status) {
 
         Log.d("tagg", users.getUid());
 
