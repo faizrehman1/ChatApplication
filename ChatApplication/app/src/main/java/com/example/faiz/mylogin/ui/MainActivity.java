@@ -1,6 +1,6 @@
 package com.example.faiz.mylogin.ui;
 
-
+import com.facebook.FacebookSdk;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -124,12 +124,6 @@ public class MainActivity extends AppCompatActivity {
         buttonFb = (Button) findViewById(R.id.button_SignIn_CustomFb);
 //        firebase=new Firebase("https://chatapplicationn.firebaseio.com");
 //        Log.d("idd",mAuth.getCurrentUser().getUid());
-
-        Map config = new HashMap();
-        config.put("cloud_name", "fkcs14");
-        config.put("api_key", "527495965545816");
-        config.put("api_secret", "RI0k_mpmGjDa0TVkZABkVQwutf0");
-        cloudinary = new Cloudinary(config);
 
         email = (EditText) findViewById(R.id.edt);
         pass = (EditText) findViewById(R.id.edt1);
@@ -512,33 +506,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-//        try {
-//            if (requestCode == Browse_image) {
-//                if (resultCode == RESULT_OK) {
-//                    //   setDefaultLayout();
-//                    Uri selectedImageUri = data.getData();
-//
-//
-//                 //   Log.d("Uploading file from URI: %s", selectedImageUri.getPath());
-//
-//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//                    Cursor cursor = getContentResolver().query(
-//                            selectedImageUri, filePathColumn, null, null, null);
-//                    cursor.moveToFirst();
-//
-//                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                    String filePath = cursor.getString(columnIndex);
-//                    cursor.close();
-//                    Log.d("Upload file is:", filePath);
-//                    selectedImagePath = filePath;
-//                    textView_imageName.setText("Uploaded");
-//                    startUpload(filePath);
-//                }
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
          try {
              if (Build.VERSION.SDK_INT < 19) {
                  Uri selectedImage = data.getData();
@@ -551,39 +518,11 @@ public class MainActivity extends AppCompatActivity {
                  cursor.close();
                  System.out.println("smallImagePath" + selectedImagePath);
                  Log.d("Tag", selectedImagePath);
-
-                 //   image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
-                 //   encodeImage();
              } else {
                  try {
                      InputStream imInputStream = getContentResolver().openInputStream(data.getData());
                      Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
                      selectedImagePath = saveGalaryImageOnLitkat(bitmap);
-                     //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
-                     //  encodeImage();
-//                     final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-//                     dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//                     dialog.setMessage("Uploading Image...");
-//                     dialog.setCancelable(true);
-//                     dialog.setMax(100);
-//                     dialog.setProgress(0);
-//                     dialog.show();
-//
-//                     Thread t = new Thread(new Runnable() {
-//                         public void run() {
-//                             while (dialog.getProgress() < dialog.getMax()) {
-//                                 dialog.incrementProgressBy(1);
-//                                 try {
-//                                     Thread.sleep(50);
-//                                 } catch (Exception e) {/* no-op */}
-//                             }
-//                             dialog.dismiss();
-//                         }
-//                     });
-//                     t.start();
-
-
-
 
                      Log.d("Tag", selectedImagePath);
                      startUpload(selectedImagePath);
