@@ -1,6 +1,9 @@
 package com.example.faiz.mylogin.ui;
 
+import com.example.faiz.mylogin.util.NodeRef;
 import com.facebook.FacebookSdk;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -46,6 +49,8 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -57,6 +62,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONObject;
 
@@ -66,6 +74,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -91,10 +100,9 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonSignup, buttonSignin, btn_upload_image, buttonFb;
     private User user = new User();
     //ImageView image;
-    private Cloudinary cloudinary;
     private String selectedImagePath;
     private Bitmap bitmap;
-    private String url_cloudinary;
+    private String url_ProfileImage;
     private TextView textView_imageName,per;
     private FirebaseUser firebase_user;
     private File temp_path;
@@ -102,10 +110,11 @@ public class MainActivity extends AppCompatActivity {
      private static final String[] Gender = new String[] {
             "Male","Female"
     };
-
+    private  Uri selectedImage;
     ProgressDialog progressDialog;
     //wait jus see bc
     private boolean fbSignIn = false;
+    private StorageReference rootStorageRef, folderRef,imageRef;
 
 
     @Override
@@ -117,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
         final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
 //        final DatabaseReference firebase = database.getReference("https://chatapplicationn.firebaseio.com");
+        rootStorageRef = FirebaseStorage.getInstance().getReference();
+        folderRef = rootStorageRef.child("profileImages");
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -225,10 +236,8 @@ public class MainActivity extends AppCompatActivity {
                     btn_upload_image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent();
-                            intent.setType("image/*");
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), Browse_image);
+                            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(i, Browse_image);
                         }
                     });
                     builder.setView(vv);
@@ -264,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                                                             dob.getText().toString(),
                                                             gender.getText().toString(),
                                                             uid,
-                                                            url_cloudinary
+                                                            url_ProfileImage
                                                     ,"true"));
 
                                                     Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
@@ -507,8 +516,22 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
          try {
-             if (Build.VERSION.SDK_INT < 19) {
-                 Uri selectedImage = data.getData();
+             if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+                 selectedImage = data.getData();
+
+                 Intent intent = new Intent("com.android.camera.action.CROP");
+                 intent.setData(selectedImage);
+                 intent.putExtra("crop", true);
+                 intent.putExtra("aspectX", 1);
+                 intent.putExtra("aspectY", 1);
+                 intent.putExtra("outputX", 96);
+                 intent.putExtra("outputY", 96);
+                 intent.putExtra("noFaceDetection", true);
+                 intent.putExtra("return-data", true);
+                 startActivityForResult(intent, 2);
+             }
+            else if (Build.VERSION.SDK_INT < 19) {
+                  selectedImage = data.getData();
                  // System.out.println("selectedImage "+selectedImage);
                  String[] filePathColumn = {MediaStore.Images.Media.DATA};
                  Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
@@ -550,59 +573,41 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(final DialogInterface dialog, int which) {
                             //     image.setImageBitmap(bitmap);
                             Log.d("File PATH IS ", selectedImagePath + "");
-                            AsyncTask<String, Void, HashMap<String, Object>> upload = new AsyncTask<String, Void, HashMap<String, Object>>() {
-                                @Override
-                                protected HashMap<String, Object> doInBackground(String... params) {
-                                    File file = new File(selectedImagePath);
-                                    HashMap<String, Object> responseFromServer = null;
-                                    try {
-                                        responseFromServer = (HashMap<String, Object>) cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-
-                                    } catch (IOException e) {
-                                        Toast.makeText(MainActivity.this, "Cannot Upload Image Please Try Again", Toast.LENGTH_LONG).show();
-                                        e.printStackTrace();
+                            try {
+                                File fileRef = new File(selectedImagePath);
+                                Date date = new Date(System.currentTimeMillis());
+                                String filenew = fileRef.getName();
+                                Log.d("fileNewName", filenew);
+                                int dot = filenew.lastIndexOf('.');
+                                String base = (dot == -1) ? filenew : filenew.substring(0, dot);
+                                String extension = (dot == -1) ? "" : filenew.substring(dot + 1);
+                                Log.d("extensionsss", extension);
+                                final ProgressDialog mProgressDialog = ProgressDialog.show(MainActivity.this, "Sending Image", "loading...", true, false);
+                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                UploadTask uploadTask;
+                                Uri file = Uri.fromFile(new File(selectedImagePath));
+                                imageRef = folderRef.child(base + "" + String.valueOf(date) + "." + extension);
+                                uploadTask = imageRef.putFile(file);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Handle unsuccessful uploads
+                                        Toast.makeText(MainActivity.this, "UPLOAD FAILD", Toast.LENGTH_LONG).show();
                                     }
-
-                                    return responseFromServer;
-                                }
-
-                                @Override
-                                protected void onPostExecute(final HashMap<String, Object> stringObjectHashMap) {
-
-                                    url_cloudinary = (String) stringObjectHashMap.get("url");
-                                    Log.d("LAG", url_cloudinary);
-                                    progressDialog.dismiss();
-                                    textView_imageName.setText("Uploaded");
-
-                                }
-                                @Override
-                                protected void onPreExecute() {
-//                                    progressDialog = ProgressDialog.show(MainActivity.this, "Upload ", "Image Uploading...");
-//                                    progressDialog.show();
-                                     progressDialog = new ProgressDialog(MainActivity.this);
-                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                    progressDialog.setMessage("Uploading Image...");
-                                    progressDialog.setCancelable(false);
-                                    progressDialog.setMax(100);
-                                    progressDialog.setProgress(0);
-                                    progressDialog.show();
-
-                                    Thread t = new Thread(new Runnable() {
-                                        public void run() {
-                                            while (progressDialog.getProgress() < progressDialog.getMax()) {
-                                                progressDialog.incrementProgressBy(1);
-                                                try {
-                                                    Thread.sleep(250);
-                                                } catch (Exception e) {/* no-op */}
-                                            }
-                                             // dialog.dismiss();
-                                        }
-                                    });
-                                    t.start();
-//                                    AppLogs.logd("Hello");
-                                }
-                            };
-                            upload.execute(selectedImagePath);
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                         url_ProfileImage = taskSnapshot.getDownloadUrl().toString();
+                                        Log.e("Image ka URL", "" + url_ProfileImage);
+                                        textView_imageName.setText("Uploaded");
+                                        mProgressDialog.dismiss();
+                                        //  messageEditText.setText("");
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     })
