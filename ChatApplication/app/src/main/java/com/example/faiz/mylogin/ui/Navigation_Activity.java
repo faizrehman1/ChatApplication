@@ -91,7 +91,7 @@ public class Navigation_Activity extends AppCompatActivity
     private ProgressDialog progressDialog;
     private CircleImageView img;
     private TextView user_name, user_email;
-    private boolean status = true;
+    private String status = "true";
     private FirebaseUser users;
     private Uri selectedImage;
     private StorageReference rootStorageRef, folderRef,imageRef;
@@ -233,7 +233,7 @@ public class Navigation_Activity extends AppCompatActivity
 
         } else if (id == R.id.logout) {
 
-            status = false;
+            status = "false";
             testing(status);
             auth.getInstance().signOut();
             Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
@@ -494,7 +494,7 @@ public class Navigation_Activity extends AppCompatActivity
 
     }
 
-    public void testing(final boolean status) {
+    public void testing(final String status) {
 
         Log.d("tagg", users.getUid());
 
