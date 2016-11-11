@@ -119,6 +119,7 @@ public class Conversation_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 relative.setVisibility(View.GONE);
+                messageField.setFocusable(true);
                 flag = true;
             }
         });
@@ -452,9 +453,12 @@ public class Conversation_Activity extends AppCompatActivity {
         if(id == R.id.action_attach && flag){
             relative.setVisibility(View.VISIBLE);
             view.setVisibility(View.VISIBLE);
+            messageField.setFocusable(false);
             flag = false;
         }else {
             relative.setVisibility(View.GONE);
+            messageField.setFocusable(true);
+
             flag = true;
         }
 //        }else if(id == R.id.action_attachfile){

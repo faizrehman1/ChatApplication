@@ -45,19 +45,13 @@
         android:background="@drawable/ic_menu_send"/>
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_below="@+id/attach_container"
-        android:id="@+id/cover"
-        android:layout_above="@+id/editText_Conversation_message"></View>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="230dp"
         android:id="@+id/attach_container"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
@@ -65,7 +59,8 @@
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/floatingActionButton2"
+            android:id="@+id/cam_btn"
+            
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="13dp" />
@@ -75,8 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/doc_btn"
-            android:layout_alignTop="@+id/floatingActionButton2"
-            android:layout_toStartOf="@+id/floatingActionButton2"
+            android:layout_alignTop="@+id/cam_btn"
+            android:layout_toStartOf="@+id/cam_btn"
             android:layout_marginEnd="59dp" />
 
         <android.support.design.widget.FloatingActionButton
@@ -84,24 +79,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/gallery_btn"
             android:layout_marginStart="58dp"
-            android:layout_alignTop="@+id/floatingActionButton2"
-            android:layout_toEndOf="@+id/floatingActionButton2" />
+            android:layout_alignTop="@+id/cam_btn"
+            android:layout_toEndOf="@+id/cam_btn" />
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
-
-
-            android:id="@+id/floatingActionButton5"
-            android:layout_alignTop="@+id/floatingActionButton6"
+            android:id="@+id/contact_btn"
+            android:layout_alignTop="@+id/locat_btn"
             android:layout_alignStart="@+id/gallery_btn" />
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/floatingActionButton6"
-            android:layout_alignTop="@+id/floatingActionButton4"
+            android:id="@+id/locat_btn"
+            android:layout_alignTop="@+id/aud_btn"
             android:layout_alignEnd="@+id/camera" />
 
         <TextView
@@ -143,9 +135,7 @@
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-
-            android:id="@+id/floatingActionButton4"
+            android:id="@+id/aud_btn"
             android:layout_marginTop="22dp"
             android:layout_below="@+id/doc"
             android:layout_alignStart="@+id/doc_btn" />
@@ -156,8 +146,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="11dp"
             android:id="@+id/audio"
-            android:layout_below="@+id/floatingActionButton4"
-            android:layout_alignEnd="@+id/floatingActionButton4" />
+            android:layout_below="@+id/aud_btn"
+            android:layout_alignEnd="@+id/aud_btn" />
 
         <TextView
             android:text="Contact"
@@ -166,8 +156,15 @@
             android:id="@+id/contact"
             android:layout_alignBaseline="@+id/locat"
             android:layout_alignBottom="@+id/locat"
-            android:layout_alignStart="@+id/floatingActionButton5" />
+            android:layout_alignStart="@+id/contact_btn" />
 
 
     </RelativeLayout>
+   <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    android:layout_below="@+id/attach_container"
+    android:id="@+id/cover"
+    android:layout_above="@+id/editText_Conversation_message"></View>
 </RelativeLayout>
