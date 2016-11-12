@@ -31,7 +31,7 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Group_Detail> groupData;
     private Context context;
-    ImageView imgView_dialog;
+
     AddGroupmemberAdapter adapter;
     private ArrayList<User> user;
     private FirebaseAuth mAuth;
@@ -91,7 +91,7 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
                 TextView nameView = (TextView) view.findViewById(R.id.groupNamealert);
                 TextView adminView = (TextView) view.findViewById(R.id.groupAdminName);
 
-                imgView_dialog = (ImageView) view.findViewById(R.id.groupImage);
+              CircleImageView  imgView_dialog = (CircleImageView) view.findViewById(R.id.groupImage);
 
 
                 nameView.setText("Group Name: " + groupData.get(position).getGroupName());

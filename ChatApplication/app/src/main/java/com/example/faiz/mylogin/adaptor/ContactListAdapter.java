@@ -27,7 +27,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 //setting Adapter class for the COntact list View in Fragment
 public class ContactListAdapter extends BaseAdapter implements ListAdapter {
     public static final String UUID_KEY = "data_uudsdfgasdg";
-    private ImageView imgView_dialog;
     private Context context;
     private ArrayList<User> usersList;
     private DatabaseReference firebaseDatabase;
@@ -119,7 +118,7 @@ public class ContactListAdapter extends BaseAdapter implements ListAdapter {
                 TextView nameView = (TextView) view.findViewById(R.id.textViewName_alert_Name);
                 TextView emailView = (TextView) view.findViewById(R.id.textView_alert_Email);
                 TextView dobView = (TextView) view.findViewById(R.id.textView_alert_Dob);
-                imgView_dialog = (ImageView) view.findViewById(R.id.imageView_userprofile);
+             CircleImageView   imgView_dialog = (CircleImageView) view.findViewById(R.id.imageView_userprofile);
                 Button textButton = (Button) view.findViewById(R.id.button_Message_alertBox);
                 Button cancelButton = (Button) view.findViewById(R.id.button_Cancel_alertBox);
 

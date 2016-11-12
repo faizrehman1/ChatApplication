@@ -27,7 +27,6 @@
     <EditText
         android:id="@+id/editText_Conversation_message"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:autoText="true"
@@ -51,8 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="230dp"
         android:id="@+id/attach_container"
-        android:visibility="gone"
+        android:visibility="visible"
+        android:background="#6b5c5c"
         android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
 
@@ -60,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cam_btn"
-            
+android:backgroundTint="#fff"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="13dp" />
@@ -70,6 +71,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/doc_btn"
+            android:backgroundTint="#cc5e5e"
+
             android:layout_alignTop="@+id/cam_btn"
             android:layout_toStartOf="@+id/cam_btn"
             android:layout_marginEnd="59dp" />
@@ -82,89 +85,121 @@
             android:layout_alignTop="@+id/cam_btn"
             android:layout_toEndOf="@+id/cam_btn" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/contact_btn"
-            android:layout_alignTop="@+id/locat_btn"
-            android:layout_alignStart="@+id/gallery_btn" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/locat_btn"
-            android:layout_alignTop="@+id/aud_btn"
-            android:layout_alignEnd="@+id/camera" />
-
         <TextView
             android:text="Camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/camera"
+            android:textColor="#fff"
             android:layout_alignBaseline="@+id/doc"
             android:layout_alignBottom="@+id/doc"
             android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:text="Gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/gallery"
-            android:layout_alignBaseline="@+id/camera"
-            android:layout_alignBottom="@+id/camera"
-            android:layout_alignStart="@+id/gallery_btn" />
-
-        <TextView
-            android:text="Location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/audio"
-            android:layout_toEndOf="@+id/doc_btn"
-            android:id="@+id/locat" />
-
-        <TextView
-            android:text="Documents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/doc"
-            android:layout_marginTop="14dp"
-            android:layout_below="@+id/doc_btn"
-            android:layout_toStartOf="@+id/camera"
-            android:layout_marginEnd="33dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/aud_btn"
-            android:layout_marginTop="22dp"
-            android:layout_below="@+id/doc"
-            android:layout_alignStart="@+id/doc_btn" />
-
-        <TextView
-            android:text="Audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:id="@+id/audio"
-            android:layout_below="@+id/aud_btn"
-            android:layout_alignEnd="@+id/aud_btn" />
 
         <TextView
             android:text="Contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/contact"
+            android:textColor="#fff"
+
             android:layout_alignBaseline="@+id/locat"
             android:layout_alignBottom="@+id/locat"
-            android:layout_alignStart="@+id/contact_btn" />
+            android:layout_alignLeft="@+id/contact_btn"
+            android:layout_alignStart="@+id/contact_btn"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp" />
+
+        <TextView
+            android:text="Documents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/doc"
+            android:textColor="#fff"
+
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/doc_btn"
+            android:layout_alignRight="@+id/doc_btn"
+            android:layout_alignEnd="@+id/doc_btn" />
+
+        <TextView
+            android:text="Gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gallery"
+            android:textColor="#fff"
+
+            android:layout_alignBaseline="@+id/camera"
+            android:layout_alignBottom="@+id/camera"
+            android:layout_alignLeft="@+id/contact"
+            android:layout_alignStart="@+id/contact" />
+
+        <TextView
+            android:text="Audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:id="@+id/audio"
+            android:textColor="#fff"
+
+            android:layout_below="@+id/aud_btn"
+            android:layout_alignRight="@+id/aud_btn"
+            android:layout_alignEnd="@+id/aud_btn"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aud_btn"
+            android:backgroundTint="#2787da"
+
+            android:layout_alignTop="@+id/locat_btn"
+            android:layout_alignRight="@+id/doc"
+            android:layout_alignEnd="@+id/doc" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locat_btn"
+            android:backgroundTint="#3ed958"
+
+            android:layout_marginTop="37dp"
+            android:layout_below="@+id/camera"
+            android:layout_toRightOf="@+id/doc_btn"
+            android:layout_toEndOf="@+id/doc_btn" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/contact_btn"
+            android:layout_above="@+id/audio"
+            android:backgroundTint="#aa3bb4"
+
+            android:layout_alignLeft="@+id/gallery_btn"
+            android:layout_alignStart="@+id/gallery_btn" />
+
+        <TextView
+            android:text="Location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locat"
+            android:textColor="#fff"
+
+            android:layout_alignBaseline="@+id/audio"
+            android:layout_alignBottom="@+id/audio"
+            android:layout_alignLeft="@+id/locat_btn"
+            android:layout_alignStart="@+id/locat_btn"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp" />
 
 
     </RelativeLayout>
-   <View
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="visible"
-    android:layout_below="@+id/attach_container"
-    android:id="@+id/cover"
-    android:layout_above="@+id/editText_Conversation_message"></View>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/cover"
+        android:layout_below="@+id/attach_container"
+        android:layout_alignBottom="@+id/button_Conversation_send" />
 </RelativeLayout>

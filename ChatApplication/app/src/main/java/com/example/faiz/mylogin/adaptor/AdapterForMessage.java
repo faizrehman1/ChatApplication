@@ -72,7 +72,6 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         this.messages = messages;
         this.context = context;
         this.uid = uid;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -93,6 +92,9 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
 
+        View view;
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
         boolean flagURL;
@@ -100,24 +102,42 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         if (messages.get(position).getU_id().equals(user.getUid())) {
 
             U_ID = user.getUid();
-            convertView = inflater.inflate(R.layout.message_left_side_layout, null);
+            view = inflater.inflate(R.layout.message_left_side_layout, null);
 
         } else {
 
             U_ID = uid.getU_Id();
-            convertView = inflater.inflate(R.layout.message_right_side_layout, null);
+            view = inflater.inflate(R.layout.message_right_side_layout, null);
             Log.d("TAGG", uid.getU_Id());
 
         }
 
-            sendImagePic = (ImageView) convertView.findViewById(R.id.imagepic);
-           msgView = (TextView) convertView.findViewById(R.id.messageView);
-            timeView = (TextView) convertView.findViewById(R.id.timeView_messages);
-            img = (CircleImageView) convertView.findViewById(R.id.imageView_messages);
+            sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
+           msgView = (TextView) view.findViewById(R.id.messageView);
+            timeView = (TextView) view.findViewById(R.id.timeView_messages);
+            img = (CircleImageView) view.findViewById(R.id.imageView_messages);
 
 
 
+        try {
+            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                @Override
+                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if(user.getImgUrl().equals("")){
+                        img.setImageResource(R.drawable.ic_menu_camera);
+                    }else{
+                        Glide.with(context).load(user.getImgUrl()).into(img);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
 
 
 
@@ -147,10 +167,6 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
             } else {
                 Glide.with(context).load(R.drawable.docs_icon).into(sendImagePic);
             }
-
-
-
-
 
         }
 
@@ -217,30 +233,8 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
 
 
-        try {
-           firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-              @Override
-              public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                  User user = dataSnapshot.getValue(User.class);
-                 if(user.getImgUrl().equals("")){
-                    img.setImageResource(R.drawable.ic_menu_camera);
-                 }else{
-                  Glide.with(context).load(user.getImgUrl()).into(img);
-              }
-              }
-              @Override
-              public void onCancelled(DatabaseError databaseError) {
-              }
-          });
 
-
-
-
-
-       }catch(Exception ex){
-           ex.printStackTrace();
-       }
-        return convertView;
+        return view;
     }
 
 

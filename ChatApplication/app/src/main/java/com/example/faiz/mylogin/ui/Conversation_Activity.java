@@ -1,5 +1,6 @@
 package com.example.faiz.mylogin.ui;
 
+import android.animation.Animator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +18,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,7 +87,9 @@ public class Conversation_Activity extends AppCompatActivity {
     private RelativeLayout relative;
     private boolean flag = true;
     private  View view;
-
+    Animator animator =
+            null;
+    private FloatingActionButton contact,location,gallery,audio,document,camera;
 
 
     @Override
@@ -94,6 +101,9 @@ public class Conversation_Activity extends AppCompatActivity {
         date = new Date(System.currentTimeMillis());
         dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
         var = dateFormat.format(date);
+        view = (View)findViewById(R.id.cover);
+
+        relative = (RelativeLayout)findViewById(R.id.attach_container);
         Log.d("TAG",user.getUid());
         try {
 //            mAuth = firebase.getAuth();
@@ -110,8 +120,7 @@ public class Conversation_Activity extends AppCompatActivity {
         messagesListView.setAdapter(adapter);
         rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("chat");
-        relative = (RelativeLayout)findViewById(R.id.attach_container);
-        view = (View)findViewById(R.id.cover);
+
         checkConversationNewOROLD();
 
 
@@ -119,13 +128,64 @@ public class Conversation_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 relative.setVisibility(View.GONE);
-                messageField.setFocusable(true);
+                view.setVisibility(View.GONE);
                 flag = true;
             }
         });
 
+        contact = (FloatingActionButton)relative.findViewById(R.id.contact_btn);
+        location = (FloatingActionButton)relative.findViewById(R.id.locat_btn);
+        gallery = (FloatingActionButton)relative.findViewById(R.id.gallery_btn);
+        audio = (FloatingActionButton)relative.findViewById(R.id.aud_btn);
+        document = (FloatingActionButton)relative.findViewById(R.id.doc_btn);
 
+        contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Conversation_Activity.this,"Contact",Toast.LENGTH_SHORT).show();
+                relative.setVisibility(View.GONE);
+            }
+        });
 
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+           Toast.makeText(Conversation_Activity.this,"Location",Toast.LENGTH_SHORT).show();
+                relative.setVisibility(View.GONE);
+            }
+        });
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(Conversation_Activity.this,"Gallery",Toast.LENGTH_SHORT).show();
+                flag = true;
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, SELECTED_PICTURE);
+                relative.setVisibility(View.GONE);
+
+            }
+        });
+        audio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Conversation_Activity.this,"Audio",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                flag = false;
+                //  intent.setType("application/pdf");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/*");
+                startActivityForResult(intent, SELECT_DOC_DIALOG);
+                relative.setVisibility(View.GONE);
+            }
+        });
+        document.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Conversation_Activity.this,"Document",Toast.LENGTH_SHORT).show();
+                relative.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -147,9 +207,9 @@ public class Conversation_Activity extends AppCompatActivity {
                     LayoutInflater inflater = LayoutInflater.from(Conversation_Activity.this);
                     View view1 = inflater.inflate(R.layout.attach_alert_view, null);
                     ImageView alertImageView = (ImageView) view1.findViewById(R.id.imageView_Alert);
-                    if (Conversation_Activity.this != null) {
+
                         Glide.with(Conversation_Activity.this).load(uri).into(alertImageView);
-                    }
+
                     builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -451,32 +511,69 @@ public class Conversation_Activity extends AppCompatActivity {
             return true;
         }
         if(id == R.id.action_attach && flag){
-            relative.setVisibility(View.VISIBLE);
-            view.setVisibility(View.VISIBLE);
-            messageField.setFocusable(false);
-            flag = false;
-        }else {
-            relative.setVisibility(View.GONE);
-            messageField.setFocusable(true);
 
-            flag = true;
+            showMenu();
+
+        }else {
+            hideMenu();
         }
-//        }else if(id == R.id.action_attachfile){
-//            Intent intent = new Intent();
-//            chooseFlag = false;
-//            //  intent.setType("application/pdf");
-//            intent.setAction(Intent.ACTION_GET_CONTENT);
-//            intent.setType("application/*");
-//            startActivityForResult(intent, SELECT_DOC_DIALOG);
-//
-//        }else if(id == R.id.action_attachimage){
-//            chooseFlag = true;
-//            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//            startActivityForResult(i, SELECTED_PICTURE);
-//        }
+
 
         return super.onOptionsItemSelected(item);
     }
+    public void showMenu(){
+        int cx = (relative.getLeft() + relative.getRight());
+        int cy = relative.getTop();
+        int radius = Math.max(relative.getWidth(), relative.getHeight());
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(relative, cx, cy, 0, radius);
+        }
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(400);
+        relative.setVisibility(View.VISIBLE);
+
+        view.setVisibility(View.VISIBLE);
+        animator.start();
+
+        flag = false;
+    }
+
+    public void hideMenu(){
+        int cx = (relative.getLeft() + relative.getRight());
+        int cy = relative.getTop();
+        int radius = relative.getWidth();
+        // int radius = Math.max(relative.getWidth(), relative.getHeight());
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            animator = ViewAnimationUtils.createCircularReveal(relative, cx, cy,radius, 0);
+        }
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                relative.setVisibility(View.GONE);
+                view.setVisibility(View.GONE);
+                flag = true;
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
+
+    }
 }
 
