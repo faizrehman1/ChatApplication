@@ -62,7 +62,7 @@ public class Chat_Fragment extends android.support.v4.app.Fragment {
                     for (final DataSnapshot data : dataSnapshot.getChildren()) {
                         TempRefObj tempRefObj = data.getValue(TempRefObj.class);
                         AppLogs.logd("TT " + tempRefObj.getUserId());
-                        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).child(tempRefObj.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).child(tempRefObj.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot1) {
                                 AppLogs.logd("dataa " + dataSnapshot1);

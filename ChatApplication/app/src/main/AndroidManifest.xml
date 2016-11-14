@@ -18,7 +18,10 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateAlwaysHidden"
+
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,9 +32,10 @@
             android:name=".ui.Navigation_Activity"
             android:label="My Chat Application"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.Conversation_Activity"
+        <activity
+            android:name=".ui.Conversation_Activity"
             android:label="Conversation Room"
-            ></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!--<activity-->
             <!--android:name="com.facebook.FacebookActivity"-->
             <!--android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
@@ -39,6 +43,8 @@
             <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
         <activity android:name=".ui.Create_Group"
             android:label="Create Group"
+            android:windowSoftInputMode="stateAlwaysHidden"
+
             />
         <activity android:name=".ui.Group_Chat_Act"
             android:label="Group Chat Room"

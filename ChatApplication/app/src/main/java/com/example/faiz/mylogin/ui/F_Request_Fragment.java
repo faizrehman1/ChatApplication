@@ -122,8 +122,8 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).child(user.getU_Id()).setValue(user);
-                        firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
+                        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).child(user.getU_Id()).setValue(user);
+                        firebase.child(NodeRef.FRIENDS).child(user.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
                         AppLogs.loge("REF " + firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()));
 
 
