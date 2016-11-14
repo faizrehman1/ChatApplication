@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="230dp"
         android:id="@+id/attach_container"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:background="#6b5c5c"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cam_btn"
-android:backgroundTint="#fff"
+            android:src="@drawable/cameralogo"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="13dp" />
@@ -71,8 +71,7 @@ android:backgroundTint="#fff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/doc_btn"
-            android:backgroundTint="#cc5e5e"
-
+android:src="@drawable/docc"
             android:layout_alignTop="@+id/cam_btn"
             android:layout_toStartOf="@+id/cam_btn"
             android:layout_marginEnd="59dp" />
@@ -81,6 +80,7 @@ android:backgroundTint="#fff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/gallery_btn"
+            android:src="@drawable/gallery"
             android:layout_marginStart="58dp"
             android:layout_alignTop="@+id/cam_btn"
             android:layout_toEndOf="@+id/cam_btn" />
@@ -101,7 +101,6 @@ android:backgroundTint="#fff"
             android:layout_height="wrap_content"
             android:id="@+id/contact"
             android:textColor="#fff"
-
             android:layout_alignBaseline="@+id/locat"
             android:layout_alignBottom="@+id/locat"
             android:layout_alignLeft="@+id/contact_btn"
@@ -151,8 +150,7 @@ android:backgroundTint="#fff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/aud_btn"
-            android:backgroundTint="#2787da"
-
+            android:src="@drawable/audio"
             android:layout_alignTop="@+id/locat_btn"
             android:layout_alignRight="@+id/doc"
             android:layout_alignEnd="@+id/doc" />
@@ -161,8 +159,7 @@ android:backgroundTint="#fff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/locat_btn"
-            android:backgroundTint="#3ed958"
-
+            android:src="@drawable/map"
             android:layout_marginTop="37dp"
             android:layout_below="@+id/camera"
             android:layout_toRightOf="@+id/doc_btn"
@@ -173,8 +170,7 @@ android:backgroundTint="#fff"
             android:layout_height="wrap_content"
             android:id="@+id/contact_btn"
             android:layout_above="@+id/audio"
-            android:backgroundTint="#aa3bb4"
-
+            android:src="@drawable/gcontact"
             android:layout_alignLeft="@+id/gallery_btn"
             android:layout_alignStart="@+id/gallery_btn" />
 
@@ -185,12 +181,10 @@ android:backgroundTint="#fff"
             android:id="@+id/locat"
             android:textColor="#fff"
 
+            android:layout_marginLeft="10dp"
             android:layout_alignBaseline="@+id/audio"
             android:layout_alignBottom="@+id/audio"
-            android:layout_alignLeft="@+id/locat_btn"
-            android:layout_alignStart="@+id/locat_btn"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            android:layout_alignEnd="@+id/camera" />
 
 
     </RelativeLayout>
@@ -198,6 +192,7 @@ android:backgroundTint="#fff"
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:visibility="gone"
         android:id="@+id/cover"
         android:layout_below="@+id/attach_container"

@@ -57,12 +57,11 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     private Context context;
   private   User uid;
    private String U_ID;
-   private FirebaseAuth mAuth;
-   private FirebaseUser user;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
   private   DatabaseReference firebase;
    private String fileExtenstion;
    private ProgressDialog mProgressDialogforFileAndPic;
-   private LayoutInflater inflater;
    private ImageView sendImagePic;
    private TextView msgView,timeView;
    private CircleImageView img;
@@ -92,23 +91,17 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
 
-        View view;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
-        boolean flagURL;
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view;
 
-        if (messages.get(position).getU_id().equals(user.getUid())) {
 
-            U_ID = user.getUid();
-            view = inflater.inflate(R.layout.message_left_side_layout, null);
 
-        } else {
-
-            U_ID = uid.getU_Id();
-            view = inflater.inflate(R.layout.message_right_side_layout, null);
-            Log.d("TAGG", uid.getU_Id());
+        if(messages.get(position).getU_id().equals(user.getUid())){
+            view = inflater.inflate(R.layout.message_left_side_layout,null);
+        }else{
+            view= inflater.inflate(R.layout.message_right_side_layout,null);
 
         }
 
@@ -117,6 +110,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
             timeView = (TextView) view.findViewById(R.id.timeView_messages);
             img = (CircleImageView) view.findViewById(R.id.imageView_messages);
 
+        U_ID = messages.get(position).getU_id();
 
 
         try {
