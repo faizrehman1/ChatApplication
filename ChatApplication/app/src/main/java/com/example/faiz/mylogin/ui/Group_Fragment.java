@@ -101,8 +101,6 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
             }
         });
 
-        adapter = new GroupListAdapter(arraylist,getActivity());
-        list.setAdapter(adapter);
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -158,6 +156,9 @@ public class Group_Fragment extends android.support.v4.app.Fragment {
             ex.printStackTrace();
         }
 
+
+        adapter = new GroupListAdapter(arraylist,getActivity());
+        list.setAdapter(adapter);
 
 
         return view;
