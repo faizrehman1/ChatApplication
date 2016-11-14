@@ -153,7 +153,7 @@ public class Create_Group extends AppCompatActivity {
 //            }
 //        });
 
-        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -253,7 +253,7 @@ public class Create_Group extends AppCompatActivity {
                 //   encodeImage();
             } else {
                 try {
-                    InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                    InputStream imInputStream = getContentResolver().openInputStream(selectedImage);
                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                     //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
