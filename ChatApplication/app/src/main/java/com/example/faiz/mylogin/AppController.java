@@ -10,6 +10,7 @@ import android.util.Log;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.firebase.client.Firebase;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +25,8 @@ public class AppController extends Application {
         super.onCreate();
       //  Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         //when anyone install this app it shows in analytics at Fb.developer page
         AppEventsLogger.activateApp(this);
         /**
