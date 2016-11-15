@@ -104,18 +104,18 @@ public class MainActivity extends AppCompatActivity {
     private String selectedImagePath;
     private Bitmap bitmap;
     private String url_ProfileImage;
-    private TextView textView_imageName,per;
+    private TextView textView_imageName, per;
     private FirebaseUser firebase_user;
     private File temp_path;
     private final int COMPRESS = 100;
-     private static final String[] Gender = new String[] {
-            "Male","Female"
+    private static final String[] Gender = new String[]{
+            "Male", "Female"
     };
-    private  Uri selectedImage;
+    private Uri selectedImage;
     ProgressDialog progressDialog;
     //wait jus see bc
     private boolean fbSignIn = false;
-    private StorageReference rootStorageRef, folderRef,imageRef;
+    private StorageReference rootStorageRef, folderRef, imageRef;
 
 
     @Override
@@ -171,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-                    }
-                    else  {
+                    } else {
                         try {
                             firebase.child("User").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -191,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
-                        }catch (Exception ex){
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -218,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
                     password = (EditText) vv.findViewById(R.id.edtviewPassword);
 
 
-
                     fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
                     lname = (EditText) vv.findViewById(R.id.edtviewLastName);
                     dob = (EditText) vv.findViewById(R.id.editTextDob);
@@ -233,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
                     // forImageUpload();
 
 
-
                     btn_upload_image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -244,19 +241,14 @@ public class MainActivity extends AppCompatActivity {
                     builder.setView(vv);
 
 
-
-
                     builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String pass = password.getText().toString();
-                                if(pass.length() <= 6){
-                                    main(pass);
-                                }
-
-                                else{
-
-
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String pass = password.getText().toString();
+                            //Checking the length of pasword while registering new USER;
+                            if (pass.length() <= 6) {
+                                main(pass);
+                            } else {
                                 try {
                                     mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
                                             new OnCompleteListener<AuthResult>() {
@@ -275,10 +267,10 @@ public class MainActivity extends AppCompatActivity {
                                                             gender.getText().toString(),
                                                             uid,
                                                             url_ProfileImage
-                                                    ,"true"));
+                                                            , "true"));
 
                                                     Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-                                                    AppLogs.logd("createUserWithEmail:onComplete:" + task.isSuccessful());
+                                                    AppLogs.logd("createUserWithEmail:onComplete: " + task.isSuccessful());
 //                                                } else
                                                     if (!task.isSuccessful()) {
 
@@ -291,22 +283,21 @@ public class MainActivity extends AppCompatActivity {
 
                                     ex.printStackTrace();
                                 }
-                                }
                             }
+                        }
 
 
-                        });
-                        builder.setNegativeButton("Cancel", null);
+                    });
+                    builder.setNegativeButton("Cancel", null);
 
                     //    builder.setCancelable(false);
 
                     builder.create().show();
 
 
-
-                    }catch(Exception ex){
-                        ex.printStackTrace();
-                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
 
             }
@@ -392,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(FacebookException error) {
                         fbSignIn = false;
-                        Toast.makeText(MainActivity.this,""+error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                         Log.d("TAG", "facebook:onError " + error);
                     }
                 });
@@ -413,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (emails.length() == 0) {
                     email.setError("This is Required Field");
-                } else if (passo.length() == 0 && passo.length() <= 5) {
+                } else if (passo.length() == 0 && passo.length() <= 6) {
                     pass.setError("This is Required Field");
                 }
 
@@ -429,8 +420,8 @@ public class MainActivity extends AppCompatActivity {
                                 openNavigationActivity();
                             } else if (!task.isSuccessful()) {
                                 AppLogs.logw("signInWithEmail" + task.getException());
-                                Toast.makeText(MainActivity.this, "Authentication failed." + task.getException(),
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "" + task.getException(),
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -445,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void main(String pass) {
 
-        Toast.makeText(MainActivity.this,pass+"\n You Password is no longer Stronger",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, pass + "\nYou Password is no longer Stronger \nPlease signup Again with \natleast 7 Character of Pasword.\nThanks ", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -518,51 +509,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-         try {
-             if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
-                 selectedImage = data.getData();
+        try {
+            if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+                selectedImage = data.getData();
 
-                 Intent intent = new Intent("com.android.camera.action.CROP");
-                 intent.setData(selectedImage);
-                 intent.putExtra("crop", true);
-                 intent.putExtra("aspectX", 1);
-                 intent.putExtra("aspectY", 1);
-                 intent.putExtra("outputX", 96);
-                 intent.putExtra("outputY", 96);
-                 intent.putExtra("noFaceDetection", true);
-                 intent.putExtra("return-data", true);
-                 startActivityForResult(intent, 2);
-             }
-            else if (Build.VERSION.SDK_INT < 19) {
-                  selectedImage = data.getData();
-                 // System.out.println("selectedImage "+selectedImage);
-                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                 Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                 cursor.moveToFirst();
-                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                 selectedImagePath = cursor.getString(columnIndex);
-                 cursor.close();
-                 System.out.println("smallImagePath" + selectedImagePath);
-                 Log.d("Tag", selectedImagePath);
-             } else {
-                 try {
-                     InputStream imInputStream = getContentResolver().openInputStream(data.getData());
-                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
-                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
+                Intent intent = new Intent("com.android.camera.action.CROP");
+                intent.setData(selectedImage);
+                intent.putExtra("crop", true);
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("outputX", 96);
+                intent.putExtra("outputY", 96);
+                intent.putExtra("noFaceDetection", true);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent, 2);
+            } else if (Build.VERSION.SDK_INT < 19) {
+                selectedImage = data.getData();
+                // System.out.println("selectedImage "+selectedImage);
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                selectedImagePath = cursor.getString(columnIndex);
+                cursor.close();
+                System.out.println("smallImagePath" + selectedImagePath);
+                Log.d("Tag", selectedImagePath);
+            } else {
+                try {
+                    InputStream imInputStream = getContentResolver().openInputStream(selectedImage);
+                    Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
+                    selectedImagePath = saveGalaryImageOnLitkat(bitmap);
 
-                     Log.d("Tag", selectedImagePath);
-                     startUpload(selectedImagePath);
+                    Log.d("Tag", selectedImagePath);
+                    startUpload(selectedImagePath);
 
-                 } catch (FileNotFoundException e) {
-                     e.printStackTrace();
-                 }
-                 // finishAndSetResult(RESULT_OK, picturePath, false);
-             }
-         }catch (Exception ex){
-             ex.printStackTrace();
-         }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // finishAndSetResult(RESULT_OK, picturePath, false);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
-
 
 
     public void startUpload(String path) {
@@ -601,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
                                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                                         url_ProfileImage = taskSnapshot.getDownloadUrl().toString();
+                                        url_ProfileImage = taskSnapshot.getDownloadUrl().toString();
                                         Log.e("Image ka URL", "" + url_ProfileImage);
                                         textView_imageName.setText("Uploaded");
                                         mProgressDialog.dismiss();
