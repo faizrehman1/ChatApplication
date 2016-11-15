@@ -55,16 +55,16 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Message> messages;
     private Context context;
-  private   User uid;
-   private String U_ID;
+    private User uid;
+    private String U_ID;
     FirebaseAuth mAuth;
     FirebaseUser user;
-  private   DatabaseReference firebase;
-   private String fileExtenstion;
-   private ProgressDialog mProgressDialogforFileAndPic;
-   private ImageView sendImagePic;
-   private TextView msgView,timeView;
-   private CircleImageView img;
+    private DatabaseReference firebase;
+    private String fileExtenstion;
+    private ProgressDialog mProgressDialogforFileAndPic;
+    private ImageView sendImagePic;
+    private TextView msgView, timeView;
+    private CircleImageView img;
 
 
     public AdapterForMessage(ArrayList<Message> messages, Context context, User uid) {
@@ -93,22 +93,21 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
         firebase = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getInstance().getCurrentUser();
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view;
 
 
-
-        if(messages.get(position).getU_id().equals(user.getUid())){
-            view = inflater.inflate(R.layout.message_left_side_layout,null);
-        }else{
-            view= inflater.inflate(R.layout.message_right_side_layout,null);
+        if (messages.get(position).getU_id().equals(user.getUid())) {
+            view = inflater.inflate(R.layout.message_left_side_layout, null);
+        } else {
+            view = inflater.inflate(R.layout.message_right_side_layout, null);
 
         }
 
-            sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
-           msgView = (TextView) view.findViewById(R.id.messageView);
-            timeView = (TextView) view.findViewById(R.id.timeView_messages);
-            img = (CircleImageView) view.findViewById(R.id.imageView_messages);
+        sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
+        msgView = (TextView) view.findViewById(R.id.messageView);
+        timeView = (TextView) view.findViewById(R.id.timeView_messages);
+        img = (CircleImageView) view.findViewById(R.id.imageView_messages);
 
         U_ID = messages.get(position).getU_id();
 
@@ -117,28 +116,31 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
             firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                 @Override
                 public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    if(user.getImgUrl().equals("")){
-                        img.setImageResource(R.drawable.ic_menu_camera);
-                    }else{
+                    User user = null;
+                    if (dataSnapshot != null) {
+                         user = dataSnapshot.getValue(User.class);
+                    } else if (user.getImgUrl().equals("")) {
+                        img.setImageResource(R.drawable.default_user);
+                    } else {
                         Glide.with(context).load(user.getImgUrl()).into(img);
                     }
+
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
 
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
 
-
         // ImageView
-      //  ProgressBar prog = (ProgressBar)view.findViewById(R.id.progressBarpic);
+        //  ProgressBar prog = (ProgressBar)view.findViewById(R.id.progressBarpic);
         msgView.setText(messages.get(position).getMsg());
-       timeView.setText(messages.get(position).getTime());
+        timeView.setText(messages.get(position).getTime());
 //for image in conversation Activity
         final String getMsg = messages.get(position).getMsg();
         String messageObject = getMsg;
@@ -154,8 +156,8 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         String base = (dot == -1) ? fileURl : fileURl.substring(0, dot);
         String extension = (dot == -1) ? "" : fileURl.substring(dot + 1);
         if (messages.get(position).getMsg().contains("https://")) {
-          msgView.setVisibility(View.GONE);
-           sendImagePic.setVisibility(View.VISIBLE);
+            msgView.setVisibility(View.GONE);
+            sendImagePic.setVisibility(View.VISIBLE);
             if (getMsg.contains(".jpg") || getMsg.contains(".png") || getMsg.contains(".jpeg") || getMsg.contains(".gif")) {
                 Glide.with(context).load(messages.get(position).getMsg()).into(sendImagePic);
             } else {
@@ -223,14 +225,8 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         });
 
 
-
-
-
-
-
         return view;
     }
-
 
 
     public void startDownLoad(Context context, String sourceUrl, String destinationPath, String filename, ProgressDialog progressDialog) {
@@ -274,7 +270,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
             InputStream urlInputStream = null;
             URLConnection urlConnection;
             File file = new File(destinationPath);
-            if (!file.exists()){
+            if (!file.exists()) {
                 file.mkdir();
             }
             try {
