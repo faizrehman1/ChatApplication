@@ -126,10 +126,10 @@ public class MainActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
+        firebase.keepSynced(true);
 //        final DatabaseReference firebase = database.getReference("https://chatapplicationn.firebaseio.com");
         rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("profileImages");
-
 
         mAuth = FirebaseAuth.getInstance();
         firebase_user = mAuth.getCurrentUser();
@@ -445,6 +445,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Navigation_Activity.class);
         startActivity(intent);
         finish();
+
+
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
