@@ -4,12 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +14,20 @@ import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.Message;
-import com.example.faiz.mylogin.model.TempRefObj;
 import com.example.faiz.mylogin.model.User;
 
-import com.firebase.client.DataSnapshot;
-
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.firebase.client.realtime.util.StringListReader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -53,7 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AdapterForMessage extends BaseAdapter implements ListAdapter {
 
 
-    private ArrayList<Message> messages;
+    private ArrayList<Message> arraylistforMessages;
     private Context context;
     private User uid;
     private String U_ID;
@@ -64,23 +53,23 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     private ProgressDialog mProgressDialogforFileAndPic;
     private ImageView sendImagePic;
     private TextView msgView, timeView;
-    private CircleImageView img;
+    private CircleImageView circleImageView;
 
 
-    public AdapterForMessage(ArrayList<Message> messages, Context context, User uid) {
-        this.messages = messages;
+    public AdapterForMessage(ArrayList<Message> arraylistforMessages, Context context, User uid) {
+        this.arraylistforMessages = arraylistforMessages;
         this.context = context;
         this.uid = uid;
     }
 
     @Override
     public int getCount() {
-        return messages.size();
+        return arraylistforMessages.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return messages.get(position);
+        return arraylistforMessages.get(position);
     }
 
     @Override
@@ -97,7 +86,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         View view;
 
 
-        if (messages.get(position).getU_id().equals(user.getUid())) {
+        if (arraylistforMessages.get(position).getU_id().equals(user.getUid())) {
             view = inflater.inflate(R.layout.message_left_side_layout, null);
         } else {
             view = inflater.inflate(R.layout.message_right_side_layout, null);
@@ -107,42 +96,31 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
         msgView = (TextView) view.findViewById(R.id.messageView);
         timeView = (TextView) view.findViewById(R.id.timeView_messages);
-        img = (CircleImageView) view.findViewById(R.id.imageView_messages);
+        circleImageView = (CircleImageView) view.findViewById(R.id.imageView_messages);
 
-        U_ID = messages.get(position).getU_id();
+        U_ID = arraylistforMessages.get(position).getU_id();
 
-
-        try {
-            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                    User user = null;
-                    if (dataSnapshot != null) {
-                         user = dataSnapshot.getValue(User.class);
-                    } else if (user.getImgUrl().equals("")) {
-                        img.setImageResource(R.drawable.default_user);
-                    } else {
-                        Glide.with(context).load(user.getImgUrl()).into(img);
-                    }
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
 
 
         // ImageView
         //  ProgressBar prog = (ProgressBar)view.findViewById(R.id.progressBarpic);
-        msgView.setText(messages.get(position).getMsg());
-        timeView.setText(messages.get(position).getTime());
+        msgView.setText(arraylistforMessages.get(position).getMsg());
+        timeView.setText(arraylistforMessages.get(position).getTime());
 //for image in conversation Activity
-        final String getMsg = messages.get(position).getMsg();
+        final String getMsg = arraylistforMessages.get(position).getMsg();
         String messageObject = getMsg;
         String url = messageObject;
         fileExtenstion = MimeTypeMap.getFileExtensionFromUrl(url);
@@ -155,11 +133,11 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         int dot = fileURl.lastIndexOf('.');
         String base = (dot == -1) ? fileURl : fileURl.substring(0, dot);
         String extension = (dot == -1) ? "" : fileURl.substring(dot + 1);
-        if (messages.get(position).getMsg().contains("https://")) {
+        if (arraylistforMessages.get(position).getMsg().contains("https://")) {
             msgView.setVisibility(View.GONE);
             sendImagePic.setVisibility(View.VISIBLE);
             if (getMsg.contains(".jpg") || getMsg.contains(".png") || getMsg.contains(".jpeg") || getMsg.contains(".gif")) {
-                Glide.with(context).load(messages.get(position).getMsg()).into(sendImagePic);
+                Glide.with(context).load(arraylistforMessages.get(position).getMsg()).into(sendImagePic);
             } else {
                 Glide.with(context).load(R.drawable.docs_icon).into(sendImagePic);
             }
