@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/groupButton_Conversation_send"
         android:autoText="true"
-        android:hint="type message"/>
+        android:hint="type message" />
 
     <Button
         android:id="@+id/groupButton_Conversation_send"
@@ -24,23 +24,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/ic_menu_send"
-        />
+        android:background="@drawable/ic_menu_send" />
 
 
-        <ListView
-            android:id="@+id/GroupmessagesListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/group_Conversation_message"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
-            android:divider="@null"
-            android:listSelector="@android:color/transparent"
-            android:transcriptMode="alwaysScroll"/>
-
+    <ListView
+        android:id="@+id/GroupmessagesListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/group_Conversation_message"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
 
 
 </RelativeLayout>
