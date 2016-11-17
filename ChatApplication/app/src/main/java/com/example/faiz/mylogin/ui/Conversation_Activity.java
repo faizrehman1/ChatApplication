@@ -416,22 +416,6 @@ public class Conversation_Activity extends AppCompatActivity {
         conversationPushRef = pushRef.getKey();
         final TempRefObj tempRefObj = new TempRefObj(user.getUid(), conversationPushRef);
         Log.d("fid",friendData.getU_Id());
-//        firebase.child("user_conv").child(friendData.getU_Id()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
-//            @Override
-//            public void onComplete(FirebaseError firebaseError, Firebase f) {
-//                if (firebaseError == null) {
-//                    tempRefObj.setUserId(friendData.getU_Id());
-//                    firebase.child("user_conv").child(user.getUid()).push().setValue(tempRefObj, new Firebase.CompletionListener() {
-//                        @Override
-//                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-//                            if (firebaseError == null) {
-//                                getConversationData();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-  //      });
 
         firebase.child("user_conv").child(friendData.getU_Id()).push().setValue(tempRefObj, new DatabaseReference.CompletionListener() {
             @Override
