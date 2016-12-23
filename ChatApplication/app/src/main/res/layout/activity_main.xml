@@ -6,13 +6,17 @@
     tools:context=".ui.MainActivity"
     android:fillViewport="true">
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="15dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/mainn"
-        android:padding="30dp"
-       >
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="130dp"
@@ -130,10 +134,7 @@
                 android:text="@string/login_facebook"
                 android:textColor="#ffffff" />
         </LinearLayout>
-
-
-
-
     </LinearLayout>
+</LinearLayout>
 
-</ScrollView>
+    </ScrollView>

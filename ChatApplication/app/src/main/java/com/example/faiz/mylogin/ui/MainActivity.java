@@ -1,12 +1,6 @@
 package com.example.faiz.mylogin.ui;
 
-import com.example.faiz.mylogin.util.NodeRef;
-import com.facebook.FacebookSdk;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,30 +8,22 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputFilter;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
@@ -51,7 +37,6 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -75,13 +60,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /*import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -127,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fbLoginMan = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
-        fragmentManager = getSupportFragmentManager();
         final DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
         firebase.keepSynced(true);
 //        final DatabaseReference firebase = database.getReference("https://chatapplicationn.firebaseio.com");
@@ -181,9 +161,10 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     User user = dataSnapshot.getValue(User.class);
 //                                AppLogs.logd("User Logged In For My Auth:" + user.getEmail());
-
-                                    SharedPref.setCurrentUser(MainActivity.this, user);
-                                    openNavigationActivity();
+                                    if (user != null) {
+                                        SharedPref.setCurrentUser(MainActivity.this, user);
+                                        openNavigationActivity();
+                                    }
                                 }
 
                                 @Override
@@ -209,12 +190,9 @@ public class MainActivity extends AppCompatActivity {
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.mainn);
 
-                fragmentManager.beginTransaction()
-                       .add(R.id.mainn,new Signup_Fragment())
-                       .commit();
-                linearLayout.setVisibility(View.GONE);
+                Intent intent = new Intent(MainActivity.this, Signup_Activity.class);
+                startActivity(intent);
 //                try {
 //                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 //                    builder.setTitle("Add");
@@ -309,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //            }
-        }
+            }
         });
 
         buttonFb.setOnClickListener(new View.OnClickListener() {
@@ -419,13 +397,15 @@ public class MainActivity extends AppCompatActivity {
 
 
                 try {
+                  final ProgressDialog  progressDialog = ProgressDialog.show(MainActivity.this, "Sign In", "Connecting...", true, false);
+
                     mAuth.signInWithEmailAndPassword(emails, passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
                                 Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-
+                                progressDialog.dismiss();
                                 openNavigationActivity();
                             } else if (!task.isSuccessful()) {
                                 AppLogs.logw("signInWithEmail" + task.getException());
