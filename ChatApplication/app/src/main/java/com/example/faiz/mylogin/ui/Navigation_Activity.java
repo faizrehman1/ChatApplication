@@ -255,7 +255,7 @@ public class Navigation_Activity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText("Chat"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
         tabLayout.addTab(tabLayout.newTab().setText("Friends"));
-        tabLayout.addTab(tabLayout.newTab().setText("FRequest"));
+        tabLayout.addTab(tabLayout.newTab().setText("F_Request"));
 
         chatFragment = new Chat_Fragment();
         contactFragment = new Contact_Fragment();
@@ -418,7 +418,7 @@ public class Navigation_Activity extends AppCompatActivity
 
                                             }
                                         });
-                                        firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        firebase.child(NodeRef.FRIENDS).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
@@ -498,7 +498,7 @@ public class Navigation_Activity extends AppCompatActivity
 
         Log.d("tagg", users.getUid());
 
-        firebase.child(NodeRef.Friends_Node).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));

@@ -47,7 +47,7 @@ public class FriendListActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.fRequest_ListView1);
 
-        firebase.child(NodeRef.Friends_Node).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -64,7 +64,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
-        final DatabaseReference user = firebase.child("User").child(mAuth.getCurrentUser().getUid()).getRef();
+         DatabaseReference user = firebase.child("User").child(mAuth.getCurrentUser().getUid()).getRef();
         user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,9 +134,10 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     private void membersfromFirebase() {
-        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.All_USERS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
 
                     User users = data.getValue(User.class);

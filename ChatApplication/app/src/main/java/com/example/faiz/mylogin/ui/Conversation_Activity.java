@@ -102,8 +102,15 @@ public class Conversation_Activity extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
         var = dateFormat.format(date);
         view = (View)findViewById(R.id.cover);
-
         relative = (RelativeLayout)findViewById(R.id.attach_container);
+
+        contact = (FloatingActionButton)relative.findViewById(R.id.contact_btn);
+        location = (FloatingActionButton)relative.findViewById(R.id.locat_btn);
+        gallery = (FloatingActionButton)relative.findViewById(R.id.gallery_btn);
+        audio = (FloatingActionButton)relative.findViewById(R.id.aud_btn);
+        document = (FloatingActionButton)relative.findViewById(R.id.doc_btn);
+        camera = (FloatingActionButton)relative.findViewById(R.id.cam_btn);
+
         Log.d("TAG",user.getUid());
         try {
 //            mAuth = firebase.getAuth();
@@ -133,11 +140,6 @@ public class Conversation_Activity extends AppCompatActivity {
             }
         });
 
-        contact = (FloatingActionButton)relative.findViewById(R.id.contact_btn);
-        location = (FloatingActionButton)relative.findViewById(R.id.locat_btn);
-        gallery = (FloatingActionButton)relative.findViewById(R.id.gallery_btn);
-        audio = (FloatingActionButton)relative.findViewById(R.id.aud_btn);
-        document = (FloatingActionButton)relative.findViewById(R.id.doc_btn);
 
         contact.setOnClickListener(new View.OnClickListener() {
             @Override

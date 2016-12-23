@@ -65,7 +65,7 @@ public class Create_Group extends AppCompatActivity {
     private static final int Browse_image = 1;
     private String selectedImagePath;
     private Bitmap bitmap;
-    private String url_cloudinary;
+    private String url_image;
     private FirebaseAuth mAuth;
     private FirebaseUser firebase_user;
     private ArrayList<User> arrayList;
@@ -119,41 +119,8 @@ public class Create_Group extends AppCompatActivity {
 
         adapter = new ContactListAdapter(this, arrayList);
 
-//        firebase.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for (DataSnapshot data : dataSnapshot.getChildren()) {
-//                    User users = data.getValue(User.class);
-//
-//                    Log.d("idss", users.getU_Id());
-//
-//                    if (users.getU_Id().equals(firebase_user.getUid())) {
-//                        Log.d("LOL", users.getU_Id());
-//                    } else {
-//                        String image = users.getImgUrl();
-//                        arrayList.add(new User(users.getFname(),
-//                                users.getLname(),
-//                                users.getEmail(),
-//                                users.getPassword(),
-//                                users.getDob(),
-//                                users.getGender(),
-//                                users.getU_Id(),
-//                                image));
-//                        adapter.notifyDataSetChanged();
-//
-//
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                AppLogs.loge("database error" + databaseError.getMessage());
-//            }
-//        });
 
-        firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -199,7 +166,7 @@ public class Create_Group extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                                firebase.child("MyGroup").child(arrayList.get(position).getU_Id()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_image));
                                 Toast.makeText(Create_Group.this, "Friend Add Successfuly", Toast.LENGTH_SHORT).show();
                                 arrayList.remove(position);
                                 adapter.notifyDataSetChanged();
@@ -253,31 +220,9 @@ public class Create_Group extends AppCompatActivity {
                 //   encodeImage();
             } else {
                 try {
-                    InputStream imInputStream = getContentResolver().openInputStream(data.getData());
+                    InputStream imInputStream = getContentResolver().openInputStream(selectedImage);
                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
-                    //     image.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
-                    //  encodeImage();
-//                    final ProgressDialog dialog = new ProgressDialog(Create_Group.this);
-//                    dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//                    dialog.setMessage("Uploading Image...");
-//                    dialog.setCancelable(true);
-//                    dialog.setMax(100);
-//                    dialog.setProgress(0);
-//                    dialog.show();
-//
-//                    Thread t = new Thread(new Runnable() {
-//                        public void run() {
-//                            while (dialog.getProgress() < dialog.getMax()) {
-//                                dialog.incrementProgressBy(1);
-//                                try {
-//                                    Thread.sleep(50);
-//                                } catch (Exception e) {/* no-op */}
-//                            }
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    t.start();
 
                     Log.d("Tag", selectedImagePath);
                     startUpload(selectedImagePath);
@@ -329,8 +274,8 @@ public class Create_Group extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
                                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                                        final String downloadUrl = taskSnapshot.getDownloadUrl().toString();
-                                        Log.e("Image ka URL", "" + downloadUrl);
+                                        url_image = taskSnapshot.getDownloadUrl().toString();
+                                        Log.e("Image ka URL", "" + url_image);
 
 
                                         mProgressDialog.dismiss();
@@ -369,8 +314,8 @@ public class Create_Group extends AppCompatActivity {
                     Toast.makeText(Create_Group.this, "Please upload picutre And then Add friends", Toast.LENGTH_LONG).show();
                 } else {
 
-                    firebase.child("MyGroup").child(firebase_user.getUid()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
-                    firebase.child("Groupinfo").child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_cloudinary));
+                    firebase.child("MyGroup").child(firebase_user.getUid()).child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_image));
+                    firebase.child("Groupinfo").child(grp).setValue(new Group_Detail(grp, SharedPref.getCurrentUser(Create_Group.this).getFname(), url_image));
                     Toast.makeText(this, "Group Created...", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Create_Group.this, Navigation_Activity.class);
                     startActivity(intent);

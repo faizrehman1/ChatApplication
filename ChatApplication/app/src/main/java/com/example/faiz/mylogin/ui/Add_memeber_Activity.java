@@ -102,7 +102,7 @@ public class Add_memeber_Activity extends AppCompatActivity {
 
         AppLogs.logd("Aloo "+key);
 try {
-    firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+    firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (final DataSnapshot data : dataSnapshot.getChildren()) {

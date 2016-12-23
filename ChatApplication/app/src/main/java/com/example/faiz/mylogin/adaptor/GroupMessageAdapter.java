@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupMessageAdapter extends BaseAdapter {
 
     private ArrayList<Message> arrayList;
@@ -75,7 +77,7 @@ public class GroupMessageAdapter extends BaseAdapter {
 
         TextView msgView = (TextView) view.findViewById(R.id.messageView);
         TextView timeView = (TextView) view.findViewById(R.id.timeView_messages);
-        final ImageView img = (ImageView)view.findViewById(R.id.imageView_messages);
+        final CircleImageView circleImageView = (CircleImageView)view.findViewById(R.id.imageView_messages);
         msgView.setText(arrayList.get(position).getMsg());
         timeView.setText(arrayList.get(position).getTime());
 
@@ -88,15 +90,10 @@ public class GroupMessageAdapter extends BaseAdapter {
                 public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
 
                     User user = dataSnapshot.getValue(User.class);
-//                 user.getImgUrl()
-
-//                Log.d("imaaa",user.getImgUrl());
-
                     if(user.getImgUrl().equals("")){
-                        img.setImageResource(R.drawable.ic_menu_camera);
-
+                        circleImageView.setImageResource(R.drawable.default_user);
                     }else{
-                        Glide.with(context).load(user.getImgUrl()).into(img);
+                        Glide.with(context).load(user.getImgUrl()).into(circleImageView);
 
                     }
                 }
@@ -106,7 +103,7 @@ public class GroupMessageAdapter extends BaseAdapter {
                 }
             });
             //    Log.d("image",dataSnapshot.child("imgUrl").getValue().toString());
-            //    Glide.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(img);
+            //    Glide.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(circleImageView);
 
 
 

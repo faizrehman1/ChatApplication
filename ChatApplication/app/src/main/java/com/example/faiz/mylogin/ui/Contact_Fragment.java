@@ -55,7 +55,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
         //Getting Single value from fire base and setting it to list View
         try {
 
-            firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -178,9 +178,9 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             AppLogs.loge("USername " + user.getU_Id().toString());
-                            DatabaseReference ref = firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).getRef();
+                            DatabaseReference ref = firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).getRef();
                             AppLogs.loge("Unknown " + ref.toString());
-                            firebase.child(NodeRef.Friends_Node).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     int i = 0;
@@ -203,7 +203,7 @@ public class Contact_Fragment extends android.support.v4.app.Fragment {
 
                                 }
                             });
-                            firebase.child(NodeRef.Friends_Node).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            firebase.child(NodeRef.FRIENDS).child(user.getU_Id()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     String uid = mAuth.getCurrentUser().getUid().toString();
