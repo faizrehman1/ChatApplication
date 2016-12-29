@@ -102,19 +102,9 @@ public class GroupMessageAdapter extends BaseAdapter {
 
                 }
             });
-            //    Log.d("image",dataSnapshot.child("imgUrl").getValue().toString());
-            //    Glide.with(context).load(dataSnapshot.child("imgUrl").getValue().toString()).transform(new RoundImage()).into(circleImageView);
-
-
-
-
-
         }catch(Exception ex){
             ex.printStackTrace();
         }
-
-
-
 
         return view;
     }

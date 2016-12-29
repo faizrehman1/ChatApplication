@@ -53,7 +53,7 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
     private ProgressDialog mProgressDialogforFileAndPic;
     private ImageView sendImagePic;
     private TextView msgView, timeView;
-    private CircleImageView circleImageView;
+//    private CircleImageView circleImageView;
 
 
     public AdapterForMessage(ArrayList<Message> arraylistforMessages, Context context, User uid) {
@@ -96,21 +96,31 @@ public class AdapterForMessage extends BaseAdapter implements ListAdapter {
         sendImagePic = (ImageView) view.findViewById(R.id.imagepic);
         msgView = (TextView) view.findViewById(R.id.messageView);
         timeView = (TextView) view.findViewById(R.id.timeView_messages);
-        circleImageView = (CircleImageView) view.findViewById(R.id.imageView_messages);
+        final CircleImageView circleImageView = (CircleImageView)view.findViewById(R.id.imageView_messages);
 
         U_ID = arraylistforMessages.get(position).getU_id();
 
-            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new ValueEventListener() {
+        try {
+
+            firebase.child("User").child(U_ID).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
 
+                    User user = dataSnapshot.getValue(User.class);
+                    if(user.getImgUrl().equals("")){
+                        circleImageView.setImageResource(R.drawable.default_user);
+                    }else{
+                        Glide.with(context).load(user.getImgUrl()).into(circleImageView);
+                    }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
 
 
 
