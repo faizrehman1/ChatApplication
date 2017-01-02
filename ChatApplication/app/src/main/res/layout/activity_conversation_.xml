@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
     tools:context=".ui.Conversation_Activity">
 
 
-        <ListView
-            android:id="@+id/messagesListView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/editText_Conversation_message"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
-            android:divider="@null"
-            android:listSelector="@android:color/transparent"
-            android:transcriptMode="alwaysScroll"/>
-
+    <ListView
+        android:id="@+id/messagesListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/editText_Conversation_message"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
 
 
     <EditText
@@ -29,172 +31,170 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/button_Conversation_send"
         android:autoText="true"
-        android:hint="type message"
-        android:layout_toStartOf="@+id/button_Conversation_send" />
+        android:hint="type message" />
 
     <Button
         android:id="@+id/button_Conversation_send"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:padding="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
-        android:background="@drawable/ic_menu_send"/>
-
-
+        android:background="@drawable/ic_menu_send"
+        android:padding="50dp" />
 
 
     <RelativeLayout
+        android:id="@+id/attach_container"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        android:id="@+id/attach_container"
-        android:visibility="invisible"
-        android:background="#6b5c5c"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#6b5c5c"
+        android:visibility="invisible">
 
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/cam_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cam_btn"
-            android:src="@drawable/cameralogo"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="13dp" />
+            android:layout_marginTop="13dp"
+            android:src="@drawable/cameralogo" />
 
         <android.support.design.widget.FloatingActionButton
-            android:layout_marginLeft="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/doc_btn"
-android:src="@drawable/docc"
-            android:layout_alignTop="@+id/cam_btn"
-            android:layout_toStartOf="@+id/cam_btn"
-            android:layout_marginEnd="59dp" />
-
-        <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/gallery_btn"
-            android:src="@drawable/gallery"
-            android:layout_marginStart="58dp"
             android:layout_alignTop="@+id/cam_btn"
-            android:layout_toEndOf="@+id/cam_btn" />
+            android:layout_marginEnd="59dp"
+            android:layout_marginLeft="30dp"
+            android:layout_toStartOf="@+id/cam_btn"
+            android:src="@drawable/docc" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/gallery_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/cam_btn"
+            android:layout_marginStart="58dp"
+            android:layout_toEndOf="@+id/cam_btn"
+            android:src="@drawable/gallery" />
 
         <TextView
-            android:text="Camera"
+            android:id="@+id/camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/camera"
-            android:textColor="#fff"
             android:layout_alignBaseline="@+id/doc"
             android:layout_alignBottom="@+id/doc"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:text="Camera"
+            android:textColor="#fff" />
 
         <TextView
-            android:text="Contact"
+            android:id="@+id/contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/contact"
-            android:textColor="#fff"
             android:layout_alignBaseline="@+id/locat"
             android:layout_alignBottom="@+id/locat"
             android:layout_alignLeft="@+id/contact_btn"
             android:layout_alignStart="@+id/contact_btn"
             android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp" />
+            android:layout_marginStart="12dp"
+            android:text="Contact"
+            android:textColor="#fff" />
 
         <TextView
-            android:text="Documents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/doc"
-            android:textColor="#fff"
-
-            android:layout_marginTop="15dp"
-            android:layout_below="@+id/doc_btn"
-            android:layout_alignRight="@+id/doc_btn"
-            android:layout_alignEnd="@+id/doc_btn" />
-
-        <TextView
-            android:text="Gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/gallery"
-            android:textColor="#fff"
+            android:layout_alignEnd="@+id/doc_btn"
+            android:layout_alignRight="@+id/doc_btn"
 
+            android:layout_below="@+id/doc_btn"
+            android:layout_marginTop="15dp"
+            android:text="Documents"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/camera"
             android:layout_alignBottom="@+id/camera"
+
             android:layout_alignLeft="@+id/contact"
-            android:layout_alignStart="@+id/contact" />
+            android:layout_alignStart="@+id/contact"
+            android:text="Gallery"
+            android:textColor="#fff" />
 
         <TextView
-            android:text="Audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:id="@+id/audio"
-            android:textColor="#fff"
-
-            android:layout_below="@+id/aud_btn"
-            android:layout_alignRight="@+id/aud_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/aud_btn"
+            android:layout_alignRight="@+id/aud_btn"
+            android:layout_below="@+id/aud_btn"
+
+            android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginEnd="15dp" />
+            android:layout_marginTop="12dp"
+            android:text="Audio"
+            android:textColor="#fff" />
 
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/aud_btn"
-            android:src="@drawable/audio"
-            android:layout_alignTop="@+id/locat_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/doc"
             android:layout_alignRight="@+id/doc"
-            android:layout_alignEnd="@+id/doc" />
+            android:layout_alignTop="@+id/locat_btn"
+            android:src="@drawable/audio" />
 
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/locat_btn"
-            android:src="@drawable/map"
-            android:layout_marginTop="37dp"
-            android:layout_below="@+id/camera"
-            android:layout_toRightOf="@+id/doc_btn"
-            android:layout_toEndOf="@+id/doc_btn" />
-
-        <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/camera"
+            android:layout_marginTop="37dp"
+            android:layout_toEndOf="@+id/doc_btn"
+            android:layout_toRightOf="@+id/doc_btn"
+            android:src="@drawable/map" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/contact_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/audio"
-            android:src="@drawable/gcontact"
             android:layout_alignLeft="@+id/gallery_btn"
-            android:layout_alignStart="@+id/gallery_btn" />
+            android:layout_alignStart="@+id/gallery_btn"
+            android:src="@drawable/gcontact" />
 
         <TextView
-            android:text="Location"
+            android:id="@+id/locat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/locat"
-            android:textColor="#fff"
-
-            android:layout_marginLeft="10dp"
             android:layout_alignBaseline="@+id/audio"
             android:layout_alignBottom="@+id/audio"
-            android:layout_alignEnd="@+id/camera" />
+
+            android:layout_alignEnd="@+id/camera"
+            android:layout_marginLeft="10dp"
+            android:text="Location"
+            android:textColor="#fff" />
 
 
     </RelativeLayout>
 
     <View
+        android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"
-        android:id="@+id/cover"
+        android:layout_alignBottom="@+id/button_Conversation_send"
         android:layout_below="@+id/attach_container"
-        android:layout_alignBottom="@+id/button_Conversation_send" />
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
 </RelativeLayout>

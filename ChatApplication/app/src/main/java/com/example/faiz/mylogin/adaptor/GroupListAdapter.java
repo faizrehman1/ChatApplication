@@ -109,23 +109,13 @@ public class GroupListAdapter extends BaseAdapter implements ListAdapter {
                                 intent.putExtra("groupAdminName",groupData.get(position).getAdminName());
                                 intent.putExtra("groupUrl",groupData.get(position).getImgUrl());
                                 context.startActivity(intent);
-
-                              //  Toast.makeText(context,"LOL",Toast.LENGTH_SHORT).show();
                             }
                         });
                         builder.setPositiveButton("Delete Group", null);
-
-
                         builder.setView(view);
-
-
-                        //     builder.setMessage("LOL");
-
                         builder.create().show();
                     }
                 });
-
-
                 return view;
             }
 
