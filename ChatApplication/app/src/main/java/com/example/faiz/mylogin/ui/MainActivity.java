@@ -193,100 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, Signup_Activity.class);
                 startActivity(intent);
-//                try {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                    builder.setTitle("Add");
-//                    builder.setMessage("Add New Email or Password");
-//                    LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-//                    View vv = inflater.inflate(R.layout.signup_view, null);
-//                    id = (EditText) vv.findViewById(R.id.edtviewEmail);
-//                    password = (EditText) vv.findViewById(R.id.edtviewPassword);
-//
-//
-//                    fname = (EditText) vv.findViewById(R.id.edtviewFirstName);
-//                    lname = (EditText) vv.findViewById(R.id.edtviewLastName);
-//                    dob = (EditText) vv.findViewById(R.id.editTextDob);
-//
-//                    gender = (AutoCompleteTextView) vv.findViewById(R.id.editGender);
-//
-//                    //  AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.actv_country);
-//                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, Gender);
-//                    gender.setAdapter(adapter);
-//                    btn_upload_image = (Button) vv.findViewById(R.id.BtnuploadImage);
-//                    textView_imageName = (TextView) vv.findViewById(R.id.image_Name);
-//                    // forImageUpload();
-//
-//
-//                    btn_upload_image.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                            startActivityForResult(i, Browse_image);
-//                        }
-//                    });
-//                    builder.setView(vv);
-//
-//
-//                    builder.setPositiveButton("SIGN-UP", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            String pass = password.getText().toString();
-//                            //Checking the length of pasword while registering new USER;
-//                            if (pass.length() <= 6) {
-//                                main(pass);
-//                            } else {
-//                                try {
-//                                    mAuth.createUserWithEmailAndPassword((id.getText().toString()), (password.getText().toString())).addOnCompleteListener(MainActivity.this,
-//                                            new OnCompleteListener<AuthResult>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                    String uid = mAuth.getCurrentUser().getUid();
-//
-//
-////                                                if (task.isSuccessful()) {
-//                                                    firebase.child("User").child(uid).setValue(new
-//                                                            User(fname.getText().toString(),
-//                                                            lname.getText().toString(),
-//                                                            id.getText().toString(),
-//                                                            password.getText().toString(),
-//                                                            dob.getText().toString(),
-//                                                            gender.getText().toString(),
-//                                                            uid,
-//                                                            url_ProfileImage
-//                                                            , "true"));
-//
-//                                                    Toast.makeText(MainActivity.this, "Successfull", Toast.LENGTH_SHORT).show();
-//                                                    AppLogs.logd("createUserWithEmail:onComplete: " + task.isSuccessful());
-////                                                } else
-//                                                    if (!task.isSuccessful()) {
-//
-//                                                        Toast.makeText(MainActivity.this, " " + task.getException(), Toast.LENGTH_SHORT).show();
-//                                                    }
-//                                                }
-//                                            });
-//
-//                                } catch (Exception ex) {
-//
-//                                    ex.printStackTrace();
-//                                }
-//                            }
-//                        }
-//
-//
-//                    });
-//                    builder.setNegativeButton("Cancel", null);
-//
-//                    //    builder.setCancelable(false);
-//
-//                    builder.create().show();
-//
-//
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//
-//
-//            }
+
             }
         });
 
@@ -408,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 openNavigationActivity();
                             } else if (!task.isSuccessful()) {
+                                progressDialog.dismiss();
                                 AppLogs.logw("signInWithEmail" + task.getException());
                                 Toast.makeText(MainActivity.this, "" + task.getException(),
                                         Toast.LENGTH_LONG).show();
