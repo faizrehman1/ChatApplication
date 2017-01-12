@@ -298,44 +298,42 @@ public class MainActivity extends AppCompatActivity {
 
                 if (emails.length() == 0) {
                     email.setError("This is Required Field");
-                } else if (passo.length() == 0 && passo.length() <= 6) {
+                } else if (passo.length() == 0 && passo.length() <= 6 ) {
                     pass.setError("This is Required Field");
-                }
+                }else{
 
+                    try {
+                        final ProgressDialog  progressDialog = ProgressDialog.show(MainActivity.this, "Sign In", "Connecting...", true, false);
 
-                try {
-                  final ProgressDialog  progressDialog = ProgressDialog.show(MainActivity.this, "Sign In", "Connecting...", true, false);
-
-                    mAuth.signInWithEmailAndPassword(emails, passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
-                                Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                                progressDialog.dismiss();
-                                openNavigationActivity();
-                            } else if (!task.isSuccessful()) {
-                                progressDialog.dismiss();
-                                AppLogs.logw("signInWithEmail" + task.getException());
-                                Toast.makeText(MainActivity.this, "" + task.getException(),
-                                        Toast.LENGTH_LONG).show();
+                        mAuth.signInWithEmailAndPassword(emails, passo).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    AppLogs.logd("signInWithEmail:onComplete:" + task.isSuccessful());
+                                    Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                    openNavigationActivity();
+                                } else if (!task.isSuccessful()) {
+                                    progressDialog.dismiss();
+                                    AppLogs.logw("signInWithEmail" + task.getException());
+                                    Toast.makeText(MainActivity.this, "" + task.getException(),
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
-                    });
+                        });
 
 
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
-        });
+
+
+
+    });
     }
 
-    private void main(String pass) {
-
-        Toast.makeText(MainActivity.this, pass + "\nYou Password is no longer Stronger \nPlease signup Again with \natleast 7 Character of Pasword.\nThanks ", Toast.LENGTH_SHORT).show();
-
-    }
 
 
     private void openNavigationActivity() {

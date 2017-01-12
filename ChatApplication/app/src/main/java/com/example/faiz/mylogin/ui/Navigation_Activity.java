@@ -2,6 +2,7 @@ package com.example.faiz.mylogin.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -95,7 +96,7 @@ public class Navigation_Activity extends AppCompatActivity
     private FirebaseUser users;
     private Uri selectedImage;
     private StorageReference rootStorageRef, folderRef,imageRef;
-
+    private android.support.v4.app.FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +106,7 @@ public class Navigation_Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        fragmentManager = getSupportFragmentManager();
         rootStorageRef = FirebaseStorage.getInstance().getReference();
         folderRef = rootStorageRef.child("profileImages");
 
@@ -213,8 +214,6 @@ public class Navigation_Activity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
-
             return true;
         }
 
@@ -227,10 +226,11 @@ public class Navigation_Activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.update_status) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.update_profile) {
 
+            fragmentManager.beginTransaction().add(R.id.container, new UserSetting_Fragment()).addToBackStack(null).commit();
         } else if (id == R.id.logout) {
 
             status = "false";

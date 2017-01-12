@@ -59,6 +59,7 @@
                 android:background="#fff"
                 android:hint="Email"
                 android:padding="15dp"
+                android:maxLength="25"
                 android:textColor="#000"
                 android:textSize="25sp"
                 android:typeface="monospace" />
