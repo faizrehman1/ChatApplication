@@ -103,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
     private android.support.v4.app.FragmentManager fragmentManager;
 
     @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

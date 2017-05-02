@@ -50,7 +50,7 @@ public class FriendListActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.fRequest_ListView1);
 
-        firebase.child(NodeRef.FRIENDS).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS_REFERENCE).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -93,7 +93,7 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 clickedUser = nameList.get(position);
-                firebase.child(NodeRef.FRIEND_REQUEST).addListenerForSingleValueEvent(new ValueEventListener() {
+                firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(clickedUser.getU_Id())) {
@@ -166,7 +166,7 @@ public class FriendListActivity extends AppCompatActivity {
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                firebase.child(NodeRef.FRIEND_REQUEST).child(clickedUser.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
+                firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).child(clickedUser.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
                 nameList.remove(nameList.get(position));
                 adapter.notifyDataSetChanged();
             }
@@ -194,7 +194,7 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     private void membersfromFirebase() {
-        firebase.child(NodeRef.All_USERS).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.USERS_REFERENCE).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

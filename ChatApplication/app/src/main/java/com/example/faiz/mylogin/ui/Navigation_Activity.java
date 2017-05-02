@@ -2,7 +2,6 @@ package com.example.faiz.mylogin.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,16 +28,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
-import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.example.faiz.mylogin.util.NodeRef;
@@ -57,16 +51,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -95,7 +85,7 @@ public class Navigation_Activity extends AppCompatActivity
     private String status = "true";
     private FirebaseUser users;
     private Uri selectedImage;
-    private StorageReference rootStorageRef, folderRef,imageRef;
+    private StorageReference rootStorageRef, folderRef, imageRef;
     private android.support.v4.app.FragmentManager fragmentManager;
 
     @Override
@@ -111,13 +101,12 @@ public class Navigation_Activity extends AppCompatActivity
         folderRef = rootStorageRef.child("profileImages");
 
 
-
         firebase = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-
-        users = auth.getCurrentUser();
-
+        if (auth != null) {
+            users = auth.getCurrentUser();
+        }
 
         Tab_ViewPager();
 
@@ -282,7 +271,7 @@ public class Navigation_Activity extends AppCompatActivity
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                 //   adapter.notifyDataSetChanged();
+                    //   adapter.notifyDataSetChanged();
                     viewPager.setCurrentItem(tab.getPosition());
 
 
@@ -341,7 +330,7 @@ public class Navigation_Activity extends AppCompatActivity
             } else {
                 try {
                     InputStream imInputStream = getContentResolver().openInputStream(selectedImage);
-                 //   Bitmap bitmap = data.getParcelableExtra("data");
+                    //   Bitmap bitmap = data.getParcelableExtra("data");
                     Bitmap bitmap = BitmapFactory.decodeStream(imInputStream);
                     selectedImagePath = saveGalaryImageOnLitkat(bitmap);
                     Log.d("Tag", selectedImagePath);
@@ -369,7 +358,7 @@ public class Navigation_Activity extends AppCompatActivity
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, int which) {
                             Log.d("File PATH IS ", selectedImagePath + "");
-                          //  File file = new File(selectedImagePath);
+                            //  File file = new File(selectedImagePath);
                             try {
                                 File fileRef = new File(selectedImagePath);
                                 Date date = new Date(System.currentTimeMillis());
@@ -418,7 +407,7 @@ public class Navigation_Activity extends AppCompatActivity
 
                                             }
                                         });
-                                        firebase.child(NodeRef.FRIENDS).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        firebase.child(NodeRef.FRIENDS_REFERENCE).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
@@ -463,10 +452,6 @@ public class Navigation_Activity extends AppCompatActivity
         }
 
 
-
-
-
-
     }
 
     private String saveGalaryImageOnLitkat(Bitmap bitmap) {
@@ -496,31 +481,34 @@ public class Navigation_Activity extends AppCompatActivity
 
     public void testing(final String status) {
 
-        Log.d("tagg", users.getUid());
+//        Log.d("tagg", users.getUid());
 
-        firebase.child(NodeRef.FRIENDS).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebase.child(NodeRef.FRIENDS_REFERENCE).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                  //  User user = data.getValue(User.class);
-                    if (data.hasChild(users.getUid())) {
-                        DatabaseReference ref = data.getRef();
-                        String keys = ref.getKey();
-                        Log.d("tag1", ref.getKey());
-                        firebase.child("Friends").child(keys).child(users.getUid()).child("status").setValue(status);
+                if (dataSnapshot != null) {
+                    Log.d("tag", String.valueOf(dataSnapshot.hasChild(users.getUid())));
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        //  User user = data.getValue(User.class);
+                        if (data.hasChild(users.getUid())) {
+                            DatabaseReference ref = data.getRef();
+                            String keys = ref.getKey();
+                            Log.d("tag1", ref.getKey());
+                            firebase.child("Friends").child(keys).child(users.getUid()).child("status").setValue(status);
 
-
+                        }
                     }
                 }
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-        firebase.child("User").child(auth.getCurrentUser().getUid()).child("status").setValue(status);
+
+        firebase.child(NodeRef.USERS_REFERENCE).child(auth.getCurrentUser().getUid()).child("status").setValue(status);
 
     }
 }
