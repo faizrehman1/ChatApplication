@@ -4,7 +4,6 @@
     <group >
         <item
             android:id="@+id/update_status"
-            android:icon="@drawable/status"
             android:title="Update Status" />
         <item
             android:id="@+id/update_profile"

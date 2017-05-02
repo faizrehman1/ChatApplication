@@ -1,10 +1,8 @@
 package com.example.faiz.mylogin.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +12,12 @@ import android.widget.ListView;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.ChatListAdapter;
-import com.example.faiz.mylogin.adaptor.ContactListAdapter;
 import com.example.faiz.mylogin.model.TempRefObj;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.example.faiz.mylogin.util.NodeRef;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -62,7 +58,7 @@ public class Chat_Fragment extends android.support.v4.app.Fragment {
                     for (final DataSnapshot data : dataSnapshot.getChildren()) {
                         TempRefObj tempRefObj = data.getValue(TempRefObj.class);
                         AppLogs.logd("TT " + tempRefObj.getUserId());
-                        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).child(tempRefObj.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        firebase.child(NodeRef.FRIENDS_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(tempRefObj.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot1) {
                                 AppLogs.logd("dataa " + dataSnapshot1);

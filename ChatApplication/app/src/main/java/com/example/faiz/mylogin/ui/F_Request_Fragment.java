@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.FriendList_adapter;
@@ -60,8 +59,8 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
         listView = (ListView) view.findViewById(R.id.fRequest_ListView2);
 
         AppLogs.loge("CurrentUser " + mAuth.getCurrentUser().getUid().toString());
-        AppLogs.loge("UID unknown " + firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()).toString());
-        firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        AppLogs.loge("UID unknown " + firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()).toString());
+        firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
@@ -122,12 +121,12 @@ public class F_Request_Fragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).child(user.getU_Id()).setValue(user);
-                        firebase.child(NodeRef.FRIENDS).child(user.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
-                        AppLogs.loge("REF " + firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()));
+                        firebase.child(NodeRef.FRIENDS_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(user.getU_Id()).setValue(user);
+                        firebase.child(NodeRef.FRIENDS_REFERENCE).child(user.getU_Id()).child(mAuth.getCurrentUser().getUid()).setValue(userCall);
+                        AppLogs.loge("REF " + firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()));
 
 
-                        firebase.child(NodeRef.FRIEND_REQUEST).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        firebase.child(NodeRef.FRIEND_REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 int i = 0;

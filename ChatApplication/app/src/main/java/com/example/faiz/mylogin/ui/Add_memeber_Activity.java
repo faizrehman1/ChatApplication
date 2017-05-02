@@ -4,22 +4,17 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.AddGroupmemberAdapter;
-import com.example.faiz.mylogin.adaptor.FriendList_adapter;
 import com.example.faiz.mylogin.model.Group_Detail;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.example.faiz.mylogin.util.NodeRef;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -102,7 +97,7 @@ public class Add_memeber_Activity extends AppCompatActivity {
 
         AppLogs.logd("Aloo "+key);
 try {
-    firebase.child(NodeRef.FRIENDS).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+    firebase.child(NodeRef.FRIENDS_REFERENCE).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (final DataSnapshot data : dataSnapshot.getChildren()) {
