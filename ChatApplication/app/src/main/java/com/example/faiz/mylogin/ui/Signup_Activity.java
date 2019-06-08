@@ -162,7 +162,7 @@ public class Signup_Activity extends AppCompatActivity {
 
                                         Toast.makeText(Signup_Activity.this, "Successfull", Toast.LENGTH_SHORT).show();
                                         AppLogs.logd("createUserWithEmail:onComplete: " + task.isSuccessful());
-                                        Intent intent = new Intent(Signup_Activity.this,MainActivity.class);
+                                        Intent intent = new Intent(Signup_Activity.this, LoginActivity.class);
                                         startActivity(intent);
                                         progressDialog.dismiss();
 //                                                } else

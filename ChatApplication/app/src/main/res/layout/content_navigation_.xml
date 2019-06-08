@@ -13,12 +13,12 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ccccd6"
+        android:background="#03363B"
         android:elevation="6dp"
 
-        app:tabIndicatorColor="#36a740"
+        app:tabIndicatorColor="#39B1B9"
         app:tabIndicatorHeight="5dp"
-        app:tabSelectedTextColor="#060606"
+        app:tabSelectedTextColor="#fff"
         app:tabTextColor="#9b9494"
 
         android:layout_alignParentTop="true" />

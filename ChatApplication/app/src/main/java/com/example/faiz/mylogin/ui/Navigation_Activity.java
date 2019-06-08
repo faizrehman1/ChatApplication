@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,16 +28,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.faiz.mylogin.R;
 import com.example.faiz.mylogin.adaptor.Tab_Adapter;
-import com.example.faiz.mylogin.model.Message;
 import com.example.faiz.mylogin.model.User;
 import com.example.faiz.mylogin.util.AppLogs;
 import com.example.faiz.mylogin.util.NodeRef;
@@ -60,12 +55,9 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -236,7 +228,7 @@ public class Navigation_Activity extends AppCompatActivity
             status = "false";
             testing(status);
             auth.getInstance().signOut();
-            Intent intent = new Intent(Navigation_Activity.this, MainActivity.class);
+            Intent intent = new Intent(Navigation_Activity.this, LoginActivity.class);
             startActivity(intent);
             finish();
 

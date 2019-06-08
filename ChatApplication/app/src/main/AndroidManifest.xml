@@ -1,32 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.faiz.mylogin">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="com.trek2000.android.pas.permission.C2D_MESSAGE"/>
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false"/>
+
+    <permission
+        android:name="com.example.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false"/>
+    <uses-feature android:glEsVersion="0x00020000"/>
 
     <application
+        android:largeHeap="true"
         android:name=".AppController"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/mainlogo"
         android:label="Chat Application"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
-        <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name"
+        <activity android:name=".ui.SplashActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
-
             >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateAlwaysHidden">
+
         </activity>
         <activity
             android:name=".ui.Navigation_Activity"
@@ -39,27 +77,25 @@
         <activity
             android:name=".ui.Signup_Activity"
             android:label="Signup Form"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <!--<activity-->
-            <!--android:name="com.facebook.FacebookActivity"-->
-            <!--android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
-        <activity android:name=".ui.Create_Group"
+            android:windowSoftInputMode="stateAlwaysHidden" /> <!-- <activity -->
+        <!-- android:name="com.facebook.FacebookActivity" -->
+        <!-- android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:theme="@android:style/Theme.Translucent.NoTitleBar" /> -->
+        <activity
+            android:name=".ui.Create_Group"
             android:label="Create Group"
-            android:windowSoftInputMode="stateAlwaysHidden"
-
-            />
-        <activity android:name=".ui.Group_Chat_Act"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".ui.Group_Chat_Act"
             android:label="Group Chat Room"
-            />
-        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name=".ui.FriendListActivity"
-            android:label="Find Friends"
-            ></activity>
-        <activity android:name=".ui.Add_memeber_Activity"
-            android:label="Find Group Members"
-            ></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".ui.FriendListActivity"
+            android:label="Find Friends" />
+        <activity
+            android:name=".ui.Add_memeber_Activity"
+            android:label="Find Group Members" />
     </application>
 
 </manifest>

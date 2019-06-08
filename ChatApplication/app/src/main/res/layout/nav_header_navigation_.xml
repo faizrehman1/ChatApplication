@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:textSize="17dp"
         android:text="Android Studio"
+        android:layout_marginLeft="10dp"
         android:textColor="#fff"
         android:textStyle="bold"
         android:layout_below="@+id/imageView_NavBar" />
@@ -31,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="android.studio@android.com"
+        android:layout_marginLeft="10dp"
         android:textColor="#fff"
         android:layout_below="@+id/user_name_NavBar"
         android:layout_alignLeft="@+id/user_name_NavBar"
